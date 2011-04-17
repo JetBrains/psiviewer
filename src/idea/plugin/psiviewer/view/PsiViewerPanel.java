@@ -170,7 +170,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
 
         _propertyPanel = new PropertySheetPanel();
 
-        _splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(_tree), _propertyPanel)
+        _splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JBScrollPane(_tree), _propertyPanel)
         {
             public void setDividerLocation(int location)
             {

@@ -309,9 +309,11 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
 
         VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(editor.getDocument());
         PsiFile psiFile = PsiManager.getInstance(_project).findFile(virtualFile);
-        PsiElement elementAtCaret = psiFile.findElementAt(editor.getCaretModel().getOffset());
-        if (elementAtCaret != null && elementAtCaret != getSelectedElement())
-        {
+        PsiElement elementAtCaret = null;
+        if (psiFile != null) {
+            elementAtCaret = psiFile.findElementAt(editor.getCaretModel().getOffset());
+        }
+        if(elementAtCaret != null && elementAtCaret != getSelectedElement()) {
             debug("new element at caret " + elementAtCaret + ", current root=" + getRootElement());
             if (!PsiTreeUtil.isAncestor(getRootElement(), elementAtCaret, false))
                 selectRootElement(psiFile, TITLE_PREFIX_CURRENT_FILE);

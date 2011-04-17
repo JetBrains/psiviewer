@@ -103,7 +103,12 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
     {
         PsiElement elementChangedByPsi = event.getParent();
         PsiElement viewerRootElement = _viewer.getRootElement();
-        return PsiTreeUtil.isAncestor(viewerRootElement, elementChangedByPsi, false);
+        boolean b = false;
+        try{
+            b = PsiTreeUtil.isAncestor(viewerRootElement, elementChangedByPsi, false);
+        } catch (Throwable ignored) {}
+
+        return b;
     }
 
    public void fileOpened(FileEditorManager source, VirtualFile file) {

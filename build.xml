@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="PsiViewer" default="all" basedir=".">
+
+    <property file="build.properties"/>
+    <!-- Set the IDEA installation directory here
+    (or in the build.properties file which takes precedence) -->
+    <property name="dir.idea" value="c:/java/idea"/>
+
+    <!-- Project name and version info -->
+    <property name="project.name" value="${ant.project.name}"/>
+    <property name="plugin.vendor" value="Andrew Armstrong, Jacques Morel, Ole Matzura"/>
+    <property name="plugin.vendor.email" value="andrew_armstrong(ad)unwired(dop)com(dop)au"/>
+    <property name="plugin.description" value="A Program Structure Interface (PSI) tree viewer. This plugin may be useful for developers who are considering using the PSI interface in their own plugins."/>
+    <property name="plugin.idea.since.build" value="3461"/>
+    <property name="plugin.idea.until.build" value=""/>
+    <property name="plugin.docUrl" value="http://www.intellij.org/twiki/bin/view/Main/PsiViewerPlugin"/>
+    <property name="plugin.binUrl" value="http://www.intellij.org/twiki/pub/Main/PsiViewerPlugin/PsiViewer.jar"/>
+    <property name="plugin.srcUrl" value="http://www.intellij.org/twiki/pub/Main/PsiViewerPlugin/PsiViewer.zip"/>
+    <property name="plugin.changes" value="
+    &lt;ul>
+        &lt;li>Avoided &lt;i>Should not be called on Chameleons&lt;/i> assertion (via an ugly hack, so it might happen again)&lt;/li>
+        &lt;li>Updated to use Java 1.5 generics&lt;/li>
+    &lt;/ul>"
+        />
+
+    <!-- Source directories -->
+    <property name="dir.src" value="${basedir}/src"/>
+    <property name="dir.tst" value="${basedir}/tst"/>
+    <property name="dir.resources" value="${basedir}/resources"/>
+
+    <!-- Destination directories -->
+    <property name="dir.build" value="${basedir}/build"/>
+    <property name="dir.build.classes" value="${dir.build}/classes"/>
+    <property name="dir.build.dist" value="${dir.build}/dist"/>
+    <property name="dir.build.docs" value="${dir.build}/docs"/>
+    <property name="dir.build.lib" value="${dir.build}/lib"/>
+
+    <!-- Deployment directories -->
+    <property name="dir.idea.lib" value="${dir.idea}/lib"/>
+    <property name="dir.idea.plugins" value="${user.home}/.IntelliJIdea50/config/plugins"/>
+
+
+    <!-- Compiler settings -->
+    <property name="compile.debug" value="on"/>
+
+    <path id="compile.classpath">
+        <fileset dir="${dir.idea.lib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- Creates directories -->
+    <target name="init">
+        <tstamp/>
+        <tstamp>
+            <format property="year" pattern="yyyy"/>
+        </tstamp>
+        <tstamp>
+            <format property="month" pattern="MM"/>
+        </tstamp>
+        <tstamp>
+            <format property="day" pattern="dd"/>
+        </tstamp>
+        <mkdir dir="${dir.build.classes}"/>
+        <mkdir dir="${dir.build.dist}"/>
+        <mkdir dir="${dir.build.lib}"/>
+        <mkdir dir="${dir.build.docs}"/>
+        <available property="version.exists" file="version.properties"/>
+        <antcall target="initVersion"/>
+    </target>
+
+    <target name="initVersion" unless="version.exists">
+        <antcall target="nextVersion"/>
+    </target>
+
+    <!-- Clean up  -->
+    <target name="clean" description="Deletes the build directory.">
+        <delete dir="${dir.build}"/>
+    </target>
+
+
+    <!-- Compile, Build jar and javadoc -->
+    <target name="all" depends="clean, buildJar, deploy"
+        description="Compiles, builds jar file and javadoc."/>
+
+
+    <!-- Compiles only -->
+    <target name="compile" depends="init" description="Compiles all source files">
+        <javac srcdir="${dir.src}" destdir="${dir.build.classes}" debug="${compile.debug}">
+            <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+    <!-- Unit tests
+    <target name="test" depends="compile" description="Unit tests">
+        <junit fork="yes" printsummary="on">
+            <classpath>
+                <pathelement location="${dir.build.classes}"/>
+                <path refid="compile.classpath"/>
+            </classpath>
+
+            <batchtest fork="yes" failureproperty="test.failed" errorproperty="test.failed">
+                <fileset dir="${dir.build.classes}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+                <formatter type="plain"/>
+            </batchtest>
+        </junit>
+        <fail if="test.failed" message="Unit tests failed"/>
+    </target>
+    -->
+
+    <!-- Increment version, release and/or build numbers  -->
+    <target name="nextVersion" description="Increment version number">
+        <propertyfile file="version.properties">
+            <entry key="version.number" type="int" default="0" operation="+" value="1"/>
+            <entry key="release.number" type="int" operation="=" value="1"/>
+            <entry key="build.number" type="int" operation="=" value="0"/>
+        </propertyfile>
+    </target>
+    <target name="nextRelease" description="Increment release number">
+        <propertyfile file="version.properties">
+            <entry key="release.number" type="int" default="0" operation="+" value="1"/>
+            <entry key="build.number" type="int" operation="=" value="0"/>
+        </propertyfile>
+    </target>
+    <target name="nextBuild" description="Increment build number">
+        <propertyfile file="version.properties">
+            <entry key="build.number" type="int" default="0" operation="+" value="1"/>
+        </propertyfile>
+    </target>
+
+
+    <!-- Builds the jar file  -->
+<!--    <target name="buildJar" depends="init, test, nextBuild, jar"/>-->
+    <target name="buildJar" depends="init, compile, nextBuild, jar"/>
+
+    <target name="updateIDEAPluginJar" depends="init" description="Update plugin jar in IDEA plugins dir. Doesn't require to shutdown any instance except the test one">
+        <antcall target="jar">
+            <param name="plugin.jar" value="${dir.idea.plugins}/${project.name}.jar"/>
+        </antcall>
+    </target>
+
+    <target name="buildPluginXml" depends="init" description="Create plugin deployment descriptors">
+        <copy todir="${dir.build}/${project.name}">
+            <fileset dir="${basedir}" includes="META-INF/*.xml"/>
+            <fileset dir="${dir.resources}"/>
+        </copy>
+
+        <property file="version.properties"/>
+
+        <!-- Insert version information -->
+        <replace dir="${dir.build}" includes="**/*.xml **/*.html">
+            <replacefilter token="@PLUGIN.NAME@" value="${project.name}"/>
+            <replacefilter token="@PLUGIN.VENDOR@" value="${plugin.vendor}"/>
+            <replacefilter token="@PLUGIN.VENDOR.EMAIL@" value="${plugin.vendor.email}"/>
+            <replacefilter token="@PLUGIN.DESCRIPTION@" value="${plugin.description}"/>
+            <replacefilter token="@PLUGIN.VERSION@" value="${version.number}.${release.number}.${build.number}"/>
+            <replacefilter token="@PLUGIN.CHANGES@" value="${plugin.changes}"/>
+            <replacefilter token="@IDEA.SINCE.BUILD@" value="${plugin.idea.since.build}"/>
+            <replacefilter token="@IDEA.UNTIL.BUILD@" value="${plugin.idea.until.build}"/>
+            <replacefilter token="@PLUGIN.DOCURL@" value="${plugin.docUrl}"/>
+            <replacefilter token="@PLUGIN.BINURL@" value="${plugin.binUrl}"/>
+            <replacefilter token="@PLUGIN.SRCURL@" value="${plugin.srcUrl}"/>
+            <replacefilter token="@PLUGIN.MODIFIED.YEAR@" value="${year}"/>
+            <replacefilter token="@PLUGIN.MODIFIED.MONTH@" value="${month}"/>
+            <replacefilter token="@PLUGIN.MODIFIED.DAY@" value="${day}"/>
+        </replace>
+    </target>
+
+    <target name="jar" depends="buildPluginXml">
+        <property name="plugin.jar" value="${dir.build.lib}/${project.name}.jar"/>
+        <jar jarfile="${plugin.jar}">
+            <fileset dir="${dir.build.classes}" includes="**/*.class" excludes="**/test/*.class"/>
+            <fileset dir="${dir.build}/${project.name}" includes="META-INF/**"/>
+            <fileset dir="${dir.build}" excludes="**/META-INF/*" includes="${project.name}/**"/>
+        </jar>
+    </target>
+
+    <target name="deploy" depends="buildJar"
+        description="Copies the jar file to the plugins directory">
+        <copy todir="${dir.idea.plugins}" file="${dir.build.lib}/${project.name}.jar"/>
+    </target>
+
+    <!-- Builds the javadoc for the project   -->
+    <target name="javadoc" depends="init" description="Builds the javadoc">
+        <javadoc
+            packagenames="idea.*"
+            sourcepath="${dir.src}"
+            destdir="${dir.build.docs}"
+            private="true"
+            author="true"
+            version="true"
+            use="true"
+            failonerror="false"
+            windowtitle="${project.name} API"
+            doctitle="${project.name}">
+            <classpath refid="compile.classpath"/>
+            <link href="http://java.sun.com/j2se/1.4.2/docs/api"/>
+        </javadoc>
+    </target>
+
+
+    <!--Builds a distribution snapshop of the project -->
+    <target name="dist" depends="all, nextRelease" description="Builds a distribution snapshop">
+        <delete file="${dir.build.dist}/${project.name}.zip"/>
+
+        <zip zipfile="${dir.build.dist}/${project.name}.zip">
+            <fileset dir="${basedir}">
+                <include name="src/**"/>
+                <include name="META-INF/**"/>
+                <include name="*.txt"/>
+                <include name="*.properties"/>
+                <include name="*.xml"/>
+                <include name="resources/**/*"/>
+                <exclude name="resources/**/*.db"/>
+            </fileset>
+        </zip>
+
+        <copy todir="${dir.build.dist}">
+            <fileset dir="${dir.build.lib}"/>
+        </copy>
+
+    </target>
+
+</project>
+

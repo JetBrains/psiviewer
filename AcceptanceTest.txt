@@ -1,0 +1,28 @@
+1) Setup  : No editor opened
+   Action : Select node in Project Tree, then C-S-Q
+   Outcome: selected element File psi structure displayed in PsiViewer
+
+2) Setup  : No editor opened
+   Action : Select node in Project Tree, then C-S-P
+   Outcome: selected element psi structure displayed in PsiViewer
+
+3) Setup  : editor opened
+   Action : Select node in Structure tree, then C-S-P
+   Outcome: Selected element psi structure displayed in PsiViewer
+            if PsiViewer is pinned, element is highlighted
+            Caret has not moved
+            PropertySheet displays attributes of selected element
+
+4) Setup  : from 3) or editor opened, psiviewer viewing an element in file
+   Action : select another tree node in psiviewer
+   Outcome: Focus stays in psiviewer
+            PropertySheet has been updated
+            if PsiViewer is pinned, element is highlighted
+
+5) Setup  : Multiple files edited, current one highlighted somehow
+   Action : Close all editors
+   Outcome: No exception thrown
+
+6) Setup  : from 3) or editor opened, psiviewer viewing an element
+   Action : Close editor, then reopen it immediately
+   Outcome: No exception thrown

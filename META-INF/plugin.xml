@@ -1,0 +1,63 @@
+<idea-plugin>
+    <name>@PLUGIN.NAME@</name>
+    <description>@PLUGIN.DESCRIPTION@</description>
+    <version>@PLUGIN.VERSION@</version>
+    <vendor url="http://www.intellij.org/twiki/bin/view/Main/PsiViewerPlugin"
+        email="@PLUGIN.VENDOR.EMAIL@">
+        @PLUGIN.VENDOR@
+    </vendor>
+    <idea-version since-build="@IDEA.SINCE.BUILD@" until-build="@IDEA.UNTIL.BUILD@"/>
+    <change-notes><![CDATA[<html>@PLUGIN.CHANGES@</html>]]></change-notes>
+
+    <project-components>
+        <component>
+            <implementation-class>idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent</implementation-class>
+            <option name="workspace" value="true"/>
+        </component>
+    </project-components>
+    <application-components>
+        <component>
+            <implementation-class>idea.plugin.psiviewer.controller.application.Configuration</implementation-class>
+        </component>
+    </application-components>
+
+    <!-- Component's actions -->
+    <actions>
+        <action id="View PSI element at caret"
+            class="idea.plugin.psiviewer.controller.actions.ViewElementAtCaretAction"
+            text="View PSI element at caret"
+            description="Display PSI tree for element at caret"
+            icon="/PsiViewer/images/psi18x18.png">
+            <keyboard-shortcut first-keystroke="control shift C" keymap="$default"/>
+        </action>
+        <action id="View event PSI file "
+            class="idea.plugin.psiviewer.controller.actions.ViewFileElementAction"
+            text="View PSI for entire file"
+            description="Display PSI tree for this file"
+            icon="/PsiViewer/images/psi18x18.png">
+            <keyboard-shortcut first-keystroke="control shift Q" keymap="$default"/>
+        </action>
+        <action id="View event PSI element"
+            class="idea.plugin.psiviewer.controller.actions.ViewCurrentElementAction"
+            text="View event PSI element"
+            description="Display PSI tree for event element"
+            icon="/PsiViewer/images/psi18x18.png">
+            <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
+        </action>
+
+        <group id="PsiViewerEditor" text="PsiViewer" popup="true">
+            <reference id="View PSI element at caret" />
+            <reference id="View event PSI element" />
+            <reference id="View event PSI file " />
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </group>
+
+        <group id="PsiViewerNonEditor" text="PsiViewer" popup="true">
+            <reference id="View event PSI element" />
+            <reference id="View event PSI file " />
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="StructureViewPopupMenu" anchor="last"/>
+        </group>
+
+    </actions>
+</idea-plugin>

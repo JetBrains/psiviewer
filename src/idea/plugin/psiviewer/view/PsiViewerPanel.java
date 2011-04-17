@@ -31,10 +31,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import idea.plugin.psiviewer.util.Helpers;
+import com.intellij.ui.components.JBScrollPane;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
 import idea.plugin.psiviewer.model.PsiViewerTreeModel;
+import idea.plugin.psiviewer.util.Helpers;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

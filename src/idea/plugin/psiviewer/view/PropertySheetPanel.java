@@ -4,6 +4,7 @@
 package idea.plugin.psiviewer.view;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.ui.components.JBScrollPane;
 import idea.plugin.psiviewer.util.IntrospectionUtil;
 
 import javax.swing.*;

@@ -116,14 +116,15 @@ public class PropertySheetPanel extends JPanel
                 int row = rowAtPoint(event.getPoint());
                 return getCellRect(row, col, INCLUDE_INTERCELL_SPACING).getLocation();
             }
-        };
-        _table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        _table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+;
+        _table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        _table.getSelectionModel().setSelectionMode(0);
 
         packColumn(_table, 0, 2);
         packColumn(_table, 1, 2);
 
-        return new JScrollPane(_table);
+        return new JBScrollPane(_table);
     }
 
     private void packColumn(JTable table, int colIndex, int margin)
@@ -133,9 +134,10 @@ public class PropertySheetPanel extends JPanel
 
         width += 2 * margin;
 
-        final TableColumn column = table.getColumnModel().getColumn(colIndex);
+        TableColumn column = table.getColumnModel().getColumn(colIndex);
         column.setPreferredWidth(width);
-        column.setMaxWidth(width);
+        column.setMinWidth(colIndex==0?width:0);
+        column.setMaxWidth(colIndex==0?width:Integer.MAX_VALUE);
     }
 
     private int getColumnCellWidth(JTable table, int colIndex)

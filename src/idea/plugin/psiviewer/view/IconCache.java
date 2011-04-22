@@ -156,7 +156,7 @@ class IconCache implements PsiViewerConstants
 //        _iconCache.put(PsiTypeParameterList.class, Helpers.getIcon(ICON_PSI));
 //        _iconCache.put(PsiTypeParameterListOwner.class, Helpers.getIcon(ICON_PSI));
 
-        _iconCache.put(PsiVariable.class, Helpers.getIcon("/PsiViewer/images/variable.png"));
+        _iconCache.put(PsiVariable.class, Helpers.getIcon("/images/variable.png"));
 
 //        _iconCache.put(PsiWhileStatement.class, Helpers.getIcon(ICON_PSI));
 

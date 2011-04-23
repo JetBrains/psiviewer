@@ -23,6 +23,11 @@
     </component>
   </application-components>
 
+    <!-- Extensions -->
+  <extensions defaultExtensionNs="com.intellij">
+    <errorHandler implementation="com.sylvanaar.idea.errorreporting.YouTrackBugReporter"/>
+  </extensions>
+
   <!-- Component's actions -->
   <actions>
     <action class="idea.plugin.psiviewer.controller.actions.ViewElementAtCaretAction" description="Display PSI tree for element at caret" icon="/images/psi18x18.png" id="View PSI element at caret" text="View PSI element at caret">

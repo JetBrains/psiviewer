@@ -31,6 +31,33 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
 class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiViewerConstants {
+    private final ElementVisitor _elementVisitor = new ElementVisitor();
+    private final XmlElementVisitor _elementVisitorXml = new ElementVisitorXml();
+    private final JavaElementVisitor _elementVisitorJava = new ElementVisitorJava();
+
+    public Component getTreeCellRendererComponent(JTree tree,
+                                                  Object value,
+                                                  boolean isSelected,
+                                                  boolean isExpanded,
+                                                  boolean isLeaf,
+                                                  int row,
+                                                  boolean hasFocus) {
+        super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus);
+        setIcon(IconCache.DEFAULT_ICON);
+
+        PsiElement psiElement = (PsiElement) value;
+
+        psiElement.accept(_elementVisitor);
+        psiElement.accept(_elementVisitorXml);
+        psiElement.accept(_elementVisitorJava);
+
+        return this;
+    }
+
+    public PsiViewerTreeCellRenderer() {
+        setOpaque(false);
+    }
+
     private class ElementVisitor extends PsiElementVisitor {
 
         private static final int MAX_TEXT_LENGTH = 80;
@@ -74,8 +101,10 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
         }
 
         private String truncate(String text) {
-            if (text.length() > 80) return text.substring(0, 80).trim() + "...";
-            else return text;
+            if (text.length() > MAX_TEXT_LENGTH)
+                return text.substring(0, MAX_TEXT_LENGTH).trim() + "...";
+            else
+                return text;
         }
 
         private ElementVisitor() {
@@ -160,27 +189,5 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
         public void visitXmlToken(XmlToken psiElement) {
             setText("XmlToken: " + psiElement.getText());
         }
-    }
-
-    private final ElementVisitor     _elementVisitor     = new ElementVisitor();
-    private final XmlElementVisitor  _elementVisitorXml  = new ElementVisitorXml();
-    private final JavaElementVisitor _elementVisitorJava = new ElementVisitorJava();
-
-    public PsiViewerTreeCellRenderer() {
-        setOpaque(false);
-    }
-
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean isExpanded,
-                                                  boolean isLeaf, int row, boolean hasFocus) {
-        super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus);
-        setIcon(IconCache.DEFAULT_ICON);
-        
-        PsiElement psiElement = (PsiElement) value;
-
-        psiElement.accept(_elementVisitor);
-        psiElement.accept(_elementVisitorXml);
-        psiElement.accept(_elementVisitorJava);
-
-        return this;
     }
 }

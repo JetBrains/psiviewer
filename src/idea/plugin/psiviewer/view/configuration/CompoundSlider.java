@@ -58,7 +58,7 @@ class CompoundSlider extends JPanel
             public void stateChanged(ChangeEvent e)
             {
                 int value = ((JSlider) e.getSource()).getValue();
-                _spinner.setValue(value);
+                _spinner.setValue(new Integer(value));
                 updateColor(value);
             }
         }

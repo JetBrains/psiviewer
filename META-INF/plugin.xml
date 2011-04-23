@@ -1,63 +1,53 @@
-<idea-plugin>
-    <name>@PLUGIN.NAME@</name>
-    <description>@PLUGIN.DESCRIPTION@</description>
-    <version>@PLUGIN.VERSION@</version>
-    <vendor url="http://www.intellij.org/twiki/bin/view/Main/PsiViewerPlugin"
-        email="@PLUGIN.VENDOR.EMAIL@">
-        @PLUGIN.VENDOR@
-    </vendor>
-    <idea-version since-build="@IDEA.SINCE.BUILD@" until-build="@IDEA.UNTIL.BUILD@"/>
-    <change-notes><![CDATA[<html>@PLUGIN.CHANGES@</html>]]></change-notes>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<idea-plugin url="https://github.com/cmf/psiviewer" version="2">
+  <name>PsiViewer</name>
+  <description>A Program Structure Interface (PSI) tree viewer. This plugin may be useful for developers who are considering using the PSI interface in their own plugins.</description>
+  <version>2.26.0</version>
+  <vendor>Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar</vendor>
+  <idea-version since-build="3461"/>
+  <change-notes><![CDATA[<html><ul>
+    <li>Avoided <i>Should not be called on Chameleons</i> assertion (via an ugly hack, so it might happen again)</li>
+    <li>Updated to use Java 1.5 generics</li>
+</ul>
+</html>]]></change-notes>
 
-    <project-components>
-        <component>
-            <implementation-class>idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent</implementation-class>
-            <option name="workspace" value="true"/>
-        </component>
-    </project-components>
-    <application-components>
-        <component>
-            <implementation-class>idea.plugin.psiviewer.controller.application.Configuration</implementation-class>
-        </component>
-    </application-components>
+  <project-components>
+    <component>
+      <implementation-class>idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent</implementation-class>
+      <option name="workspace" value="true"/>
+    </component>
+  </project-components>
+  <application-components>
+    <component>
+      <implementation-class>idea.plugin.psiviewer.controller.application.Configuration</implementation-class>
+    </component>
+  </application-components>
 
-    <!-- Component's actions -->
-    <actions>
-        <action id="View PSI element at caret"
-            class="idea.plugin.psiviewer.controller.actions.ViewElementAtCaretAction"
-            text="View PSI element at caret"
-            description="Display PSI tree for element at caret"
-            icon="/PsiViewer/images/psi18x18.png">
-            <keyboard-shortcut first-keystroke="control shift C" keymap="$default"/>
-        </action>
-        <action id="View event PSI file "
-            class="idea.plugin.psiviewer.controller.actions.ViewFileElementAction"
-            text="View PSI for entire file"
-            description="Display PSI tree for this file"
-            icon="/PsiViewer/images/psi18x18.png">
-            <keyboard-shortcut first-keystroke="control shift Q" keymap="$default"/>
-        </action>
-        <action id="View event PSI element"
-            class="idea.plugin.psiviewer.controller.actions.ViewCurrentElementAction"
-            text="View event PSI element"
-            description="Display PSI tree for event element"
-            icon="/PsiViewer/images/psi18x18.png">
-            <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
-        </action>
+  <!-- Component's actions -->
+  <actions>
+    <action class="idea.plugin.psiviewer.controller.actions.ViewElementAtCaretAction" description="Display PSI tree for element at caret" icon="/images/psi18x18.png" id="View PSI element at caret" text="View PSI element at caret">
+      <keyboard-shortcut first-keystroke="control shift C" keymap="$default"/>
+    </action>
+    <action class="idea.plugin.psiviewer.controller.actions.ViewFileElementAction" description="Display PSI tree for this file" icon="/images/psi18x18.png" id="View event PSI file " text="View PSI for entire file">
+      <keyboard-shortcut first-keystroke="control shift Q" keymap="$default"/>
+    </action>
+    <action class="idea.plugin.psiviewer.controller.actions.ViewCurrentElementAction" description="Display PSI tree for event element" icon="/images/psi18x18.png" id="View event PSI element" text="View event PSI element">
+      <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
+    </action>
 
-        <group id="PsiViewerEditor" text="PsiViewer" popup="true">
-            <reference id="View PSI element at caret" />
-            <reference id="View event PSI element" />
-            <reference id="View event PSI file " />
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </group>
+    <group id="PsiViewerEditor" popup="true" text="PsiViewer">
+      <reference ref="View PSI element at caret"/>
+      <reference ref="View event PSI element"/>
+      <reference ref="View event PSI file "/>
+      <add-to-group anchor="last" group-id="EditorPopupMenu"/>
+    </group>
 
-        <group id="PsiViewerNonEditor" text="PsiViewer" popup="true">
-            <reference id="View event PSI element" />
-            <reference id="View event PSI file " />
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-            <add-to-group group-id="StructureViewPopupMenu" anchor="last"/>
-        </group>
+    <group id="PsiViewerNonEditor" popup="true" text="PsiViewer">
+      <reference ref="View event PSI element"/>
+      <reference ref="View event PSI file "/>
+      <add-to-group anchor="last" group-id="ProjectViewPopupMenu"/>
+      <add-to-group anchor="last" group-id="StructureViewPopupMenu"/>
+    </group>
 
-    </actions>
+  </actions>
 </idea-plugin>

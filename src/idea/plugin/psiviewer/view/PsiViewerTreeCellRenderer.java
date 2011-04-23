@@ -30,178 +30,157 @@ import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.*;
 
-class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiViewerConstants
-{
-    private final ElementVisitor _elementVisitor;
+class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiViewerConstants {
+    private class ElementVisitor extends PsiElementVisitor {
 
-    public PsiViewerTreeCellRenderer()
-    {
-        setOpaque(false);
-        _elementVisitor = new ElementVisitor();
-    }
-
-    public Component getTreeCellRendererComponent(JTree tree,
-                                                  Object value,
-                                                  boolean isSelected,
-                                                  boolean isExpanded,
-                                                  boolean isLeaf,
-                                                  int row,
-                                                  boolean hasFocus)
-    {
-        super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus);
-
-        setIcon(IconCache.DEFAULT_ICON);
-
-        PsiElement psiElement = (PsiElement) value;
-        psiElement.accept(_elementVisitor);
-
-        return this;
-    }
-
-    private class ElementVisitor extends PsiElementVisitor
-    {
         private static final int MAX_TEXT_LENGTH = 80;
 
-        public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression)
-        {
-        }
 
-        public void visitBinaryFile(PsiBinaryFile psiElement)
-        {
+        public void visitBinaryFile(PsiBinaryFile psiElement) {
             setIcon(IconCache.getIcon(PsiBinaryFile.class));
             setText("PsiBinaryFile: " + psiElement.getName());
         }
 
-        public void visitClass(PsiClass psiElement)
-        {
-            setIcon(IconCache.getIcon(PsiClass.class));
-            setText("PsiClass: " + psiElement.getName());
-        }
 
-        public void visitComment(PsiComment psiElement)
-        {
+        public void visitComment(PsiComment psiElement) {
             setIcon(IconCache.getIcon(PsiComment.class));
             setText("PsiComment: " + truncate(psiElement.getText()));
         }
 
-        public void visitDirectory(PsiDirectory psiElement)
-        {
+        public void visitDirectory(PsiDirectory psiElement) {
             setIcon(IconCache.getIcon(PsiDirectory.class));
             setText("PsiDirectory: " + psiElement.getName());
         }
 
-        public void visitElement(PsiElement psiElement)
-        {
+        public void visitElement(PsiElement psiElement) {
             setText(psiElement.toString());
         }
 
-        public void visitField(PsiField psiElement)
-        {
-            setIcon(IconCache.getIcon(PsiField.class));
-            setText("PsiField: " + psiElement.getName());
-        }
 
-        public void visitFile(PsiFile psiElement)
-        {
+        public void visitFile(PsiFile psiElement) {
             setText("PsiFile: " + psiElement.getName());
         }
 
-        public void visitJavaFile(PsiJavaFile psiElement)
-        {
-            setIcon(IconCache.getIcon(PsiJavaFile.class));
-            setText("PsiJavaFile: " + psiElement.getName());
-        }
 
-        public void visitJavaToken(PsiJavaToken psiElement)
-        {
-            setText("PsiJavaToken: " + psiElement.getText());
-        }
-
-        public void visitMethod(PsiMethod psiElement)
-        {
-            setIcon(IconCache.getIcon(PsiMethod.class));
-            setText("PsiMethod: " + psiElement.getName());
-        }
-
-        public void visitPlainTextFile(PsiPlainTextFile psiElement)
-        {
+        public void visitPlainTextFile(PsiPlainTextFile psiElement) {
             setIcon(IconCache.getIcon(PsiPlainTextFile.class));
             setText("PsiPlainTextFile: " + psiElement.getName());
         }
 
-        public void visitVariable(PsiVariable psiElement)
-        {
-            setIcon(IconCache.getIcon(PsiVariable.class));
-            setText("PsiVariable: " + psiElement.getName());
-        }
 
-        public void visitWhiteSpace(PsiWhiteSpace psiElement)
-        {
+        public void visitWhiteSpace(PsiWhiteSpace psiElement) {
             setIcon(IconCache.getIcon(PsiWhiteSpace.class));
             setText("PsiWhiteSpace");
         }
 
-        public void visitXmlAttribute(XmlAttribute psiElement)
-        {
+        private String truncate(String text) {
+            if (text.length() > 80) return text.substring(0, 80).trim() + "...";
+            else return text;
+        }
+
+        private ElementVisitor() {
+        }
+    }
+
+    private class ElementVisitorJava extends JavaElementVisitor {
+        public void visitVariable(PsiVariable psiElement) {
+            setIcon(IconCache.getIcon(PsiVariable.class));
+            setText("PsiVariable: " + psiElement.getName());
+        }
+
+        public void visitJavaFile(PsiJavaFile psiElement) {
+            setIcon(IconCache.getIcon(PsiJavaFile.class));
+            setText("PsiJavaFile: " + psiElement.getName());
+        }
+
+        public void visitJavaToken(PsiJavaToken psiElement) {
+            setText("PsiJavaToken: " + psiElement.getText());
+        }
+
+        public void visitMethod(PsiMethod psiElement) {
+            setIcon(IconCache.getIcon(PsiMethod.class));
+            setText("PsiMethod: " + psiElement.getName());
+        }
+
+        public void visitField(PsiField psiElement) {
+            setIcon(IconCache.getIcon(PsiField.class));
+            setText("PsiField: " + psiElement.getName());
+        }
+
+        public void visitClass(PsiClass psiElement) {
+            setIcon(IconCache.getIcon(PsiClass.class));
+            setText("PsiClass: " + psiElement.getName());
+        }
+
+        public void visitReferenceExpression(PsiReferenceExpression psireferenceexpression) {
+        }
+    }
+
+    private class ElementVisitorXml extends XmlElementVisitor {
+        public void visitXmlAttribute(XmlAttribute psiElement) {
             setIcon(IconCache.getIcon(XmlAttribute.class));
             setText("XmlAttribute: " + psiElement.getName());
         }
 
-        public void visitXmlAttributeValue(XmlAttributeValue psiElement)
-        {
+        public void visitXmlAttributeValue(XmlAttributeValue psiElement) {
             setText("XmlAttributeValue");
         }
 
-        public void visitXmlComment(XmlComment psiElement)
-        {
+        public void visitXmlComment(XmlComment psiElement) {
             setIcon(IconCache.getIcon(XmlComment.class));
             setText("XmlComment");
         }
 
-        public void visitXmlDecl(XmlDecl psiElement)
-        {
+        public void visitXmlDecl(XmlDecl psiElement) {
             setText("XmlDecl");
         }
 
-        public void visitXmlDoctype(XmlDoctype psiElement)
-        {
+        public void visitXmlDoctype(XmlDoctype psiElement) {
             setText("XmlDoctype");
         }
 
-        public void visitXmlDocument(XmlDocument psiElement)
-        {
+        public void visitXmlDocument(XmlDocument psiElement) {
             setText("XmlDocument");
         }
 
-        public void acceptXmlFile(XmlFile psiElement)
-        {
+        public void visitXmlFile(XmlFile psiElement) {
             setIcon(IconCache.getIcon(XmlFile.class));
             setText("XmlFile: " + psiElement.getName());
         }
 
-        public void visitXmlProlog(XmlProlog psiElement)
-        {
+        public void visitXmlProlog(XmlProlog psiElement) {
             setText("XmlProlog");
         }
 
-        public void visitXmlTag(XmlTag psiElement)
-        {
+        public void visitXmlTag(XmlTag psiElement) {
             setIcon(IconCache.getIcon(XmlTag.class));
             setText("XmlTag: " + psiElement.getName());
         }
 
-        public void visitXmlToken(XmlToken psiElement)
-        {
+        public void visitXmlToken(XmlToken psiElement) {
             setText("XmlToken: " + psiElement.getText());
-        }
-
-        private String truncate(String text)
-        {
-            if (text.length() > MAX_TEXT_LENGTH)
-                return text.substring(0, MAX_TEXT_LENGTH).trim() + "...";
-            else
-                return text;
         }
     }
 
+    private final ElementVisitor     _elementVisitor     = new ElementVisitor();
+    private final XmlElementVisitor  _elementVisitorXml  = new ElementVisitorXml();
+    private final JavaElementVisitor _elementVisitorJava = new ElementVisitorJava();
+
+    public PsiViewerTreeCellRenderer() {
+        setOpaque(false);
+    }
+
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean isExpanded,
+                                                  boolean isLeaf, int row, boolean hasFocus) {
+        super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus);
+        setIcon(IconCache.DEFAULT_ICON);
+        
+        PsiElement psiElement = (PsiElement) value;
+
+        psiElement.accept(_elementVisitor);
+        psiElement.accept(_elementVisitorXml);
+        psiElement.accept(_elementVisitorJava);
+
+        return this;
+    }
 }

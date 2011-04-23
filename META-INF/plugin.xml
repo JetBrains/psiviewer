@@ -40,6 +40,11 @@
       <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
     </action>
 
+    <!--<action id="com.sylvanaar.idea.errorreporting.TriggerExceptionAction"-->
+            <!--class="com.sylvanaar.idea.errorreporting.TriggerExceptionAction" text="Trigger PsiViewer Exception">-->
+        <!--<add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="PsiViewer"/>-->
+    <!--</action>-->
+
     <group id="PsiViewerEditor" popup="true" text="PsiViewer">
       <reference ref="View PSI element at caret"/>
       <reference ref="View event PSI element"/>

@@ -23,12 +23,12 @@ import org.jetbrains.annotations.PropertyKey;
 import java.util.ResourceBundle;
 
 public class PluginErrorReportSubmitterBundle {
-    private static final ResourceBundle OUR_BUNDLE = ResourceBundle.getBundle("com.sylvanaar.com.sylvanaar.idea.errorreporting.PluginErrorReportSubmitterBundle");
+    private static final ResourceBundle OUR_BUNDLE = ResourceBundle.getBundle("com.sylvanaar.idea.errorreporting.PluginErrorReportSubmitterBundle");
 
     private PluginErrorReportSubmitterBundle() {
     }
 
-    public static String message(@PropertyKey(resourceBundle = "com.sylvanaar.com.sylvanaar.idea.errorreporting.PluginErrorReportSubmitterBundle") String key,
+    public static String message(@PropertyKey(resourceBundle = "com.sylvanaar.idea.errorreporting.PluginErrorReportSubmitterBundle") String key,
                                  Object... params) {
         return CommonBundle.message(OUR_BUNDLE, key, params);
     }

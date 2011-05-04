@@ -62,11 +62,6 @@ public class ConfigurationPanel extends JPanel
                              _colorChooser,
                              "Set highlighter color",
                              0);
-        tabbedPane.insertTab("About",
-                             Helpers.getIcon(PsiViewerConstants.ICON_PSI),
-                             new AboutPanel(),
-                             null,
-                             1);
 
         add(topPane, BorderLayout.NORTH);
         add(tabbedPane, BorderLayout.CENTER);

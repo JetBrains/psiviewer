@@ -14,6 +14,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import idea.plugin.psiviewer.PsiViewerConstants;
@@ -46,14 +47,21 @@ class EditorPsiElementHighlighter
         });
     }
 
+
+    public void removeHilight()
+    {
+        ApplicationManager.getApplication().runReadAction(new Runnable()
+        {
+            public void run()
+            {
+                remove();
+            }
+        });
+    }
+
     private void apply(PsiElement element)
     {
-        if (_highlighter != null && _highlighter.isValid())
-        {
-            debug("Removing highlighter for " + _highlighter);
-            _editor.getMarkupModel().removeHighlighter(_highlighter);
-            _highlighter = null;
-        }
+        remove();
 
         _editor = FileEditorManager.getInstance(_project).getSelectedTextEditor();
         if (_editor == null)
@@ -74,6 +82,15 @@ class EditorPsiElementHighlighter
                                                                         PsiViewerConstants.PSIVIEWER_HIGHLIGHT_LAYER,
                                                                         _textAttributes,
                                                                         HighlighterTargetArea.EXACT_RANGE);
+        }
+    }
+
+    private void remove() {
+        if (_highlighter != null && _highlighter.isValid())
+        {
+            debug("Removing highlighter for " + _highlighter);
+            _editor.getMarkupModel().removeHighlighter(_highlighter);
+            _highlighter = null;
         }
     }
 

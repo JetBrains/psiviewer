@@ -36,6 +36,7 @@ import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
 import idea.plugin.psiviewer.model.PsiViewerTreeModel;
 import idea.plugin.psiviewer.util.Helpers;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -208,6 +209,11 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         _highlighter.highlightElement(getSelectedElement());
     }
 
+    public void removeHighlighting()
+    {
+        _highlighter.removeHilight();
+    }
+
     private PsiElement getSelectedElement()
     {
         return _selectedElement;
@@ -300,7 +306,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         showRootElement();
     }
 
-    public void selectElementAtCaret(Editor editor)
+    public void selectElementAtCaret(@Nullable Editor editor)
     {
         if (editor == null) /* Vince Mallet (21 Oct 2003) */
         {

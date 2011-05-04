@@ -26,8 +26,6 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
@@ -37,14 +35,16 @@ import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
 import idea.plugin.psiviewer.controller.application.Configuration;
+import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jdom.Element;
 
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternalizable, PsiViewerConstants
 {
@@ -96,6 +96,11 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
     {
         _viewerPanel = new PsiViewerPanel(this);
 
+        _viewerPanel.addPropertyChangeListener("ancestor", new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        handleCurrentState();
+                    }
+                });
         ActionManager actionManager = ActionManager.getInstance();
 
         DefaultActionGroup actionGroup = new DefaultActionGroup(ID_ACTION_GROUP, false);
@@ -134,7 +139,22 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
         _viewerPanel.setToolWindow(toolWindow);
 
         _editorListener = new EditorListener(_viewerPanel, _project);
-        startEditorListener();
+    }
+
+    private void handleCurrentState() {
+        if (_viewerPanel == null)
+            return;
+        
+        if (_viewerPanel.isDisplayable())
+        {
+            setAutoScrollFromSource(isAutoScrollFromSource());
+            setHighlighted(isHighlighted());
+        }
+        else
+        {
+            _editorListener.stop();
+            _viewerPanel.removeHighlighting();
+        }
     }
 
     public void startEditorListener()
@@ -151,34 +171,14 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
 
     public void unregisterToolWindow()
     {
+        _viewerPanel.removeHighlighting();
         _viewerPanel = null;
 
         if (_editorListener != null)
             _editorListener.stop();
 
-        if (isHighlighted())
-            removeHighlighter();
-
         if (isToolWindowRegistered())
             ToolWindowManager.getInstance(_project).unregisterToolWindow(ID_TOOL_WINDOW);
-    }
-
-    private void removeHighlighter()
-    {
-        Editor editor = FileEditorManager.getInstance(_project).getSelectedTextEditor();
-//        Editor editor = FileEditorManager.getInstance(_project).getSelectedEditor();
-        if (editor == null)
-            return;
-
-        RangeHighlighter[] highlighters = editor.getMarkupModel().getAllHighlighters();
-        for (RangeHighlighter highlighter : highlighters)
-        {
-            if (highlighter.getLayer() == PSIVIEWER_HIGHLIGHT_LAYER)
-            {
-                editor.getMarkupModel().removeHighlighter(highlighter);
-                break;
-            }
-        }
     }
 
     private ToolWindow getToolWindow()

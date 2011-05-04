@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import idea.plugin.psiviewer.util.PluginPsiUtil;
@@ -66,11 +67,17 @@ class EditorCaretMover
         }
         else
         {
-            psiFile = element.getContainingFile();
+            psiFile =  PluginPsiUtil.getContainingFile(element);
             i = element.getTextOffset();
         }
+        
         if (psiFile == null) return null;
-        OpenFileDescriptor fileDesc = new OpenFileDescriptor(_project, psiFile.getVirtualFile(), i);    // 20050826 IDEA 5.0.1 #3461
+
+        final VirtualFile virtualFile = psiFile.getVirtualFile();
+
+        if (virtualFile == null) return null;
+
+        OpenFileDescriptor fileDesc = new OpenFileDescriptor(_project, virtualFile, i);    // 20050826 IDEA 5.0.1 #3461
         disableMovementOneTime();
         return FileEditorManager.getInstance(_project).openTextEditor(fileDesc, false);
     }

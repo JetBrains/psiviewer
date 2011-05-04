@@ -3,23 +3,37 @@
  */
 package idea.plugin.psiviewer.util;
 
-import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nullable;
 
 public class PluginPsiUtil
 {
+    @Nullable
     private static VirtualFile getVirtualFile(Project project, PsiElement psiElement)
     {
-        if (psiElement == null || psiElement.getContainingFile() == null)
+        if (psiElement == null || !psiElement.isValid() || psiElement.getContainingFile() == null)
         {
             return null;
         }
         return psiElement.getContainingFile().getVirtualFile();
+    }
+
+    @Nullable
+    public static PsiFile getContainingFile(PsiElement psiElement)
+    {
+        if (psiElement == null || !psiElement.isValid())
+        {
+            return null;
+        }
+
+        return psiElement.getContainingFile();
     }
 
     public static boolean isElementInSelectedFile(Project project, PsiElement psiElement)
@@ -42,6 +56,7 @@ public class PluginPsiUtil
         return false;
     }
 
+    @Nullable
     public static Editor getEditorIfSelected(Project project, PsiElement psiElement)
     {
         VirtualFile elementFile = getVirtualFile(project, psiElement);

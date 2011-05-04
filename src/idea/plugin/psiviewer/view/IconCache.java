@@ -184,7 +184,7 @@ class IconCache implements PsiViewerConstants
 //        _iconCache.put(XmlEntityRef.class, Helpers.getIcon(ICON_PSI));
 //        _iconCache.put(XmlEnumeratedType.class, Helpers.getIcon(ICON_PSI));
 
-        _iconCache.put(XmlFile.class, Helpers.getIcon("/nodes/xml.png"));
+//        _iconCache.put(XmlFile.class, Helpers.getIcon("/nodes/xml.png"));
 
 //        _iconCache.put(XmlMarkupDecl.class, Helpers.getIcon(ICON_PSI));
 //        _iconCache.put(XmlNotationDecl.class, Helpers.getIcon(ICON_PSI));

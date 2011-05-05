@@ -52,6 +52,12 @@
             icon="/actions/dump.png">
     </action>
 
+    <action id="idea.plugin.psiviewer.controller.actions.PsiTestDump"
+            class="idea.plugin.psiviewer.controller.actions.PsiTestDump"
+            text="PSI unit test data file to clipboard"
+            icon="/actions/dump.png">
+    </action>
+
     <!--<action id="com.sylvanaar.idea.errorreporting.TriggerExceptionAction"-->
     <!--class="com.sylvanaar.idea.errorreporting.TriggerExceptionAction" text="Trigger PsiViewer Exception">-->
     <!--<add-to-group group-id="ToolsMenu" anchor="after" relative-to-action="PsiViewer"/>-->
@@ -62,6 +68,7 @@
       <reference ref="View event PSI element"/>
       <reference ref="View event PSI file "/>
       <reference ref="idea.plugin.psiviewer.controller.actions.PsiDump"/>
+      <reference ref="idea.plugin.psiviewer.controller.actions.PsiTestDump"/>
       <add-to-group anchor="last" group-id="EditorPopupMenu"/>
     </group>
 

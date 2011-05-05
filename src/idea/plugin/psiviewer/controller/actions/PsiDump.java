@@ -16,29 +16,35 @@ import java.awt.datatransfer.StringSelection;
  * Time: 6:41 PM
  */
 public class PsiDump extends AnAction {
-
-    @Override
-    public void actionPerformed(AnActionEvent e) {
-        PsiFile pf = getFile(e);
-        try {
-            String data = "";
-            for (PsiFile file : pf.getViewProvider().getAllFiles()) {
-                data = (new StringBuilder()).append(data).append(DebugUtil.psiToString(file, false, true)).toString();
-            }
-
-            StringSelection trans = new StringSelection(data);
-            CopyPasteManager cpmgr = CopyPasteManager.getInstance();
-            cpmgr.setContents(trans);
-        } catch (Exception ignored) {
-        }
+  @Override
+  public void actionPerformed(AnActionEvent e) {
+    PsiFile pf = getFile(e);
+    try {
+      String data = getPsiData(pf);
+      placeStringInClipboard(data);
+    } catch (Exception ignored) {
     }
+  }
 
-    private static PsiFile getFile(AnActionEvent e) {
-        return LangDataKeys.PSI_FILE.getData(e.getDataContext());
-    }
+  protected void placeStringInClipboard(String data) {StringSelection trans = new StringSelection(data);
+    CopyPasteManager cpmgr = CopyPasteManager.getInstance();
+    cpmgr.setContents(trans);
+  }
 
-    @Override
-    public void update(AnActionEvent e) {
-        e.getPresentation().setEnabled(getFile(e) != null);
+  protected static String getPsiData(PsiFile pf) {
+    String data = "";
+    for (PsiFile file : pf.getViewProvider().getAllFiles()) {
+      data = (new StringBuilder()).append(data).append(DebugUtil.psiToString(file, false, true)).toString();
     }
+    return data;
+  }
+
+  protected static PsiFile getFile(AnActionEvent e) {
+    return LangDataKeys.PSI_FILE.getData(e.getDataContext());
+  }
+
+  @Override
+  public void update(AnActionEvent e) {
+    e.getPresentation().setEnabled(getFile(e) != null);
+  }
 }

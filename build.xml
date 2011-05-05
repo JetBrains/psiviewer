@@ -73,6 +73,8 @@
       <replace path="/idea-plugin/change-notes/text()"
                withText="&lt;html&gt;${plugin.changes}&lt;/html&gt;"/>
     </xmltask>
+
+    <echo output="&lt;!--##teamcity[buildNumber '${version.number}.${release.number}.${build.number}']--&gt;" taskname=""/>
   </target>
 
   <target name="jar" depends="update-metadata">

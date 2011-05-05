@@ -73,16 +73,6 @@
       <replace path="/idea-plugin/change-notes/text()"
                withText="&lt;html&gt;${plugin.changes}&lt;/html&gt;"/>
     </xmltask>
-
-    <xmltask source="${basedir}/resources/html/About.html"
-             dest="${basedir}/resources/html/About.html"
-             failwithoutmatch="true"
-             omitheader="true">
-      <replace path="/:html/:body/:table/:tr[1]/:td[3]/text()" withText="${project.name}"/>
-      <replace path="/:html/:body/:table/:tr[2]/:td[3]/text()" withText="${version.number}.${release.number}.${build.number}"/>
-      <replace path="/:html/:body/:table/:tr[3]/:td[3]/text()" withText="${plugin.vendor}"/>
-      <replace path="/:html/:body/:table/:tr[4]/:td[3]/text()" withText="${plugin.description}"/>
-    </xmltask>
   </target>
 
   <target name="jar" depends="update-metadata">

@@ -49,7 +49,6 @@ public interface PsiViewerConstants
     public static final String ID_ACTION_TOOLBAR = "PsiActionToolbar";
 
     // Miscellaneous
-    public static final String URL_ABOUT = "/html/About.html";
     public static final int PSIVIEWER_HIGHLIGHT_LAYER = HighlighterLayer.SELECTION - 100;
     public static final String DEFAULT_HIGHLIGHT_COLOR = "162 3 229 32"; // ThighMaster Accident
     public static final String TITLE_PREFIX_CURRENT_FILE = "Current File";

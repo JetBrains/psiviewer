@@ -61,6 +61,7 @@
   <target name="update-metadata" depends="init" description="Create plugin deployment descriptors">
     <property file="version.properties"/>
 
+
     <echo output="##teamcity[buildNumber '${version.number}.${release.number}.${build.number}']"/>
 
     <xmltask source="${basedir}/META-INF/plugin.xml"
@@ -68,12 +69,17 @@
              failwithoutmatch="true">
       <replace path="/idea-plugin/name/text()" withText="${project.name}"/>
       <replace path="/idea-plugin/description/text()" withText="${plugin.description}"/>
-      <replace path="/idea-plugin/version/text()" withText="${version.number}.${release.number}.${build.number}"/>
+      <replace path="/idea-plugin/version/text()" withText="${version.number}.${release.number}.${build.number}&lt;-- ##teamcity[buildNumber '${version.number}.${release.number}.${build.number}'] --&gt;"/>
       <replace path="/idea-plugin/vendor/text()" withText="${plugin.vendor}"/>
       <replace path="/idea-plugin/idea-version/@since-build" withText="${plugin.idea.since.build}"/>
       <replace path="/idea-plugin/change-notes/text()"
                withText="&lt;html&gt;${plugin.changes}&lt;/html&gt;"/>
     </xmltask>
+
+    <concat>
+        <filelist dir="${basedir}/META-INF/" files="plugin.xml" />
+    </concat>
+
   </target>
 
   <target name="jar" depends="update-metadata">

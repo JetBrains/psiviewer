@@ -9,17 +9,17 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.markup.HighlighterTargetArea;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.application.Configuration;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.util.PluginPsiUtil;
 
 class EditorPsiElementHighlighter
 {
@@ -106,7 +106,7 @@ class EditorPsiElementHighlighter
 
     private boolean isElementInEditor(Editor editor, PsiElement psiElement)
     {
-        if (psiElement == null || psiElement.getContainingFile() == null) return false;
+        if (psiElement == null || PluginPsiUtil.getContainingFile(psiElement) == null) return false;
         VirtualFile elementFile = psiElement.getContainingFile().getVirtualFile();
         if (elementFile == null)
             return false;   // 20050826

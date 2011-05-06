@@ -69,7 +69,7 @@
              failwithoutmatch="true">
       <replace path="/idea-plugin/name/text()" withText="${project.name}"/>
       <replace path="/idea-plugin/description/text()" withText="${plugin.description}"/>
-      <replace path="/idea-plugin/version/text()" withText="${version.number}.${release.number}.${build.number}&lt;!-- ##teamcity[buildNumber '${version.number}.${release.number}.${build.number}'] --&gt;"/>
+      <replace path="/idea-plugin/version/text()" withText="${version.number}.${release.number}.${build.number}"/>
       <replace path="/idea-plugin/vendor/text()" withText="${plugin.vendor}"/>
       <replace path="/idea-plugin/idea-version/@since-build" withText="${plugin.idea.since.build}"/>
       <replace path="/idea-plugin/change-notes/text()"
@@ -78,6 +78,10 @@
 
     <concat>
         <filelist dir="${basedir}/META-INF/" files="plugin.xml" />
+    </concat>
+
+    <concat>
+      ##teamcity[buildNumber '${version.number}.${release.number}.${build.number}']
     </concat>
 
   </target>

@@ -22,7 +22,10 @@
 
 package idea.plugin.psiviewer.model;
 
+import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiWhiteSpace;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
 
@@ -79,6 +82,21 @@ public class PsiViewerTreeModel implements TreeModel
         {
             if (isValid(child))
             {
+                if (psi instanceof PsiLanguageInjectionHost) {
+                    List<Pair<PsiElement,TextRange>> injected = ((PsiLanguageInjectionHost) psi).getInjectedPsi();
+
+                    if (injected != null) {
+                        for(Pair<PsiElement,TextRange> pair : injected) {
+                            PsiElement element = pair.getFirst();
+
+                            if (isValid(element))
+                                filteredChildren.add(element);
+                        }
+
+                        continue;
+                    }
+                }
+
                 filteredChildren.add(child);
             }
         }

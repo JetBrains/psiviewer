@@ -237,7 +237,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
             if (reason != TREE_SELECTION_CHANGED)
                 changeTreeSelection();
             applyHighlighting();
-            if (reason != CARET_MOVED)
+            if (reason != CARET_MOVED && element != null)
                 moveEditorCaret();
         }
         finally
@@ -289,6 +289,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
     {
         if (_projectComponent.isAutoScrollToSource())
         {
+            LOG.debug("moving editor caret");
             _projectComponent.stopEditorListener();
             _caretMover.moveEditorCaret(getSelectedElement());
             _projectComponent.startEditorListener();

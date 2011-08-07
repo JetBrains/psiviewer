@@ -97,6 +97,7 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
     {
         if (isElementChangedUnderViewerRoot(event))
         {
+            LOG.debug("PSI Change, starting update timer");
             startPanelUpdateTimer(_selectedEditor, true);
         }
     }

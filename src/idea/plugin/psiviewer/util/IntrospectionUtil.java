@@ -54,7 +54,7 @@ public class IntrospectionUtil
             Object args[] = {};
             getter.setAccessible(true);
 
-            LOG.debug("Invoking " + getter.getName() + " on " + target.toString());
+            //LOG.debug("Invoking " + getter.getName() + " on " + target.toString());
             // TODO: Hack...invoking getVariants() is prohibited on PsiJavaReference objects in IDEA build #3144 and later
             if (target instanceof PsiJavaReference && "variants".equals(name))
             {

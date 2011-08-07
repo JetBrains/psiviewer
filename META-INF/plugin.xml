@@ -5,10 +5,10 @@
   <version>2.27.0</version>
   <vendor>Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar</vendor>
   <idea-version since-build="3461"/>
-  <change-notes><![CDATA[<html><ul>
-    <li>Avoided <i>Should not be called on Chameleons</i> assertion (via an ugly hack, so it might happen again)</li>
-    <li>Updated to use Java 1.5 generics</li>
-</ul>
+  <change-notes><![CDATA[<html><ul>
+    <li>Avoided <i>Should not be called on Chameleons</i> assertion (via an ugly hack, so it might happen again)</li>
+    <li>Updated to use Java 1.5 generics</li>
+</ul>
 </html>]]></change-notes>
 
   <project-components>
@@ -30,32 +30,20 @@
 
   <!-- Component's actions -->
   <actions>
-    <action class="idea.plugin.psiviewer.controller.actions.ViewElementAtCaretAction"
-            description="Display PSI tree for element at caret" icon="/images/psi18x18.png"
-            id="View PSI element at caret" text="View PSI element at caret">
+    <action class="idea.plugin.psiviewer.controller.actions.ViewElementAtCaretAction" description="Display PSI tree for element at caret" icon="/images/psi18x18.png" id="View PSI element at caret" text="View PSI element at caret">
       <keyboard-shortcut first-keystroke="control shift C" keymap="$default"/>
     </action>
-    <action class="idea.plugin.psiviewer.controller.actions.ViewFileElementAction"
-            description="Display PSI tree for this file" icon="/images/psi18x18.png" id="View event PSI file "
-            text="View PSI for entire file">
+    <action class="idea.plugin.psiviewer.controller.actions.ViewFileElementAction" description="Display PSI tree for this file" icon="/images/psi18x18.png" id="View event PSI file " text="View PSI for entire file">
       <keyboard-shortcut first-keystroke="control shift Q" keymap="$default"/>
     </action>
-    <action class="idea.plugin.psiviewer.controller.actions.ViewCurrentElementAction"
-            description="Display PSI tree for event element" icon="/images/psi18x18.png" id="View event PSI element"
-            text="View event PSI element">
+    <action class="idea.plugin.psiviewer.controller.actions.ViewCurrentElementAction" description="Display PSI tree for event element" icon="/images/psi18x18.png" id="View event PSI element" text="View event PSI element">
       <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
     </action>
 
-    <action id="idea.plugin.psiviewer.controller.actions.PsiDump"
-            class="idea.plugin.psiviewer.controller.actions.PsiDump"
-            text="PSI dump to clipboard"
-            icon="/actions/dump.png">
+    <action class="idea.plugin.psiviewer.controller.actions.PsiDump" icon="/actions/dump.png" id="idea.plugin.psiviewer.controller.actions.PsiDump" text="PSI dump to clipboard">
     </action>
 
-    <action id="idea.plugin.psiviewer.controller.actions.PsiTestDump"
-            class="idea.plugin.psiviewer.controller.actions.PsiTestDump"
-            text="PSI unit test data file to clipboard"
-            icon="/actions/dump.png">
+    <action class="idea.plugin.psiviewer.controller.actions.PsiTestDump" icon="/actions/dump.png" id="idea.plugin.psiviewer.controller.actions.PsiTestDump" text="PSI unit test data file to clipboard">
     </action>
 
     <!--<action id="com.sylvanaar.idea.errorreporting.TriggerExceptionAction"-->

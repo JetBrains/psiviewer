@@ -22,12 +22,13 @@
 
 package idea.plugin.psiviewer.model;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -35,102 +36,77 @@ import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PsiViewerTreeModel implements TreeModel
-{
+public class PsiViewerTreeModel implements TreeModel {
     private PsiElement _root;
     private final PsiViewerProjectComponent _projectComponent;
 
-    public PsiViewerTreeModel(PsiViewerProjectComponent projectComponent)
-    {
+    public PsiViewerTreeModel(PsiViewerProjectComponent projectComponent) {
         _projectComponent = projectComponent;
     }
 
-    public Object getRoot()
-    {
+    public Object getRoot() {
         return _root;
     }
 
-    public void setRoot(PsiElement root)
-    {
+    public void setRoot(PsiElement root) {
         _root = root;
     }
 
-    public Object getChild(Object parent, int index)
-    {
+    public Object getChild(Object parent, int index) {
         PsiElement psi = (PsiElement) parent;
         List<PsiElement> children = getFilteredChildren(psi);
         return children.get(index);
     }
 
-    public int getChildCount(Object parent)
-    {
+    public int getChildCount(Object parent) {
         PsiElement psi = (PsiElement) parent;
         return getFilteredChildren(psi).size();
     }
 
-    public boolean isLeaf(Object node)
-    {
+    public boolean isLeaf(Object node) {
         PsiElement psi = (PsiElement) node;
         return psi.getChildren().length == 0;
     }
 
-    private List<PsiElement> getFilteredChildren(PsiElement psi)
-    {
-        List<PsiElement> children =  new ArrayList<PsiElement>();
-        for(PsiElement e = psi.getFirstChild(); e != null; e = e.getNextSibling())
-            children.add(e);
-        
-        List<PsiElement> filteredChildren = new ArrayList<PsiElement>(children.size());
+    private List<PsiElement> getFilteredChildren(PsiElement psi) {
+        final List<PsiElement> filteredChildren = new ArrayList<PsiElement>();
 
         if (psi instanceof PsiLanguageInjectionHost) {
-            List<Pair<PsiElement,TextRange>> injected = ((PsiLanguageInjectionHost) psi).getInjectedPsi();
-
-            if (injected != null) {
-                for(Pair<PsiElement,TextRange> pair : injected) {
-                    PsiElement element = pair.getFirst();
-
-                    if (isValid(element))
-                        filteredChildren.add(element);
+            InjectedLanguageUtil.enumerate(psi, psi.getContainingFile(), false, new PsiLanguageInjectionHost.InjectedPsiVisitor() {
+                @Override
+                public void visit(@NotNull final PsiFile injectedPsi, @NotNull final List<PsiLanguageInjectionHost.Shred> places) {
+                    if (injectedPsi.isValid()) filteredChildren.add(injectedPsi);
                 }
+            });
 
-                return filteredChildren;
-            }
+            return filteredChildren;
         }
 
-        for (PsiElement child : children)
-        {
-            if (isValid(child))
-            {
-                filteredChildren.add(child);
+        for (PsiElement e = psi.getFirstChild(); e != null; e = e.getNextSibling())
+            if (isValid(e)) {
+                filteredChildren.add(e);
             }
-        }
 
-        
         return filteredChildren;
     }
 
-    private boolean isValid(PsiElement psiElement)
-    {
+    private boolean isValid(PsiElement psiElement) {
         return !_projectComponent.isFilterWhitespace() || !(psiElement instanceof PsiWhiteSpace);
     }
 
-    public int getIndexOfChild(Object parent, Object child)
-    {
+    public int getIndexOfChild(Object parent, Object child) {
         PsiElement psiParent = (PsiElement) parent;
         List<PsiElement> psiChildren = getFilteredChildren(psiParent);
 
         return psiChildren.indexOf(child);
     }
 
-    public void valueForPathChanged(TreePath path, Object newValue)
-    {
+    public void valueForPathChanged(TreePath path, Object newValue) {
     }
 
-    public synchronized void addTreeModelListener(TreeModelListener l)
-    {
+    public synchronized void addTreeModelListener(TreeModelListener l) {
     }
 
-    public synchronized void removeTreeModelListener(TreeModelListener l)
-    {
+    public synchronized void removeTreeModelListener(TreeModelListener l) {
     }
 }

@@ -18,15 +18,19 @@
 
 package com.sylvanaar.idea.errorreporting;
 
+import com.intellij.diagnostic.ErrorReportConfigurable;
 import com.intellij.diagnostic.IdeErrorsDialog;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter;
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.diagnostic.SubmittedReportInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NonNls;
 
 import java.awt.*;
@@ -50,8 +54,6 @@ import static com.intellij.openapi.diagnostic.SubmittedReportInfo.SubmissionStat
  * Time: 11:35:35 AM
  */
 public class YouTrackBugReporter extends ErrorReportSubmitter {
-    private static final String USER = "IDEA";
-
     private static final Logger log = Logger.getInstance(YouTrackBugReporter.class.getName());
     @NonNls
     private static final String SERVER_URL = "http://sylvanaar.myjetbrains.com/youtrack/";
@@ -67,6 +69,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
     private String email = null;
     private String affectedVersion = null;
     private static final String DEFAULT_RESPONSE = "Thank you for your report.";
+    private boolean showDialog = ApplicationInfo.getInstance().getBuild().getBaselineVersion() > 110;
 
     public String submit() {
         if (this.description == null || this.description.length() == 0) throw new RuntimeException("Description");
@@ -154,22 +157,34 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
     public SubmittedReportInfo submit
             (IdeaLoggingEvent[] ideaLoggingEvents, Component
                     component) {
-        // show modal error submission dialog
-        PluginErrorSubmitDialog dialog = new PluginErrorSubmitDialog(component);
-        dialog.prepare();
-        dialog.show();
 
-// submit error to server if user pressed SEND
-        int code = dialog.getExitCode();
-        if (code == DialogWrapper.OK_EXIT_CODE) {
-            dialog.persist();
-            String description = dialog.getDescription();
-            String user = dialog.getUser();
-            return submit(ideaLoggingEvents, description, user, component);
+        if (showDialog) {
+            return submit(ideaLoggingEvents, this.description,
+                    StringUtil.notNullize(ErrorReportConfigurable.getInstance().ITN_LOGIN, "<anonymous>"), component);
+        } else {
+            // show modal error submission dialog
+            PluginErrorSubmitDialog dialog = new PluginErrorSubmitDialog(component);
+            dialog.prepare();
+            dialog.show();
+
+            // submit error to server if user pressed SEND
+            int code = dialog.getExitCode();
+            if (code == DialogWrapper.OK_EXIT_CODE) {
+                dialog.persist();
+                String description = dialog.getDescription();
+                String user = dialog.getUser();
+                return submit(ideaLoggingEvents, description, user, component);
+            }
         }
-
         // otherwise do nothing
         return null;
+    }
+
+    @Override
+    public void submitAsync(IdeaLoggingEvent[] events, String additionalInfo, Component parentComponent,
+                            Consumer<SubmittedReportInfo> consumer) {
+        this.description = additionalInfo;
+        super.submitAsync(events, additionalInfo, parentComponent, consumer);
     }
 
     private SubmittedReportInfo submit
@@ -182,11 +197,13 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
 
         @NonNls StringBuilder descBuilder = new StringBuilder();
 
+        String platformBuild = ApplicationInfo.getInstance().getBuild().asString();
+        descBuilder.append("Platform Version: ").append(platformBuild).append('\n');
         Throwable t = ideaLoggingEvents[0].getThrowable();
         if (t != null) {
             final PluginId pluginId = IdeErrorsDialog.findPluginId(t);
             if (pluginId != null) {
-                final IdeaPluginDescriptor ideaPluginDescriptor = ApplicationManager.getApplication().getPlugin(pluginId);
+                final IdeaPluginDescriptor ideaPluginDescriptor = PluginManager.getPlugin(pluginId);
                 if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled()) {
                     descBuilder.append("Plugin ").append(ideaPluginDescriptor.getName()).append(" version: ").append(ideaPluginDescriptor.getVersion()).append("\n");
                     this.affectedVersion = ideaPluginDescriptor.getVersion();

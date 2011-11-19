@@ -23,12 +23,8 @@
 package idea.plugin.psiviewer.model;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -71,16 +67,16 @@ public class PsiViewerTreeModel implements TreeModel {
     private List<PsiElement> getFilteredChildren(PsiElement psi) {
         final List<PsiElement> filteredChildren = new ArrayList<PsiElement>();
 
-        if (psi instanceof PsiLanguageInjectionHost) {
-            InjectedLanguageUtil.enumerate(psi, psi.getContainingFile(), false, new PsiLanguageInjectionHost.InjectedPsiVisitor() {
-                @Override
-                public void visit(@NotNull final PsiFile injectedPsi, @NotNull final List<PsiLanguageInjectionHost.Shred> places) {
-                    if (injectedPsi.isValid()) filteredChildren.add(injectedPsi);
-                }
-            });
-
-            return filteredChildren;
-        }
+//        if (psi instanceof PsiLanguageInjectionHost) {
+//            InjectedLanguageUtil.enumerate(psi, psi.getContainingFile(), false, new PsiLanguageInjectionHost.InjectedPsiVisitor() {
+//                @Override
+//                public void visit(@NotNull final PsiFile injectedPsi, @NotNull final List<PsiLanguageInjectionHost.Shred> places) {
+//                    if (injectedPsi.isValid()) filteredChildren.add(injectedPsi);
+//                }
+//            });
+//
+//            return filteredChildren;
+//        }
 
         for (PsiElement e = psi.getFirstChild(); e != null; e = e.getNextSibling())
             if (isValid(e)) {

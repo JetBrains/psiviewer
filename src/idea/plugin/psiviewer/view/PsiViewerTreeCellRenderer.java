@@ -33,15 +33,9 @@ import java.awt.*;
 class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiViewerConstants {
     private final ElementVisitor _elementVisitor = new ElementVisitor();
     private final XmlElementVisitor _elementVisitorXml = new ElementVisitorXml();
-    private final JavaElementVisitor _elementVisitorJava = new ElementVisitorJava();
 
-    public Component getTreeCellRendererComponent(JTree tree,
-                                                  Object value,
-                                                  boolean isSelected,
-                                                  boolean isExpanded,
-                                                  boolean isLeaf,
-                                                  int row,
-                                                  boolean hasFocus) {
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean isExpanded,
+                                                  boolean isLeaf, int row, boolean hasFocus) {
         super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus);
         setIcon(IconCache.DEFAULT_ICON);
 
@@ -49,7 +43,11 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
 
         psiElement.accept(_elementVisitor);
         psiElement.accept(_elementVisitorXml);
-        psiElement.accept(_elementVisitorJava);
+
+//        try {
+//            psiElement.accept(new PsiViewerTreeCellJavaElementVisitor(this));
+//        } catch (Exception e) {
+//        }
 
         return this;
     }
@@ -111,39 +109,7 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
         }
     }
 
-    private class ElementVisitorJava extends JavaElementVisitor {
-        public void visitVariable(PsiVariable psiElement) {
-            setIcon(IconCache.getIcon(PsiVariable.class));
-            setText("PsiVariable: " + psiElement.getName());
-        }
 
-        public void visitJavaFile(PsiJavaFile psiElement) {
-            setIcon(IconCache.getIcon(PsiJavaFile.class));
-            setText("PsiJavaFile: " + psiElement.getName());
-        }
-
-        public void visitJavaToken(PsiJavaToken psiElement) {
-            setText("PsiJavaToken: " + psiElement.getText());
-        }
-
-        public void visitMethod(PsiMethod psiElement) {
-            setIcon(IconCache.getIcon(PsiMethod.class));
-            setText("PsiMethod: " + psiElement.getName());
-        }
-
-        public void visitField(PsiField psiElement) {
-            setIcon(IconCache.getIcon(PsiField.class));
-            setText("PsiField: " + psiElement.getName());
-        }
-
-        public void visitClass(PsiClass psiElement) {
-            setIcon(IconCache.getIcon(PsiClass.class));
-            setText("PsiClass: " + psiElement.getName());
-        }
-
-        public void visitReferenceExpression(PsiReferenceExpression psireferenceexpression) {
-        }
-    }
 
     private class ElementVisitorXml extends XmlElementVisitor {
         public void visitXmlAttribute(XmlAttribute psiElement) {
@@ -190,4 +156,5 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
             setText("XmlToken: " + psiElement.getText());
         }
     }
+
 }

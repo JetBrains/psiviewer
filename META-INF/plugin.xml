@@ -2,17 +2,13 @@
 <idea-plugin url="https://github.com/cmf/psiviewer" version="2">
   <name>PsiViewer</name>
   <description>A Program Structure Interface (PSI) tree viewer. This plugin may be useful for developers who are considering using the PSI interface in their own plugins.</description>
-  <version>2.27.0</version>
+  <version>3.27.0</version>
   <vendor>Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar</vendor>
-  <idea-version since-build="110.291"/>
-  <change-notes><![CDATA[<html><ul>
-
-    <li>Avoided <i>Should not be called on Chameleons</i> assertion (via an ugly hack, so it might happen again)</li>
-
-    <li>Updated to use Java 1.5 generics</li>
-
-</ul>
-
+  <idea-version since-build="110.129"/>
+  <change-notes><![CDATA[<html><ul>
+    <li>Avoided <i>Should not be called on Chameleons</i> assertion (via an ugly hack, so it might happen again)</li>
+    <li>Updated to use Java 1.5 generics</li>
+</ul>
 </html>]]></change-notes>
 
   <project-components>
@@ -27,7 +23,9 @@
     </component>
   </application-components>
 
-    <!-- Extensions -->
+  <depends>com.intellij.modules.lang</depends>
+
+  <!-- Extensions -->
   <extensions defaultExtensionNs="com.intellij">
     <errorHandler implementation="com.sylvanaar.idea.errorreporting.YouTrackBugReporter"/>
   </extensions>

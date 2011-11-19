@@ -4,7 +4,6 @@
 package idea.plugin.psiviewer.util;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiJavaReference;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -56,14 +55,14 @@ public class IntrospectionUtil
 
             //LOG.debug("Invoking " + getter.getName() + " on " + target.toString());
             // TODO: Hack...invoking getVariants() is prohibited on PsiJavaReference objects in IDEA build #3144 and later
-            if (target instanceof PsiJavaReference && "variants".equals(name))
-            {
-                value = "<unavailable>";
-            }
-            else
-            {
+//            if (target instanceof PsiJavaReference && "variants".equals(name))
+//            {
+//                value = "<unavailable>";
+//            }
+//            else
+//            {
                 value = getter.invoke(target, args);
-            }
+//            }
         }
         catch (InvocationTargetException ex)
         {

@@ -34,7 +34,6 @@ import java.awt.*;
 class PropertySheetHeaderRenderer extends JLabel implements TableCellRenderer, PsiViewerConstants {
     private final ElementVisitor _elementVisitor = new ElementVisitor();
     private final XmlElementVisitor _elementVisitorXml = new ElementVisitorXml();
-    private final JavaElementVisitor _elementVisitorJava = new ElementVisitorJava();
 
     public PropertySheetHeaderRenderer() {
         super();
@@ -69,7 +68,11 @@ class PropertySheetHeaderRenderer extends JLabel implements TableCellRenderer, P
             return;
         psiElement.accept(_elementVisitor);
         psiElement.accept(_elementVisitorXml);
-        psiElement.accept(_elementVisitorJava);
+
+//        try {
+//            psiElement.accept(new PropertySheetJavaElementVisitor(this));
+//        } catch (Exception e) {
+//        }
     }
 
     private class ElementVisitor extends PsiElementVisitor {
@@ -91,34 +94,6 @@ class PropertySheetHeaderRenderer extends JLabel implements TableCellRenderer, P
 
         public void visitWhiteSpace(PsiWhiteSpace psiElement) {
             setIcon(IconCache.getIcon(PsiWhiteSpace.class));
-        }
-    }
-
-    private class ElementVisitorJava extends JavaElementVisitor {
-        public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression) {
-        }
-
-        public void visitClass(PsiClass psiElement) {
-            setIcon(IconCache.getIcon(PsiClass.class));
-        }
-
-        public void visitVariable(PsiVariable psiElement) {
-            setIcon(IconCache.getIcon(PsiVariable.class));
-        }
-
-        public void visitField(PsiField psiElement) {
-            setIcon(IconCache.getIcon(PsiField.class));
-        }
-
-        public void visitJavaFile(PsiJavaFile psiElement) {
-            setIcon(IconCache.getIcon(PsiJavaFile.class));
-        }
-
-        public void visitMethod(PsiMethod psiElement) {
-            setIcon(IconCache.getIcon(PsiMethod.class));
-        }
-
-        public void visitJavaToken(PsiJavaToken psiElement) {
         }
     }
 

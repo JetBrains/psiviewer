@@ -26,7 +26,6 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
 import com.intellij.openapi.util.InvalidDataException;
@@ -41,6 +40,7 @@ import idea.plugin.psiviewer.controller.application.Configuration;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -87,6 +87,7 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
     {
     }
 
+    @NotNull
     public String getComponentName()
     {
         return PLUGIN_NAME + '.' + PROJECT_COMPONENT_NAME;
@@ -147,26 +148,14 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
         
         if (_viewerPanel.isDisplayable())
         {
-            setAutoScrollFromSource(isAutoScrollFromSource());
-            setHighlighted(isHighlighted());
+            _editorListener.start();
+            _viewerPanel.selectElementAtCaret();
         }
         else
         {
             _editorListener.stop();
             _viewerPanel.removeHighlighting();
         }
-    }
-
-    public void startEditorListener()
-    {
-        if (isAutoScrollFromSource())
-            _editorListener.start();
-    }
-
-    public void stopEditorListener()
-    {
-        if (isAutoScrollFromSource())
-            _editorListener.stop();
     }
 
     public void unregisterToolWindow()
@@ -277,13 +266,6 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
     {
         debug("autoscrollfromsource=" + isAutoScrollFromSource);
         AUTOSCROLL_FROM_SOURCE = isAutoScrollFromSource;
-        if (isAutoScrollFromSource)
-        {
-            _viewerPanel.selectElementAtCaret(FileEditorManager.getInstance(_project).getSelectedTextEditor());
-            _editorListener.start();
-        }
-        else
-            _editorListener.stop();
     }
 
     public Project getProject()

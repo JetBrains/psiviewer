@@ -21,6 +21,7 @@
 */
 package idea.plugin.psiviewer.controller.project;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.CaretEvent;
@@ -30,14 +31,13 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiTreeChangeAdapter;
+import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.messages.MessageBusConnection;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  *
@@ -50,9 +50,8 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
 
     private final PsiViewerPanel _viewer;
     private final Project _project;
-    private Editor _selectedEditor;
     private final PsiTreeChangeAdapter _treeChangeListener;
-    private Timer _timer;
+    private Editor _currentEditor;
     private MessageBusConnection _msgbus;
 
     public EditorListener(PsiViewerPanel viewer, Project project)
@@ -98,7 +97,12 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
         if (isElementChangedUnderViewerRoot(event))
         {
             LOG.debug("PSI Change, starting update timer");
-            startPanelUpdateTimer(_selectedEditor, true);
+            ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                @Override
+                public void run() {
+                    _viewer.refreshRootElement();
+                }
+            });
         }
     }
 
@@ -121,102 +125,50 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
    }
 
    public void selectionChanged(FileEditorManagerEvent event) {
-      debug("selection changed " + event.toString());
-      stopListeningToSelectedEditor();
+       debug("selection changed " + event.toString());
 
-      if (event.getNewFile() == null)
-         return;
+       if (event.getNewFile() == null) return;
 
-      startListeningToSelectedEditor();
-      _viewer.selectElementAtCaret(_selectedEditor);
+       Editor newEditor = event.getManager().getSelectedTextEditor();
 
+       if (_currentEditor != newEditor) _currentEditor.getCaretModel().removeCaretListener(this);
+
+       _viewer.selectElementAtCaret();
+
+       _currentEditor.getCaretModel().addCaretListener(this);
    }
+
 
     public void caretPositionChanged(CaretEvent event)
     {
         final Editor editor = event.getEditor();
-        if (_selectedEditor == null)
-        {
-            if (editor != null)
-                _viewer.selectElementAtCaret(editor);
-            return;
-        }
 
         debug("caret moved to " + editor.getCaretModel().getOffset() + " in editor " + editor);
-        startPanelUpdateTimer(editor, false);
+
+        _viewer.selectElementAtCaret();
     }
 
-    private synchronized void startPanelUpdateTimer(final Editor editor, final boolean isTreeRefreshed)
-    {
-        stopPanelUpdateTimer();
-        _timer = new Timer(1000, new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                stopPanelUpdateTimer();
-               PsiDocumentManager.getInstance(_project).commitAllDocuments();
-                if (isTreeRefreshed)
-                    _viewer.refreshRootElement();
-                _viewer.selectElementAtCaret(editor);
-            }
-        });
-        _timer.setRepeats(false);
-        _timer.setCoalesce(true);
-        _timer.start();
-    }
-
-    private synchronized void stopPanelUpdateTimer()
-    {
-        if (_timer != null)
-        {
-            _timer.stop();
-            _timer = null;
-        }
-    }
 
     public void start()
     {
         _msgbus = _project.getMessageBus().connect();
         _msgbus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, this);
-        
-        startListeningToSelectedEditor();
 
         PsiManager.getInstance(_project).addPsiTreeChangeListener(_treeChangeListener);
-    }
+
+        _currentEditor = FileEditorManager.getInstance(_project).getSelectedTextEditor();
+        if (_currentEditor != null)
+            _currentEditor.getCaretModel().addCaretListener(this);
+   }
 
     public void stop()
     {
-        stopPanelUpdateTimer();
-
         if (_msgbus != null) {
             _msgbus.disconnect();
             _msgbus = null;
         }
 
         PsiManager.getInstance(_project).removePsiTreeChangeListener(_treeChangeListener);
-
-        stopListeningToSelectedEditor();
-    }
-
-    private void startListeningToSelectedEditor()
-    {
-        _selectedEditor = FileEditorManager.getInstance(_project).getSelectedTextEditor();
-        if (_selectedEditor != null)
-        {
-            debug("Start listening to editor" + _selectedEditor);
-            _selectedEditor.getCaretModel().addCaretListener(this);
-        }
-    }
-
-    private void stopListeningToSelectedEditor()
-    {
-        if (_selectedEditor != null)
-        {
-            debug("Stop listening to editor" + _selectedEditor);
-            stopPanelUpdateTimer();
-            _selectedEditor.getCaretModel().removeCaretListener(this);
-            _selectedEditor = null;
-        }
     }
 
     private static void debug(String message)

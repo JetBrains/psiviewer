@@ -23,13 +23,12 @@ package idea.plugin.psiviewer.view;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBScrollPane;
 import idea.plugin.psiviewer.PsiViewerConstants;
@@ -110,6 +109,8 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
 
     private void resetTree()
     {
+        _tree.getSelectionModel().removeTreeSelectionListener(_treeSelectionListener);
+
         Enumeration expandedDescendants = null;
         TreePath path = null;
         if (_model.getRoot() != null)
@@ -121,15 +122,16 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         _model = new PsiViewerTreeModel(_projectComponent);
         _model.setRoot(getRootElement());
         _tree.setModel(_model);
-        if (expandedDescendants == null) return;
-        while (expandedDescendants.hasMoreElements())
-        {
-            TreePath treePath = (TreePath) expandedDescendants.nextElement();
-            _tree.expandPath(treePath);
-        }
+        if (expandedDescendants != null)
+            while (expandedDescendants.hasMoreElements())
+            {
+                TreePath treePath = (TreePath) expandedDescendants.nextElement();
+                _tree.expandPath(treePath);
+            }
         _tree.setSelectionPath(path);
         _tree.scrollPathToVisible(path);
 
+        _tree.getSelectionModel().addTreeSelectionListener(_treeSelectionListener);
     }
 
     public void showProperties(boolean showProperties)
@@ -163,7 +165,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
                 debug("key typed " + e);
                 if (getSelectedElement() == null) return;
                 Editor editor = _caretMover.openInEditor(getSelectedElement());
-                selectElementAtCaret(editor);
+                selectElementAtCaret(editor, TREE_SELECTION_CHANGED);
                 editor.getContentComponent().requestFocus();
             }
         });
@@ -221,6 +223,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
 
     private static final String CARET_MOVED = "caret moved";
     private static final String TREE_SELECTION_CHANGED = "tree selection changed";
+
     private boolean inSetSelectedElement = false;
 
     private void setSelectedElement(PsiElement element, String reason)
@@ -290,9 +293,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         if (_projectComponent.isAutoScrollToSource())
         {
             LOG.debug("moving editor caret");
-            _projectComponent.stopEditorListener();
             _caretMover.moveEditorCaret(getSelectedElement());
-            _projectComponent.startEditorListener();
         }
     }
 
@@ -307,7 +308,10 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         showRootElement();
     }
 
-    public void selectElementAtCaret(@Nullable Editor editor)
+    public void selectElementAtCaret() {
+        selectElementAtCaret(FileEditorManager.getInstance(_project).getSelectedTextEditor(), null);
+    }
+    public void selectElementAtCaret(@Nullable Editor editor, @Nullable String changeSource)
     {
         if (editor == null) /* Vince Mallet (21 Oct 2003) */
         {
@@ -315,17 +319,22 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
             return;
         }
 
-        VirtualFile virtualFile = FileDocumentManager.getInstance().getFile(editor.getDocument());
-        PsiFile psiFile = PsiManager.getInstance(_project).findFile(virtualFile);
+        PsiFile psiFile = PsiDocumentManager.getInstance(_project).getPsiFile(editor.getDocument());
+
         PsiElement elementAtCaret = null;
         if (psiFile != null) {
             elementAtCaret = psiFile.findElementAt(editor.getCaretModel().getOffset());
+            if (elementAtCaret != null && elementAtCaret.getParent() != null) {
+                if (elementAtCaret.getParent().getChildren().length == 0)
+                    elementAtCaret = elementAtCaret.getParent();
+            }
         }
+        
         if(elementAtCaret != null && elementAtCaret != getSelectedElement()) {
             debug("new element at caret " + elementAtCaret + ", current root=" + getRootElement());
             if (!PsiTreeUtil.isAncestor(getRootElement(), elementAtCaret, false))
                 selectRootElement(psiFile, TITLE_PREFIX_CURRENT_FILE);
-            setSelectedElement(elementAtCaret, PsiViewerPanel.CARET_MOVED);
+            setSelectedElement(elementAtCaret, changeSource == null ? PsiViewerPanel.CARET_MOVED : changeSource);
         }
     }
 

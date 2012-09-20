@@ -61,7 +61,7 @@ public class PsiViewerTreeModel implements TreeModel {
 
     public boolean isLeaf(Object node) {
         PsiElement psi = (PsiElement) node;
-        return psi.getChildren().length == 0;
+        return getFilteredChildren(psi).size() == 0;
     }
 
     private List<PsiElement> getFilteredChildren(PsiElement psi) {
@@ -94,7 +94,7 @@ public class PsiViewerTreeModel implements TreeModel {
         PsiElement psiParent = (PsiElement) parent;
         List<PsiElement> psiChildren = getFilteredChildren(psiParent);
 
-        return psiChildren.indexOf(child);
+        return psiChildren.indexOf((PsiElement)child);
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {

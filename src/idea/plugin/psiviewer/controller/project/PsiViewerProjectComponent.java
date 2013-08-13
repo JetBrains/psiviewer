@@ -21,6 +21,7 @@
 */
 package idea.plugin.psiviewer.controller.project;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -117,17 +118,17 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
                                                  "highlighted"));
         actionGroup.add(new PropertyToggleAction("Properties",
                                                  "Show PSI element properties",
-                                                 Helpers.getIcon(ICON_SHOW_PROPERTIES),
+                                                 AllIcons.General.Settings,
                                                  this,
                                                  "showProperties"));
         actionGroup.add(new PropertyToggleAction("Autoscroll to Source",
                                                  "Autoscroll to Source",
-                                                 Helpers.getIcon("/general/autoscrollToSource.png"),
+                                                 AllIcons.General.AutoscrollToSource,
                                                  this,
                                                  "autoScrollToSource"));
         actionGroup.add(new PropertyToggleAction("Autoscroll from Source",
                                                  "Autoscroll from Source",
-                                                 Helpers.getIcon("/general/autoscrollFromSource.png"),
+                                                 AllIcons.General.AutoscrollFromSource,
                                                  this,
                                                  "autoScrollFromSource"));
 

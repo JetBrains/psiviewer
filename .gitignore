@@ -2,3 +2,4 @@ PsiViewer.iws
 out
 .idea
 psiviewer.jar
+build.properties

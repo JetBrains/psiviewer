@@ -52,7 +52,7 @@
   </target>
 
   <!-- Compiles only -->
-  <target name="compile" depends="init" description="Compiles all source files">
+  <target name="compile" depends="init, update-metadata" description="Compiles all source files">
     <javac srcdir="${dir.src}" destdir="${dir.out}" debug="on">
       <classpath refid="compile.classpath"/>
     </javac>
@@ -80,13 +80,9 @@
         <filelist dir="${basedir}/META-INF/" files="plugin.xml" />
     </concat>
 
-    <concat>
-      ##teamcity[buildNumber '${version.number}.${release.number}.${build.number}']
-    </concat>
-
   </target>
 
-  <target name="jar" depends="update-metadata">
+  <target name="jar" depends="compile">
     <property name="plugin.jar" value="${basedir}/${project.name}.jar"/>
     <jar jarfile="${plugin.jar}">
       <fileset dir="${dir.out}" includes="**/*.class" excludes="**/test/*.class"/>

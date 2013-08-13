@@ -13,7 +13,7 @@
             value="Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar"/>
   <property name="plugin.description"
             value="A Program Structure Interface (PSI) tree viewer. This plugin may be useful for developers who are considering using the PSI interface in their own plugins."/>
-  <property name="plugin.idea.since.build" value="130.*"/>
+  <property name="plugin.idea.since.build" value="130.0"/>
   <loadfile srcfile="${basedir}/plugin-changes.html" property="plugin.changes"/>
 
   <!-- Source directories -->

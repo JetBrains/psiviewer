@@ -161,12 +161,15 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
 
     public void unregisterToolWindow()
     {
-        _viewerPanel.removeHighlighting();
-        _viewerPanel = null;
+        if (_viewerPanel != null) {
+            _viewerPanel.removeHighlighting();
+            _viewerPanel = null;
+        }
 
-        if (_editorListener != null)
+        if (_editorListener != null) {
             _editorListener.stop();
-
+            _editorListener = null;
+        }
         if (isToolWindowRegistered())
             ToolWindowManager.getInstance(_project).unregisterToolWindow(ID_TOOL_WINDOW);
     }

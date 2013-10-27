@@ -4,6 +4,7 @@
 package idea.plugin.psiviewer.util;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -15,26 +16,26 @@ public class ActionEventUtil
 {
     public static Project getProject(AnActionEvent event)
     {
-        return (Project) event.getDataContext().getData(PlatformDataKeys.PROJECT.getName());
+        return PlatformDataKeys.PROJECT.getData(event.getDataContext());
     }
 
     public static PsiElement getPsiElement(AnActionEvent event)
     {
-        return (PsiElement) event.getDataContext().getData("psi.Element");
+        return LangDataKeys.PSI_ELEMENT.getData(event.getDataContext());
     }
 
     public static Editor getEditor(AnActionEvent event)
     {
-        return (Editor) event.getDataContext().getData(PlatformDataKeys.EDITOR.getName());
+        return PlatformDataKeys.EDITOR.getData(event.getDataContext());
     }
 
     public static PsiFile getPsiFile(AnActionEvent event)
     {
-        return (PsiFile) event.getDataContext().getData("psi.File");
+        return LangDataKeys.PSI_FILE.getData(event.getDataContext());
     }
 
     public static VirtualFile getVirtualFile(AnActionEvent event)
     {
-        return (VirtualFile) event.getDataContext().getData(PlatformDataKeys.VIRTUAL_FILE.getName());
+        return PlatformDataKeys.VIRTUAL_FILE.getData(event.getDataContext());
     }
 }

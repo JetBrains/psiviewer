@@ -138,6 +138,9 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
 
        _viewer.selectElementAtCaret();
 
+       if (newEditor != null)
+           _currentEditor = newEditor;
+
        _currentEditor.getCaretModel().addCaretListener(this);
    }
 

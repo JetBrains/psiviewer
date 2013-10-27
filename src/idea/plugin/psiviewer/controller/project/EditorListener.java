@@ -38,6 +38,7 @@ import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.messages.MessageBusConnection;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -60,32 +61,32 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
         _project = project;
         _treeChangeListener = new PsiTreeChangeAdapter()
         {
-            public void childrenChanged(final PsiTreeChangeEvent event)
+            public void childrenChanged(@NotNull final PsiTreeChangeEvent event)
             {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childAdded(PsiTreeChangeEvent event)
+            public void childAdded(@NotNull PsiTreeChangeEvent event)
             {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childMoved(PsiTreeChangeEvent event)
+            public void childMoved(@NotNull PsiTreeChangeEvent event)
             {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childRemoved(PsiTreeChangeEvent event)
+            public void childRemoved(@NotNull PsiTreeChangeEvent event)
             {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childReplaced(PsiTreeChangeEvent event)
+            public void childReplaced(@NotNull PsiTreeChangeEvent event)
             {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void propertyChanged(PsiTreeChangeEvent event)
+            public void propertyChanged(@NotNull PsiTreeChangeEvent event)
             {
                 updateTreeFromPsiTreeChange(event);
             }
@@ -118,13 +119,15 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
         return b;
     }
 
-   public void fileOpened(FileEditorManager source, VirtualFile file) {
+   public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+       debug("source = [" + source + "], file = [" + file + "]");
    }
 
-   public void fileClosed(FileEditorManager source, VirtualFile file) {
+   public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+       debug("source = [" + source + "], file = [" + file + "]");
    }
 
-   public void selectionChanged(FileEditorManagerEvent event) {
+   public void selectionChanged(@NotNull FileEditorManagerEvent event) {
        debug("selection changed " + event.toString());
 
        if (event.getNewFile() == null) return;

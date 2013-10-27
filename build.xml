@@ -80,6 +80,9 @@
         <filelist dir="${basedir}/META-INF/" files="plugin.xml" />
     </concat>
 
+    <concat>
+      ##teamcity[buildNumber '${version.number}.${release.number}.${build.number}']
+    </concat>
   </target>
 
   <target name="jar" depends="compile">

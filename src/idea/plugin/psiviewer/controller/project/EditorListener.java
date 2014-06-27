@@ -24,6 +24,7 @@ package idea.plugin.psiviewer.controller.project;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.event.CaretAdapter;
 import com.intellij.openapi.editor.event.CaretEvent;
 import com.intellij.openapi.editor.event.CaretListener;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -41,12 +42,12 @@ import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jetbrains.annotations.NotNull;
 
 /**
- *
+ * @author <a href="mailto:andrew_armstrong@bigpond.com">Andrew Armstrong</a>
  * @version $Revision: 1.1 $
- * @author  <a href="mailto:andrew_armstrong@bigpond.com">Andrew Armstrong</a>
  */
-public class EditorListener implements FileEditorManagerListener, CaretListener
-{
+public class EditorListener extends CaretAdapter implements FileEditorManagerListener, CaretListener {
+
+
     private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.controller.project.EditorListener");
 
     private final PsiViewerPanel _viewer;
@@ -55,48 +56,38 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
     private Editor _currentEditor;
     private MessageBusConnection _msgbus;
 
-    public EditorListener(PsiViewerPanel viewer, Project project)
-    {
+    public EditorListener(PsiViewerPanel viewer, Project project) {
         _viewer = viewer;
         _project = project;
-        _treeChangeListener = new PsiTreeChangeAdapter()
-        {
-            public void childrenChanged(@NotNull final PsiTreeChangeEvent event)
-            {
+        _treeChangeListener = new PsiTreeChangeAdapter() {
+            public void childrenChanged(@NotNull final PsiTreeChangeEvent event) {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childAdded(@NotNull PsiTreeChangeEvent event)
-            {
+            public void childAdded(@NotNull PsiTreeChangeEvent event) {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childMoved(@NotNull PsiTreeChangeEvent event)
-            {
+            public void childMoved(@NotNull PsiTreeChangeEvent event) {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childRemoved(@NotNull PsiTreeChangeEvent event)
-            {
+            public void childRemoved(@NotNull PsiTreeChangeEvent event) {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void childReplaced(@NotNull PsiTreeChangeEvent event)
-            {
+            public void childReplaced(@NotNull PsiTreeChangeEvent event) {
                 updateTreeFromPsiTreeChange(event);
             }
 
-            public void propertyChanged(@NotNull PsiTreeChangeEvent event)
-            {
+            public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
                 updateTreeFromPsiTreeChange(event);
             }
         };
     }
 
-    private void updateTreeFromPsiTreeChange(final PsiTreeChangeEvent event)
-    {
-        if (isElementChangedUnderViewerRoot(event))
-        {
+    private void updateTreeFromPsiTreeChange(final PsiTreeChangeEvent event) {
+        if (isElementChangedUnderViewerRoot(event)) {
             LOG.debug("PSI Change, starting update timer");
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
@@ -107,46 +98,45 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
         }
     }
 
-    private boolean isElementChangedUnderViewerRoot(final PsiTreeChangeEvent event)
-    {
+    private boolean isElementChangedUnderViewerRoot(final PsiTreeChangeEvent event) {
         PsiElement elementChangedByPsi = event.getParent();
         PsiElement viewerRootElement = _viewer.getRootElement();
         boolean b = false;
-        try{
+        try {
             b = PsiTreeUtil.isAncestor(viewerRootElement, elementChangedByPsi, false);
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
 
         return b;
     }
 
-   public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-       debug("source = [" + source + "], file = [" + file + "]");
-   }
+    public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+        debug("source = [" + source + "], file = [" + file + "]");
+    }
 
-   public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-       debug("source = [" + source + "], file = [" + file + "]");
-   }
+    public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+        debug("source = [" + source + "], file = [" + file + "]");
+    }
 
-   public void selectionChanged(@NotNull FileEditorManagerEvent event) {
-       debug("selection changed " + event.toString());
+    public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+        debug("selection changed " + event.toString());
 
-       if (event.getNewFile() == null) return;
+        if (event.getNewFile() == null) return;
 
-       Editor newEditor = event.getManager().getSelectedTextEditor();
+        Editor newEditor = event.getManager().getSelectedTextEditor();
 
-       if (_currentEditor != newEditor) _currentEditor.getCaretModel().removeCaretListener(this);
+        if (_currentEditor != newEditor) _currentEditor.getCaretModel().removeCaretListener(this);
 
-       _viewer.selectElementAtCaret();
+        _viewer.selectElementAtCaret();
 
-       if (newEditor != null)
-           _currentEditor = newEditor;
+        if (newEditor != null)
+            _currentEditor = newEditor;
 
-       _currentEditor.getCaretModel().addCaretListener(this);
-   }
+        _currentEditor.getCaretModel().addCaretListener(this);
+    }
 
 
-    public void caretPositionChanged(CaretEvent event)
-    {
+    public void caretPositionChanged(CaretEvent event) {
         final Editor editor = event.getEditor();
 
         debug("caret moved to " + editor.getCaretModel().getOffset() + " in editor " + editor);
@@ -154,9 +144,7 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
         _viewer.selectElementAtCaret();
     }
 
-
-    public void start()
-    {
+    public void start() {
         _msgbus = _project.getMessageBus().connect();
         _msgbus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, this);
 
@@ -165,10 +153,9 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
         _currentEditor = FileEditorManager.getInstance(_project).getSelectedTextEditor();
         if (_currentEditor != null)
             _currentEditor.getCaretModel().addCaretListener(this);
-   }
+    }
 
-    public void stop()
-    {
+    public void stop() {
         if (_msgbus != null) {
             _msgbus.disconnect();
             _msgbus = null;
@@ -177,10 +164,8 @@ public class EditorListener implements FileEditorManagerListener, CaretListener
         PsiManager.getInstance(_project).removePsiTreeChangeListener(_treeChangeListener);
     }
 
-    private static void debug(String message)
-    {
-        if (LOG.isDebugEnabled())
-        {
+    private static void debug(String message) {
+        if (LOG.isDebugEnabled()) {
             LOG.debug(message);
         }
     }

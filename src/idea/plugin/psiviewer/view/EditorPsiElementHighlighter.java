@@ -77,8 +77,9 @@ class EditorPsiElementHighlighter
         {
             TextRange textRange = element.getTextRange();
             debug("Adding highlighting for " + textRange);
+            final int docTextLength = _editor.getDocument().getTextLength();
             _highlighter = _editor.getMarkupModel().addRangeHighlighter(textRange.getStartOffset(),
-                                                                        textRange.getEndOffset(),
+                                                                        Math.min(textRange.getEndOffset(), docTextLength),
                                                                         PsiViewerConstants.PSIVIEWER_HIGHLIGHT_LAYER,
                                                                         _textAttributes,
                                                                         HighlighterTargetArea.EXACT_RANGE);

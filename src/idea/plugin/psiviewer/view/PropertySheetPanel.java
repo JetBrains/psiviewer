@@ -4,7 +4,11 @@
 package idea.plugin.psiviewer.view;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.table.JBTable;
+import com.intellij.xml.util.XmlStringUtil;
+import com.intellij.xml.util.XmlUtil;
 import idea.plugin.psiviewer.util.IntrospectionUtil;
 
 import javax.swing.*;
@@ -55,8 +59,15 @@ public class PropertySheetPanel extends JPanel
         {
             String key = property.getDisplayName();
             String value = formattedToString(IntrospectionUtil.getValue(_target, property));
+
+            if(StringUtil.isNotEmpty(value) && StringUtil.startsWithIgnoreCase(value, "<html>"))
+            {
+                value = "<html>" + XmlUtil.escape(value) + "</html>";
+            }
+
             map.put(key, value);
         }
+
         int i = 0;
         for (Iterator<Map.Entry<Object,String>> it = map.entrySet().iterator(); it.hasNext(); i++)
         {
@@ -117,6 +128,8 @@ public class PropertySheetPanel extends JPanel
                 int row = rowAtPoint(event.getPoint());
                 return getCellRect(row, col, INCLUDE_INTERCELL_SPACING).getLocation();
             }
+
+
         }
 ;
         _table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
@@ -174,7 +187,7 @@ public class PropertySheetPanel extends JPanel
         StringBuffer buf = new StringBuffer();
         buf.append("[");
         Object[] array = (Object[]) object;
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++) // fixme what if length is 100_500_000 ?
         {
             if (i != 0) buf.append(", ");
             buf.append(array[i] == null ? "null" : array[i].toString());

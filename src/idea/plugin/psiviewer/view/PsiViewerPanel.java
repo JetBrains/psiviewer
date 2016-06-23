@@ -33,6 +33,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
 import idea.plugin.psiviewer.model.PsiViewerTreeModel;
@@ -305,13 +307,24 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         if (rootElement instanceof PsiFile)
         {
             FileViewProvider viewProvider = ((PsiFile) rootElement).getViewProvider();
-            _projectComponent.updateLanguagesList(viewProvider.getLanguages());
+
+            // iteration need, because getLanguages returns Set, not list, order is random
+            _projectComponent.updateLanguagesList(ContainerUtil.map(viewProvider.getAllFiles(), new Function<PsiFile, Language>() {
+                @Override
+                public Language fun(PsiFile psiFile)
+                {
+                    return psiFile.getLanguage();
+                }
+            }));
             Language selectedLanguage = _projectComponent.getSelectedLanguage();
 
             if (selectedLanguage != null)
             {
                 PsiElement selectedRoot = viewProvider.getPsi(selectedLanguage);
-                rootElement = selectedRoot;
+                if( selectedRoot != null )
+                {
+                    rootElement = selectedRoot;
+                }
             }
         }
         _rootElement = rootElement;

@@ -23,13 +23,11 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMUtil;
-import com.intellij.util.net.HTTPProxySettingsDialog;
 import org.jdom.Document;
 import org.jdom.Element;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
 
 /**
@@ -47,7 +45,6 @@ public class PluginErrorSubmitDialog extends DialogWrapper {
     private JTextArea descriptionTextArea;
     private JTextField userTextField;
     private JPanel contentPane;
-    private AbstractAction proxyAction;
 
     public PluginErrorSubmitDialog(Component inParent) {
         super(inParent, true);
@@ -74,13 +71,6 @@ public class PluginErrorSubmitDialog extends DialogWrapper {
         contentPane.add(userPane, BorderLayout.SOUTH);
 
         setOKButtonText(PluginErrorReportSubmitterBundle.message("submission.dialog.button.send"));
-
-        proxyAction = new AbstractAction(PluginErrorReportSubmitterBundle.message("submission.dialog.button.proxy")) {
-            public void actionPerformed(ActionEvent inActionEvent) {
-                HTTPProxySettingsDialog settingsDialog = new HTTPProxySettingsDialog();
-                settingsDialog.show();
-            }
-        };
 
         init();
     }
@@ -131,10 +121,6 @@ public class PluginErrorSubmitDialog extends DialogWrapper {
 
     protected JComponent createCenterPanel() {
         return contentPane;
-    }
-
-    protected Action[] createLeftSideActions() {
-        return new Action[]{proxyAction};
     }
 
     public JComponent getPreferredFocusedComponent() {

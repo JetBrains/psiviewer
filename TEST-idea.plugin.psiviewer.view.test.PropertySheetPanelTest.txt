@@ -1,8 +1,0 @@
-Testsuite: idea.plugin.psiviewer.view.test.PropertySheetPanelTest
-Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.571 sec
-------------- Standard Error -----------------
-log4j:WARN No appenders could be found for logger (idea.plugin.psiviewer.view.PropertySheetPanel).
-log4j:WARN Please initialize the log4j system properly.
-------------- ---------------- ---------------
-
-Testcase: testSetTarget took 0.571 sec

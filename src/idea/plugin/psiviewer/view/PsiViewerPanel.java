@@ -21,16 +21,20 @@
 */
 package idea.plugin.psiviewer.view;
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
 import idea.plugin.psiviewer.model.PsiViewerTreeModel;
@@ -52,8 +56,7 @@ import java.util.LinkedList;
  */
 // TODO should be a project component. Move from PsiViewerProjectcomponent the initialization to here
 
-public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstants
-{
+public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstants {
     private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.view.PsiViewerPanel");
 
     private String _actionTitle;
@@ -70,13 +73,13 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
     private final EditorPsiElementHighlighter _highlighter;
     private final PsiViewerProjectComponent _projectComponent;
     private final PropertySheetHeaderRenderer _propertyHeaderRenderer =
-        new PropertySheetHeaderRenderer(Helpers.getIcon(PsiViewerConstants.ICON_PSI),
-                                        SwingConstants.LEFT,
-                                        BorderFactory.createEtchedBorder());
+            new PropertySheetHeaderRenderer(Helpers.getIcon(PsiViewerConstants.ICON_PSI),
+                    SwingConstants.LEFT,
+                    BorderFactory.createEtchedBorder());
     private final PropertySheetHeaderRenderer _valueHeaderRenderer =
-        new PropertySheetHeaderRenderer(Helpers.getIcon(PsiViewerConstants.ICON_PSI),
-                                        SwingConstants.LEFT,
-                                        BorderFactory.createEtchedBorder());
+            new PropertySheetHeaderRenderer(Helpers.getIcon(PsiViewerConstants.ICON_PSI),
+                    SwingConstants.LEFT,
+                    BorderFactory.createEtchedBorder());
 
     public PsiViewerPanel(PsiViewerProjectComponent projectComponent)
     {
@@ -158,8 +161,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         _tree.getSelectionModel().addTreeSelectionListener(_treeSelectionListener);
 
         ActionMap actionMap = _tree.getActionMap();
-        actionMap.put("EditSource", new AbstractAction("EditSource")
-        {
+        actionMap.put("EditSource", new AbstractAction("EditSource") {
             public void actionPerformed(ActionEvent e)
             {
                 debug("key typed " + e);
@@ -174,8 +176,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
 
         _propertyPanel = new PropertySheetPanel();
 
-        _splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JBScrollPane(_tree), _propertyPanel)
-        {
+        _splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JBScrollPane(_tree), _propertyPanel) {
             public void setDividerLocation(int location)
             {
                 debug("Divider location changed to " + location + " component below " + (getRightComponent().isVisible() ? "visible" : "not visible"));
@@ -192,12 +193,11 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
     {
     }
 
-    private class ViewerTreeSelectionListener implements TreeSelectionListener
-    {
+    private class ViewerTreeSelectionListener implements TreeSelectionListener {
         public void valueChanged(TreeSelectionEvent e)
         {
             setSelectedElement((PsiElement) _tree.getLastSelectedPathComponent(),
-                               PsiViewerPanel.TREE_SELECTION_CHANGED);
+                    PsiViewerPanel.TREE_SELECTION_CHANGED);
         }
     }
 
@@ -304,13 +304,38 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
 
     private void setRootElement(PsiElement rootElement)
     {
+        if (rootElement instanceof PsiFile)
+        {
+            FileViewProvider viewProvider = ((PsiFile) rootElement).getViewProvider();
+
+            // iteration need, because getLanguages returns Set, not list, order is random
+            _projectComponent.updateLanguagesList(ContainerUtil.map(viewProvider.getAllFiles(), new Function<PsiFile, Language>() {
+                @Override
+                public Language fun(PsiFile psiFile)
+                {
+                    return psiFile.getLanguage();
+                }
+            }));
+            Language selectedLanguage = _projectComponent.getSelectedLanguage();
+
+            if (selectedLanguage != null)
+            {
+                PsiElement selectedRoot = viewProvider.getPsi(selectedLanguage);
+                if( selectedRoot != null )
+                {
+                    rootElement = selectedRoot;
+                }
+            }
+        }
         _rootElement = rootElement;
         showRootElement();
     }
 
-    public void selectElementAtCaret() {
+    public void selectElementAtCaret()
+    {
         selectElementAtCaret(FileEditorManager.getInstance(_project).getSelectedTextEditor(), null);
     }
+
     public void selectElementAtCaret(@Nullable Editor editor, @Nullable String changeSource)
     {
         if (editor == null) /* Vince Mallet (21 Oct 2003) */
@@ -322,15 +347,36 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         PsiFile psiFile = PsiDocumentManager.getInstance(_project).getPsiFile(editor.getDocument());
 
         PsiElement elementAtCaret = null;
-        if (psiFile != null) {
-            elementAtCaret = psiFile.findElementAt(editor.getCaretModel().getOffset());
-            if (elementAtCaret != null && elementAtCaret.getParent() != null) {
+        if (psiFile != null)
+        {
+            Language selectedLanguage = _projectComponent.getSelectedLanguage();
+            FileViewProvider viewProvider = psiFile.getViewProvider();
+
+            if (selectedLanguage != null)
+            {
+                PsiFile selectedRoot = viewProvider.getPsi(selectedLanguage);
+                if (selectedRoot == null)
+                {
+                    selectedLanguage = null;
+                }
+            }
+
+            if (selectedLanguage == null)
+            {
+                selectedLanguage = psiFile.getLanguage();
+            }
+
+            elementAtCaret = viewProvider.findElementAt(editor.getCaretModel().getOffset(), selectedLanguage);
+
+            if (elementAtCaret != null && elementAtCaret.getParent() != null)
+            {
                 if (elementAtCaret.getParent().getChildren().length == 0)
                     elementAtCaret = elementAtCaret.getParent();
             }
         }
-        
-        if(elementAtCaret != null && elementAtCaret != getSelectedElement()) {
+
+        if (elementAtCaret != null && elementAtCaret != getSelectedElement())
+        {
             debug("new element at caret " + elementAtCaret + ", current root=" + getRootElement());
             if (!PsiTreeUtil.isAncestor(getRootElement(), elementAtCaret, false))
                 selectRootElement(psiFile, TITLE_PREFIX_CURRENT_FILE);

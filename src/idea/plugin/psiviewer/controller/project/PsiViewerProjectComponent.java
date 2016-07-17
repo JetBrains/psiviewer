@@ -22,12 +22,14 @@
 package idea.plugin.psiviewer.controller.project;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
@@ -35,20 +37,28 @@ import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.components.panels.HorizontalLayout;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
 import idea.plugin.psiviewer.controller.application.Configuration;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
+import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
-public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternalizable, PsiViewerConstants
-{
+public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternalizable, PsiViewerConstants {
 
     private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent");
     public boolean HIGHLIGHT = false;
@@ -57,6 +67,19 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
     public int SPLIT_DIVIDER_POSITION = 300;
     public boolean AUTOSCROLL_TO_SOURCE = false;
     public boolean AUTOSCROLL_FROM_SOURCE = false;
+
+    private ComboBox myLanguagesComboBox;
+    private ItemListener myLanguagesComboBoxListener = new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e)
+        {
+            if (e.getStateChange() == ItemEvent.SELECTED)
+            {
+                _viewerPanel.refreshRootElement();
+                _viewerPanel.selectElementAtCaret();
+            }
+        }
+    };
 
     private final Project _project;
     private EditorListener _editorListener;
@@ -99,42 +122,50 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
         _viewerPanel = new PsiViewerPanel(this);
 
         _viewerPanel.addPropertyChangeListener("ancestor", new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        handleCurrentState();
-                    }
-                });
+            public void propertyChange(PropertyChangeEvent evt)
+            {
+                handleCurrentState();
+            }
+        });
         ActionManager actionManager = ActionManager.getInstance();
 
         DefaultActionGroup actionGroup = new DefaultActionGroup(ID_ACTION_GROUP, false);
         actionGroup.add(new PropertyToggleAction("Filter Whitespace",
-                                                 "Remove whitespace elements",
-                                                 Helpers.getIcon(ICON_FILTER_WHITESPACE),
-                                                 this,
-                                                 "filterWhitespace"));
+                "Remove whitespace elements",
+                Helpers.getIcon(ICON_FILTER_WHITESPACE),
+                this,
+                "filterWhitespace"));
         actionGroup.add(new PropertyToggleAction("Highlight",
-                                                 "Highlight selected PSI element",
-                                                 Helpers.getIcon(ICON_TOGGLE_HIGHLIGHT),
-                                                 this,
-                                                 "highlighted"));
+                "Highlight selected PSI element",
+                Helpers.getIcon(ICON_TOGGLE_HIGHLIGHT),
+                this,
+                "highlighted"));
         actionGroup.add(new PropertyToggleAction("Properties",
-                                                 "Show PSI element properties",
-                                                 AllIcons.General.Settings,
-                                                 this,
-                                                 "showProperties"));
+                "Show PSI element properties",
+                AllIcons.General.Settings,
+                this,
+                "showProperties"));
         actionGroup.add(new PropertyToggleAction("Autoscroll to Source",
-                                                 "Autoscroll to Source",
-                                                 AllIcons.General.AutoscrollToSource,
-                                                 this,
-                                                 "autoScrollToSource"));
+                "Autoscroll to Source",
+                AllIcons.General.AutoscrollToSource,
+                this,
+                "autoScrollToSource"));
         actionGroup.add(new PropertyToggleAction("Autoscroll from Source",
-                                                 "Autoscroll from Source",
-                                                 AllIcons.General.AutoscrollFromSource,
-                                                 this,
-                                                 "autoScrollFromSource"));
+                "Autoscroll from Source111",
+                AllIcons.General.AutoscrollFromSource,
+                this,
+                "autoScrollFromSource"));
 
         ActionToolbar toolBar = actionManager.createActionToolbar(ID_ACTION_TOOLBAR, actionGroup, true);
 
-        _viewerPanel.add(toolBar.getComponent(), BorderLayout.NORTH);
+        JPanel panel = new JPanel(new HorizontalLayout(0));
+        panel.add(toolBar.getComponent());
+
+        myLanguagesComboBox = new ComboBox();
+        panel.add(myLanguagesComboBox);
+        updateLanguagesList(Collections.<Language>emptyList());
+
+        _viewerPanel.add(panel, BorderLayout.NORTH);
 
         ToolWindow toolWindow = getToolWindow();
         toolWindow.setIcon(Helpers.getIcon(ICON_TOOL_WINDOW));
@@ -143,10 +174,11 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
         _editorListener = new EditorListener(_viewerPanel, _project);
     }
 
-    private void handleCurrentState() {
+    private void handleCurrentState()
+    {
         if (_viewerPanel == null)
             return;
-        
+
         if (_viewerPanel.isDisplayable())
         {
             _editorListener.start();
@@ -161,12 +193,14 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
 
     public void unregisterToolWindow()
     {
-        if (_viewerPanel != null) {
+        if (_viewerPanel != null)
+        {
             _viewerPanel.removeHighlighting();
             _viewerPanel = null;
         }
 
-        if (_editorListener != null) {
+        if (_editorListener != null)
+        {
             _editorListener.stop();
             _editorListener = null;
         }
@@ -181,8 +215,8 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
             return toolWindowManager.getToolWindow(ID_TOOL_WINDOW);
         else
             return toolWindowManager.registerToolWindow(ID_TOOL_WINDOW,
-                                                        _viewerPanel,
-                                                        ToolWindowAnchor.RIGHT);
+                    _viewerPanel,
+                    ToolWindowAnchor.RIGHT);
     }
 
     private boolean isToolWindowRegistered()
@@ -290,4 +324,35 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
         }
     }
 
+    @Nullable
+    public Language getSelectedLanguage()
+    {
+        return (Language) myLanguagesComboBox.getSelectedItem();
+    }
+
+    public void updateLanguagesList(Collection<Language> languages)
+    {
+        Language selectedLanguage = getSelectedLanguage();
+
+        myLanguagesComboBox.removeItemListener(myLanguagesComboBoxListener);
+
+        //noinspection Since15
+        myLanguagesComboBox.setModel(new ListComboBoxModel<Language>(new ArrayList<Language>(languages)));
+
+        if (selectedLanguage != null && languages.contains(selectedLanguage))
+        {
+            myLanguagesComboBox.setSelectedItem(selectedLanguage);
+        }
+
+        if (languages.size() < 2)
+        {
+            myLanguagesComboBox.setVisible(false);
+        }
+        else
+        {
+            myLanguagesComboBox.setVisible(true);
+        }
+
+        myLanguagesComboBox.addItemListener(myLanguagesComboBoxListener);
+    }
 }

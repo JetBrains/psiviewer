@@ -167,7 +167,7 @@ public class Configuration implements ApplicationComponent, JDOMExternalizable, 
 
     public static Configuration getInstance()
     {
-        return (Configuration) ApplicationManager.getApplication().getComponent(Configuration.class);
+        return ApplicationManager.getApplication().getComponent(Configuration.class);
     }
 
 }

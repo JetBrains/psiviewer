@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 
@@ -186,11 +187,12 @@ public class PropertySheetPanel extends JPanel
         if (!object.getClass().isArray()) return object.toString();
         StringBuffer buf = new StringBuffer();
         buf.append("[");
-        Object[] array = (Object[]) object;
-        for (int i = 0; i < array.length; i++) // fixme what if length is 100_500_000 ?
+        int arrayLength = Array.getLength(object);
+        for (int i = 0; i < arrayLength; i++) // fixme what if length is 100_500_000 ?
         {
             if (i != 0) buf.append(", ");
-            buf.append(array[i] == null ? "null" : array[i].toString());
+            Object arrayItem = Array.get(object, i);
+            buf.append(arrayItem == null ? "null" : arrayItem.toString());
         }
         buf.append("]");
         return buf.toString();

@@ -25,16 +25,14 @@
       <option name="workspace" value="true"/>
     </component>
   </project-components>
-  <application-components>
-    <component>
-      <implementation-class>idea.plugin.psiviewer.controller.application.Configuration</implementation-class>
-    </component>
-  </application-components>
+
 
   <depends>com.intellij.modules.lang</depends>
 
   <!-- Extensions -->
   <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable groupId="tools" instance="idea.plugin.psiviewer.controller.application.Configuration"/>
+    <applicationService serviceImplementation="idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings"/>
     <errorHandler implementation="com.sylvanaar.idea.errorreporting.YouTrackBugReporter"/>
   </extensions>
 

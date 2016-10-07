@@ -160,7 +160,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
 
         if (showDialog) {
             return submit(ideaLoggingEvents, this.description,
-                    StringUtil.notNullize(ErrorReportConfigurable.getInstance().ITN_LOGIN, "<anonymous>"), component);
+                    StringUtil.notNullize(ErrorReportConfigurable.Companion.getInstance().getState().getITN_LOGIN(), "<anonymous>"), component);
         } else {
             // show modal error submission dialog
             PluginErrorSubmitDialog dialog = new PluginErrorSubmitDialog(component);

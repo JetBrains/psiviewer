@@ -22,90 +22,56 @@
 
 package idea.plugin.psiviewer.controller.application;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
-import com.intellij.openapi.editor.markup.TextAttributes;
+import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.util.DefaultJDOMExternalizer;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.WriteExternalException;
-import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.configuration.ConfigurationPanel;
-import org.jdom.Element;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Configuration implements ApplicationComponent, JDOMExternalizable, PsiViewerConstants, Configurable
+public class Configuration extends BaseConfigurable implements Configurable, PsiViewerConstants
 {
-    public String HIGHLIGHT_COLOR = DEFAULT_HIGHLIGHT_COLOR;
-    public boolean PLUGIN_ENABLED = true;
-
-    private final TextAttributes _textAttributes = new TextAttributes();
-
     private ConfigurationPanel _panel;
+
+    private final PsiViewerApplicationSettings settings;
 
     public Configuration()
     {
+        settings = PsiViewerApplicationSettings.getInstance();
     }
 
-    public void initComponent()
-    {
-        getTextAttributes().setBackgroundColor(getHighlightColor());
-    }
-
-    public void disposeComponent()
-    {
-    }
-
-    public String getComponentName()
-    {
-        return PLUGIN_NAME + "." + CONFIGURATION_COMPONENT_NAME;
-    }
-
-    public void readExternal(Element element) throws InvalidDataException
-    {
-        DefaultJDOMExternalizer.readExternal(this, element);
-    }
-
-    public void writeExternal(Element element) throws WriteExternalException
-    {
-        DefaultJDOMExternalizer.writeExternal(this, element);
-    }
-
+    @Override
     public String getDisplayName()
     {
         return PLUGIN_NAME;
     }
 
-    public Icon getIcon()
-    {
-        return Helpers.getIcon(ICON_CONFIGURATION);
-    }
-
+    @Override
     public String getHelpTopic()
     {
         return null;
     }
 
+    @Override
     public JComponent createComponent()
     {
         _panel = new ConfigurationPanel();
         return _panel;
     }
 
+    @Override
     public boolean isModified()
     {
         if (_panel.isPluginEnabled() ^ isPluginEnabled())
             return true;
 
-        if (!Helpers.encodeColor(_panel.getHighlightColor()).equals(HIGHLIGHT_COLOR))
+        if (!Helpers.encodeColor(_panel.getHighlightColor()).equals(settings.HIGHLIGHT_COLOR))
             return true;
 
         return false;
@@ -114,14 +80,15 @@ public class Configuration implements ApplicationComponent, JDOMExternalizable, 
     /**
      * Save the settings from the configuration panel
      */
+    @Override
     public void apply() throws ConfigurationException
     {
-        if (PLUGIN_ENABLED ^ _panel.isPluginEnabled())  // If plugin-enabled state has changed...
+        if (settings.PLUGIN_ENABLED ^ _panel.isPluginEnabled())  // If plugin-enabled state has changed...
             enableToolWindows(_panel.isPluginEnabled());
 
-        PLUGIN_ENABLED = _panel.isPluginEnabled();
-        HIGHLIGHT_COLOR = Helpers.encodeColor(_panel.getHighlightColor());
-        getTextAttributes().setBackgroundColor(getHighlightColor());
+        settings.PLUGIN_ENABLED = _panel.isPluginEnabled();
+        settings.HIGHLIGHT_COLOR = Helpers.encodeColor(_panel.getHighlightColor());
+        settings.getTextAttributes().setBackgroundColor(getHighlightColor());
     }
 
     private static void enableToolWindows(boolean enableToolWindows)
@@ -139,12 +106,14 @@ public class Configuration implements ApplicationComponent, JDOMExternalizable, 
     /**
      * Load current settings into the configuration panel
      */
+    @Override
     public void reset()
     {
         _panel.setPluginEnabled(isPluginEnabled());
         _panel.setHighlightColor(getHighlightColor());
     }
 
+    @Override
     public void disposeUIResources()
     {
         _panel = null;
@@ -152,22 +121,13 @@ public class Configuration implements ApplicationComponent, JDOMExternalizable, 
 
     public boolean isPluginEnabled()
     {
-        return PLUGIN_ENABLED;
+        return settings.PLUGIN_ENABLED;
     }
 
     private Color getHighlightColor()
     {
-        return Helpers.parseColor(HIGHLIGHT_COLOR);
+        return Helpers.parseColor(settings.HIGHLIGHT_COLOR);
     }
 
-    public TextAttributes getTextAttributes()
-    {
-        return _textAttributes;
-    }
-
-    public static Configuration getInstance()
-    {
-        return ApplicationManager.getApplication().getComponent(Configuration.class);
-    }
 
 }

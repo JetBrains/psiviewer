@@ -40,7 +40,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.components.panels.HorizontalLayout;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
-import idea.plugin.psiviewer.controller.application.Configuration;
+import idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
@@ -92,7 +92,7 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
 
     public void projectOpened()
     {
-        if (Configuration.getInstance().isPluginEnabled())
+        if (PsiViewerApplicationSettings.getInstance().PLUGIN_ENABLED)
         {
             initToolWindow();
         }

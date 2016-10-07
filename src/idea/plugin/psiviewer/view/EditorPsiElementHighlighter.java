@@ -18,6 +18,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.application.Configuration;
+import idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
 import idea.plugin.psiviewer.util.PluginPsiUtil;
 
@@ -33,7 +34,7 @@ class EditorPsiElementHighlighter
     public EditorPsiElementHighlighter(Project project)
     {
         _project = project;
-        _textAttributes = Configuration.getInstance().getTextAttributes();
+        _textAttributes = PsiViewerApplicationSettings.getInstance().getTextAttributes();
     }
 
     public void highlightElement(final PsiElement psiElement)

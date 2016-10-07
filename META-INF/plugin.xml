@@ -4,7 +4,7 @@
   <description>A Program Structure Interface (PSI) tree viewer. This plugin may be useful for developers who are considering using the PSI interface in their own plugins.</description>
   <version>3.28.0</version>
   <vendor>Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar</vendor>
-  <idea-version since-build="143.0"/>
+  <idea-version since-build="163.0"/>
   <change-notes><![CDATA[<html><ul>
 
     <li>Fixed some longtime annoyances. The cursor doesn't jump around anymore</li>

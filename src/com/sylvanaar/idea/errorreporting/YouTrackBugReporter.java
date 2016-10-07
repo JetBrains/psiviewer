@@ -18,7 +18,6 @@
 
 package com.sylvanaar.idea.errorreporting;
 
-import com.intellij.diagnostic.ErrorReportConfigurable;
 import com.intellij.diagnostic.IdeErrorsDialog;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
@@ -29,7 +28,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.diagnostic.SubmittedReportInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NonNls;
 
@@ -159,8 +157,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
                     component) {
 
         if (showDialog) {
-            return submit(ideaLoggingEvents, this.description,
-                    StringUtil.notNullize(ErrorReportConfigurable.Companion.getInstance().getState().getITN_LOGIN(), "<anonymous>"), component);
+            return submit(ideaLoggingEvents, this.description, "<anonymous>", component);
         } else {
             // show modal error submission dialog
             PluginErrorSubmitDialog dialog = new PluginErrorSubmitDialog(component);

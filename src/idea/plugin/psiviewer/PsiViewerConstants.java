@@ -28,7 +28,7 @@ public interface PsiViewerConstants
     // Plugin names
     public static final String PLUGIN_NAME = "PsiViewer";
     public static final String PROJECT_COMPONENT_NAME = "ProjectComponent";
-    public static final String CONFIGURATION_COMPONENT_NAME = "PsiViewerSettings";
+    public static final String CONFIGURATION_COMPONENT_NAME = "PsiViewerPluginSettings";
 
     // Icons
     public static final String ICON_CONFIGURATION = "/images/psi.png";

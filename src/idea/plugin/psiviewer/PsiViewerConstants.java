@@ -26,30 +26,32 @@ import com.intellij.openapi.editor.markup.HighlighterLayer;
 public interface PsiViewerConstants
 {
     // Plugin names
-    public static final String PLUGIN_NAME = "PsiViewer";
-    public static final String PROJECT_COMPONENT_NAME = "ProjectComponent";
-    public static final String CONFIGURATION_COMPONENT_NAME = "PsiViewerPluginSettings";
+    String PLUGIN_NAME = "PsiViewer";
+    String PROJECT_COMPONENT_NAME = "ProjectComponent";
+    String CONFIGURATION_COMPONENT_NAME = "PsiViewerPluginSettings";
 
     // Icons
-    public static final String ICON_CONFIGURATION = "/images/psi.png";
-    public static final String ICON_TOOL_WINDOW = "/images/psiToolWindow.png";
-    public static final String ICON_PSI = "/images/psi18x18.png";
-    public static final String ICON_WHITESPACE = "/images/whitespace.png";
-    public static final String ICON_FILTER_WHITESPACE = "/images/filterWhitespace.png";
-    public static final String ICON_TOGGLE_HIGHLIGHT = "/images/highlighter.png";
-    public static final String ICON_SHOW_PROPERTIES = "/objectBrowser/showStructure.png";
-    public static final String ICON_COMMENT = "/images/comment.png";
-    public static final String ICON_XML_TAG = "/images/xmlTag.png";
-    public static final String ICON_XML_ATTRIBUTE = "/images/xmlAttribute.png";
-    public static final String ICON_XML_COMMENT = "/images/xmlComment.png";
+    String ICON_CONFIGURATION = "/images/psi.png";
+    String ICON_TOOL_WINDOW = "/images/psiToolWindow.png";
+    String ICON_PSI = "/images/psi18x18.png";
+    String ICON_WHITESPACE = "/images/whitespace.png";
+    String ICON_FILTER_WHITESPACE = "/images/filterWhitespace.png";
+    String ICON_TOGGLE_HIGHLIGHT = "/images/highlighter.png";
+    String ICON_SHOW_PROPERTIES = "/objectBrowser/showStructure.png";
+    String ICON_COMMENT = "/images/comment.png";
+    String ICON_XML_TAG = "/images/xmlTag.png";
+    String ICON_XML_ATTRIBUTE = "/images/xmlAttribute.png";
+    String ICON_XML_COMMENT = "/images/xmlComment.png";
 
     // Ids
-    public static final String ID_TOOL_WINDOW = "PsiViewer";
-    public static final String ID_ACTION_GROUP = "PsiActionGroup";
-    public static final String ID_ACTION_TOOLBAR = "PsiActionToolbar";
+    String ID_TOOL_WINDOW = "PsiViewer";
+    String ID_ACTION_GROUP = "PsiActionGroup";
+    String ID_ACTION_TOOLBAR = "PsiActionToolbar";
 
     // Miscellaneous
-    public static final int PSIVIEWER_HIGHLIGHT_LAYER = HighlighterLayer.SELECTION - 100;
-    public static final String DEFAULT_HIGHLIGHT_COLOR = "162 3 229 32"; // ThighMaster Accident
-    public static final String TITLE_PREFIX_CURRENT_FILE = "Current File";
+    int PSIVIEWER_HIGHLIGHT_LAYER = HighlighterLayer.SELECTION - 100;
+    int PSIVIEWER_REFERENCE_HIGHLIGHT_LAYER = HighlighterLayer.SELECTION - 99;
+    String DEFAULT_HIGHLIGHT_COLOR = "162 3 229 32"; // ThighMaster Accident
+    String DEFAULT_REFERENCE_HIGHLIGHT_COLOR = "162 229 3 32"; // ThighMaster Accident
+    String TITLE_PREFIX_CURRENT_FILE = "Current File";
 }

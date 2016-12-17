@@ -28,22 +28,25 @@ import idea.plugin.psiviewer.PsiViewerConstants;
 import javax.swing.*;
 import java.awt.*;
 
-public class ConfigurationPanel extends JPanel
-{
+public class ConfigurationPanel extends JPanel {
     private JCheckBox _pluginEnabled;
     private JColorChooser _colorChooser;
     private AlphaChooserPanel _alphaChooser;
+    private JColorChooser _refColorChooser;
+    private AlphaChooserPanel _refAlphaChooser;
 
-    public ConfigurationPanel()
-    {
+    public ConfigurationPanel() {
         buildGUI();
     }
 
-    private void buildGUI()
-    {
+    private void buildGUI() {
         _alphaChooser = new AlphaChooserPanel();
         _colorChooser = new JColorChooser();
         _colorChooser.addChooserPanel(_alphaChooser);
+
+        _refAlphaChooser = new AlphaChooserPanel();
+        _refColorChooser = new JColorChooser();
+        _refColorChooser.addChooserPanel(_refAlphaChooser);
 
         _pluginEnabled = new JCheckBox("Enable PsiViewer Plugin");
         _pluginEnabled.setToolTipText("Enable/disable the PsiViewer tool window");
@@ -58,34 +61,43 @@ public class ConfigurationPanel extends JPanel
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         tabbedPane.setPreferredSize(new Dimension(400, 600));
         tabbedPane.insertTab("Highlighter",
-                             Helpers.getIcon(PsiViewerConstants.ICON_TOGGLE_HIGHLIGHT),
-                             _colorChooser,
-                             "Set highlighter color",
-                             0);
+                Helpers.getIcon(PsiViewerConstants.ICON_TOGGLE_HIGHLIGHT),
+                _colorChooser,
+                "Set highlighter color",
+                0);
+        tabbedPane.insertTab("Reference Highlighter",
+                Helpers.getIcon(PsiViewerConstants.ICON_TOGGLE_HIGHLIGHT),
+                _refColorChooser,
+                "Set reference highlighter color",
+                0);
 
         add(topPane, BorderLayout.NORTH);
         add(tabbedPane, BorderLayout.CENTER);
     }
 
-    public boolean isPluginEnabled()
-    {
+    public boolean isPluginEnabled() {
         return _pluginEnabled.isSelected();
     }
 
-    public void setPluginEnabled(boolean enabled)
-    {
+    public void setPluginEnabled(boolean enabled) {
         _pluginEnabled.setSelected(enabled);
     }
 
-    public Color getHighlightColor()
-    {
+    public Color getHighlightColor() {
         return _colorChooser.getSelectionModel().getSelectedColor();
     }
 
-    public void setHighlightColor(Color color)
-    {
+    public void setHighlightColor(Color color) {
         _alphaChooser.setAlpha(color.getAlpha());
         _colorChooser.setColor(color);
     }
 
+    public Color getReferenceHighlightColor() {
+        return _refColorChooser.getSelectionModel().getSelectedColor();
+    }
+
+    public void setReferenceHighlightColor(Color color) {
+        _refAlphaChooser.setAlpha(color.getAlpha());
+        _refColorChooser.setColor(color);
+    }
 }

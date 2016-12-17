@@ -11,21 +11,28 @@ import idea.plugin.psiviewer.util.Helpers;
 import org.jetbrains.annotations.Nullable;
 
 import static idea.plugin.psiviewer.PsiViewerConstants.DEFAULT_HIGHLIGHT_COLOR;
+import static idea.plugin.psiviewer.PsiViewerConstants.DEFAULT_REFERENCE_HIGHLIGHT_COLOR;
 
 /**
  * Created by Jon on 10/7/2016.
  */
 @State(name = PsiViewerConstants.CONFIGURATION_COMPONENT_NAME, storages = @Storage("other.xml"))
 public class PsiViewerApplicationSettings implements PersistentStateComponent<PsiViewerApplicationSettings> {
-    public String HIGHLIGHT_COLOR;
-    public boolean PLUGIN_ENABLED;
-
     private final TextAttributes _textAttributes = new TextAttributes();
+    public String HIGHLIGHT_COLOR;
+    public String REFERENCE_HIGHLIGHT_COLOR;
+    public boolean PLUGIN_ENABLED;
+    private TextAttributes referenceTextAttributes = new TextAttributes();
 
     public PsiViewerApplicationSettings() {
         HIGHLIGHT_COLOR = DEFAULT_HIGHLIGHT_COLOR;
+        REFERENCE_HIGHLIGHT_COLOR = DEFAULT_REFERENCE_HIGHLIGHT_COLOR;
         PLUGIN_ENABLED = true;
         getTextAttributes().setBackgroundColor(Helpers.parseColor(HIGHLIGHT_COLOR));
+    }
+
+    public static PsiViewerApplicationSettings getInstance() {
+        return ServiceManager.getService(PsiViewerApplicationSettings.class);
     }
 
     @Nullable
@@ -39,14 +46,14 @@ public class PsiViewerApplicationSettings implements PersistentStateComponent<Ps
         XmlSerializerUtil.copyBean(state, this);
 
         getTextAttributes().setBackgroundColor(Helpers.parseColor(HIGHLIGHT_COLOR));
+        getReferenceTextAttributes().setBackgroundColor(Helpers.parseColor(REFERENCE_HIGHLIGHT_COLOR));
     }
 
-    public static PsiViewerApplicationSettings getInstance() {
-        return ServiceManager.getService(PsiViewerApplicationSettings.class);
-    }
-
-    public TextAttributes getTextAttributes()
-    {
+    public TextAttributes getTextAttributes() {
         return _textAttributes;
+    }
+
+    public TextAttributes getReferenceTextAttributes() {
+        return referenceTextAttributes;
     }
 }

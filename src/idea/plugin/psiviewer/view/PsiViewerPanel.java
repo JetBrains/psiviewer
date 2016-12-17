@@ -213,7 +213,7 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
 
     public void removeHighlighting()
     {
-        _highlighter.removeHilight();
+        _highlighter.removeHighlight();
     }
 
     private PsiElement getSelectedElement()

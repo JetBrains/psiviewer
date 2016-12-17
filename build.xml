@@ -2,6 +2,8 @@
 <project name="PsiViewer" default="all" basedir=".">
   <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask"/>
 
+  <typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/>
+
   <property file="build.properties"/>
   <!-- Set the IDEA installation directory here
        (or in the build.properties file which takes precedence) -->

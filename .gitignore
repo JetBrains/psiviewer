@@ -1,5 +1,3 @@
-PsiViewer.iws
-out
 .idea
-psiviewer.jar
-build.properties
+!.idea/runConfigurations
+.sandbox

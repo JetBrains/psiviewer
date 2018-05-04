@@ -46,7 +46,7 @@ class EditorPsiElementHighlighter {
             }
         });
 
-        if (psiElement.getReference() != null) {
+        if (psiElement != null && psiElement.getReference() != null) {
             ApplicationManager.getApplication().runReadAction(new Runnable() {
                 public void run() {
                     applyReference(psiElement.getReference());

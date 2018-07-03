@@ -121,7 +121,7 @@ public class EditorListener extends CaretAdapter implements FileEditorManagerLis
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
         debug("selection changed " + event.toString());
 
-        if (event.getNewFile() == null) return;
+        if (event.getNewFile() == null || _currentEditor == null) return;
 
         Editor newEditor = event.getManager().getSelectedTextEditor();
 

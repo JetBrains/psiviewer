@@ -1,3 +1,5 @@
 .idea
 !.idea/runConfigurations
 .sandbox
+build/
+.gradle/

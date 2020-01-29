@@ -17,6 +17,7 @@
     <applicationConfigurable groupId="tools" instance="idea.plugin.psiviewer.controller.application.Configuration"/>
     <applicationService serviceImplementation="idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings"/>
     <errorHandler implementation="com.sylvanaar.idea.errorreporting.YouTrackBugReporter"/>
+    <toolWindow id="PsiViewer" icon="/images/psiToolWindow.png" anchor="right" factoryClass="idea.plugin.psiviewer.controller.project.PsiViewerToolWindowFactory"/>
   </extensions>
 
   <!-- Component's actions -->

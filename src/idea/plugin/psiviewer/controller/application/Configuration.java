@@ -91,7 +91,7 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
         Project[] projects = ProjectManager.getInstance().getOpenProjects();
         for (Project project : projects) {
             PsiViewerProjectComponent pc = PsiViewerProjectComponent.getInstance(project);
-            if (enableToolWindows) pc.initToolWindow();
+            if (enableToolWindows) pc.registerToolWindow();
             else
                 pc.unregisterToolWindow();
         }

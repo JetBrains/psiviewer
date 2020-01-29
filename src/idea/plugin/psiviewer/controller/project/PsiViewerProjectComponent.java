@@ -35,12 +35,10 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.components.panels.HorizontalLayout;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
-import idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
@@ -90,34 +88,19 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
         _project = project;
     }
 
-    public void projectOpened()
-    {
-        if (PsiViewerApplicationSettings.getInstance().PLUGIN_ENABLED)
-        {
-            initToolWindow();
-        }
-    }
-
-    public void projectClosed()
-    {
-        unregisterToolWindow();
-    }
-
-    public void initComponent()
-    {
-    }
-
-    public void disposeComponent()
-    {
-    }
-
     @NotNull
     public String getComponentName()
     {
         return PLUGIN_NAME + '.' + PROJECT_COMPONENT_NAME;
     }
 
-    public void initToolWindow()
+    public void registerToolWindow() {
+        ToolWindow toolWindow = getToolWindow();
+        initToolWindow(toolWindow);
+        toolWindow.setAvailable(true, null);
+    }
+
+    PsiViewerPanel initToolWindow(@NotNull ToolWindow toolWindow)
     {
         _viewerPanel = new PsiViewerPanel(this);
 
@@ -166,12 +149,11 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
         updateLanguagesList(Collections.<Language>emptyList());
 
         _viewerPanel.add(panel, BorderLayout.NORTH);
-
-        ToolWindow toolWindow = getToolWindow();
-        toolWindow.setIcon(Helpers.getIcon(ICON_TOOL_WINDOW));
         _viewerPanel.setToolWindow(toolWindow);
 
         _editorListener = new EditorListener(_viewerPanel, _project);
+
+        return _viewerPanel;
     }
 
     private void handleCurrentState()
@@ -204,24 +186,12 @@ public class PsiViewerProjectComponent implements ProjectComponent, JDOMExternal
             _editorListener.stop();
             _editorListener = null;
         }
-        if (isToolWindowRegistered())
-            ToolWindowManager.getInstance(_project).unregisterToolWindow(ID_TOOL_WINDOW);
+        getToolWindow().setAvailable(false, null);
     }
 
     private ToolWindow getToolWindow()
     {
-        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(_project);
-        if (isToolWindowRegistered())
-            return toolWindowManager.getToolWindow(ID_TOOL_WINDOW);
-        else
-            return toolWindowManager.registerToolWindow(ID_TOOL_WINDOW,
-                    _viewerPanel,
-                    ToolWindowAnchor.RIGHT);
-    }
-
-    private boolean isToolWindowRegistered()
-    {
-        return ToolWindowManager.getInstance(_project).getToolWindow(ID_TOOL_WINDOW) != null;
+        return ToolWindowManager.getInstance(_project).getToolWindow(ID_TOOL_WINDOW);
     }
 
     public void readExternal(Element element) throws InvalidDataException

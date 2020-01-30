@@ -22,6 +22,6 @@ public class PsiViewerToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
-        return PsiViewerApplicationSettings.getInstance().PLUGIN_ENABLED;
+        return !project.isDefault() && PsiViewerApplicationSettings.getInstance().PLUGIN_ENABLED;
     }
 }

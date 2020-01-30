@@ -56,7 +56,7 @@ import java.util.LinkedList;
  */
 // TODO should be a project component. Move from PsiViewerProjectcomponent the initialization to here
 
-public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstants {
+public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
     private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.view.PsiViewerPanel");
 
     private String _actionTitle;
@@ -187,10 +187,6 @@ public class PsiViewerPanel extends JPanel implements Runnable, PsiViewerConstan
         };
         _splitPane.setDividerLocation(_projectComponent.getSplitDividerLocation());
         add(_splitPane);
-    }
-
-    public void run()
-    {
     }
 
     private class ViewerTreeSelectionListener implements TreeSelectionListener {

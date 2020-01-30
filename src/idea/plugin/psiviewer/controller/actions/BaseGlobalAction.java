@@ -10,11 +10,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiDocumentManager;
-import idea.plugin.psiviewer.util.ActionEventUtil;
+import com.intellij.psi.PsiElement;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.util.ActionEventUtil;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 
 abstract class BaseGlobalAction extends AnAction
@@ -49,21 +49,18 @@ abstract class BaseGlobalAction extends AnAction
         presentation.setVisible(true);
     }
 
-    public void actionPerformed(AnActionEvent event)
-    {
+    public void actionPerformed(AnActionEvent event) {
         Project project = ActionEventUtil.getProject(event);
         PsiDocumentManager.getInstance(project).commitAllDocuments();
-
-        PsiViewerPanel viewer = PsiViewerProjectComponent.getInstance(project).getViewerPanel();
-
-        if (getTargetElement(event) == null)
-            return;
-
-        viewer.selectRootElement(getTargetElement(event),
-                                 getToolWindowTitle());
-
         ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow(PsiViewerConstants.ID_TOOL_WINDOW);
-        toolWindow.activate(viewer);
+        if (toolWindow != null) {
+            toolWindow.activate(null);
+            PsiViewerPanel viewer = PsiViewerProjectComponent.getInstance(project).getViewerPanel();
+            if (getTargetElement(event) == null)
+                return;
+
+            viewer.selectRootElement(getTargetElement(event), getToolWindowTitle());
+        }
     }
 
     protected abstract String getToolWindowTitle();

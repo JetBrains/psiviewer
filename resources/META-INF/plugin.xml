@@ -1,6 +1,7 @@
 <idea-plugin url="https://github.com/cmf/psiviewer">
   <name>PsiViewer</name>
   <vendor>Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar</vendor>
+  <category>Plugin Development</category>
 
   <project-components>
     <component>

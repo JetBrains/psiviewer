@@ -33,20 +33,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
 class PropertySheetHeaderRenderer extends JLabel implements TableCellRenderer, PsiViewerConstants {
-    private final ElementVisitor _elementVisitor = new ElementVisitor();
-    private final XmlElementVisitor _elementVisitorXml = new ElementVisitorXml();
-
-    public PropertySheetHeaderRenderer() {
-        super();
-    }
-
-    public PropertySheetHeaderRenderer(Icon image) {
-        super(image);
-    }
-
-    public PropertySheetHeaderRenderer(Icon image, int horizontalAlignment) {
-        super(image, horizontalAlignment);
-    }
+    private final ElementVisitor myElementVisitor = new ElementVisitor();
+    private final XmlElementVisitor myElementVisitorXml = new ElementVisitorXml();
 
     public PropertySheetHeaderRenderer(Icon image, int horizontalAlignment, Border border) {
         super(image, horizontalAlignment);
@@ -67,13 +55,8 @@ class PropertySheetHeaderRenderer extends JLabel implements TableCellRenderer, P
         setIcon(IconCache.DEFAULT_ICON);
         if (psiElement == null)
             return;
-        psiElement.accept(_elementVisitor);
-        psiElement.accept(_elementVisitorXml);
-
-//        try {
-//            psiElement.accept(new PropertySheetJavaElementVisitor(this));
-//        } catch (Exception e) {
-//        }
+        psiElement.accept(myElementVisitor);
+        psiElement.accept(myElementVisitorXml);
     }
 
     private class ElementVisitor extends PsiElementVisitor {

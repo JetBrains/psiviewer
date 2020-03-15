@@ -26,28 +26,25 @@ import java.util.*;
  *
  * @author <a href="mailto:jacmorel@yahoo.com">Jacques Morel</a>
  */
-public class PropertySheetPanel extends JPanel
-{
-    private Object _target;
-    private JTable _table;
+public class PropertySheetPanel extends JPanel {
+    private Object myTarget;
+    private JTable myTable;
 
     private static final Logger LOG = Logger.getInstance(PropertySheetPanel.class);
 
-    public PropertySheetPanel()
-    {
+    public PropertySheetPanel() {
         setLayout(new GridBagLayout());
     }
 
-    public void setTarget(Object bean)
-    {
+    public void setTarget(Object bean) {
         debug("setTarget=" + bean);
         setBackground(Color.WHITE);
         setVisible(false);
         setLayout(new BorderLayout(0, 0));
         removeAll();
 
-        _target = bean;
-        if (_target == null) return;
+        myTarget = bean;
+        if (myTarget == null) return;
 
         List<PropertyDescriptor> properties = getReadProperties();
 
@@ -55,10 +52,9 @@ public class PropertySheetPanel extends JPanel
         Object[] columnTitles = new String[]{"Property", "Value"};
 
         Map<Object, String> map = new TreeMap<>(); // Guarantees ascending natural key sort order
-        for (PropertyDescriptor property : properties)
-        {
+        for (PropertyDescriptor property : properties) {
             String key = property.getDisplayName();
-            String value = formattedToString(IntrospectionUtil.getValue(_target, property));
+            String value = formattedToString(IntrospectionUtil.getValue(myTarget, property));
 
             if(StringUtil.isNotEmpty(value) && StringUtil.startsWithIgnoreCase(value, "<html>"))
             {
@@ -84,20 +80,17 @@ public class PropertySheetPanel extends JPanel
 
     public JTable getTable()
     {
-        return _table;
+        return myTable;
     }
 
     private JScrollPane createTable(Object[][] tableData, Object[] columnTitle)
     {
-        _table = new JTable(tableData, columnTitle)
-        {
-            public boolean isCellEditable(int row, int column)
-            {
+        myTable = new JTable(tableData, columnTitle) {
+            public boolean isCellEditable(int row, int column) {
                 return false;
             }
 
-            public JToolTip createToolTip()
-            {
+            public JToolTip createToolTip() {
                 PropertySheetToolTip.getInstance().setComponent(this);
                 return PropertySheetToolTip.getInstance();
             }
@@ -121,8 +114,7 @@ public class PropertySheetPanel extends JPanel
 
             private static final boolean INCLUDE_INTERCELL_SPACING = true;
 
-            public Point getToolTipLocation(MouseEvent event)
-            {
+            public Point getToolTipLocation(MouseEvent event) {
                 int col = columnAtPoint(event.getPoint());
                 int row = rowAtPoint(event.getPoint());
                 return getCellRect(row, col, INCLUDE_INTERCELL_SPACING).getLocation();
@@ -130,14 +122,14 @@ public class PropertySheetPanel extends JPanel
 
 
         }
-;
-        _table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        _table.getSelectionModel().setSelectionMode(0);
+        ;
+        myTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        myTable.getSelectionModel().setSelectionMode(0);
 
-        packColumn(_table, 0, 2);
-        packColumn(_table, 1, 2);
+        packColumn(myTable, 0, 2);
+        packColumn(myTable, 1, 2);
 
-        return new JBScrollPane(_table);
+        return new JBScrollPane(myTable);
     }
 
     private void packColumn(JTable table, int colIndex, int margin)
@@ -198,7 +190,7 @@ public class PropertySheetPanel extends JPanel
 
     private List<PropertyDescriptor> getReadProperties()
     {
-        PropertyDescriptor[] properties = IntrospectionUtil.getProperties(_target.getClass());
+        PropertyDescriptor[] properties = IntrospectionUtil.getProperties(myTarget.getClass());
         List<PropertyDescriptor> readProperties;
         readProperties = new ArrayList<>(properties.length);
         for (PropertyDescriptor property : properties)

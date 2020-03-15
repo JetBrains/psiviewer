@@ -33,19 +33,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PsiViewerTreeModel implements TreeModel {
-    private PsiElement _root;
-    private final PsiViewerProjectService _projectComponent;
+    private final PsiViewerProjectService myPsiViewerProjectService;
+    private PsiElement myRootElement;
 
     public PsiViewerTreeModel(PsiViewerProjectService projectComponent) {
-        _projectComponent = projectComponent;
+        myPsiViewerProjectService = projectComponent;
     }
 
     public Object getRoot() {
-        return _root;
+        return myRootElement;
     }
 
     public void setRoot(PsiElement root) {
-        _root = root;
+        myRootElement = root;
     }
 
     public Object getChild(Object parent, int index) {
@@ -76,7 +76,7 @@ public class PsiViewerTreeModel implements TreeModel {
     }
 
     private boolean isValid(PsiElement psiElement) {
-        return !_projectComponent.isFilterWhitespace() || !(psiElement instanceof PsiWhiteSpace);
+        return !myPsiViewerProjectService.isFilterWhitespace() || !(psiElement instanceof PsiWhiteSpace);
     }
 
     public int getIndexOfChild(Object parent, Object child) {

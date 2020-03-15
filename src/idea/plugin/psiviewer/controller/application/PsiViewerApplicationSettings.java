@@ -16,7 +16,7 @@ import static idea.plugin.psiviewer.PsiViewerConstants.DEFAULT_REFERENCE_HIGHLIG
 
 @State(name = PsiViewerConstants.CONFIGURATION_COMPONENT_NAME, storages = @Storage("other.xml"))
 public class PsiViewerApplicationSettings implements PersistentStateComponent<PsiViewerApplicationSettings> {
-    private final TextAttributes _textAttributes = new TextAttributes();
+    private final TextAttributes myTextAttributes = new TextAttributes();
     public String HIGHLIGHT_COLOR;
     public String REFERENCE_HIGHLIGHT_COLOR;
     public boolean PLUGIN_ENABLED;
@@ -48,7 +48,7 @@ public class PsiViewerApplicationSettings implements PersistentStateComponent<Ps
     }
 
     public TextAttributes getTextAttributes() {
-        return _textAttributes;
+        return myTextAttributes;
     }
 
     public TextAttributes getReferenceTextAttributes() {

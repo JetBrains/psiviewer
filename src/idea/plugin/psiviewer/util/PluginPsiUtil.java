@@ -69,8 +69,7 @@ public class PluginPsiUtil
 
         Editor editor = null;
 
-        if (fileEditor != null && fileEditor instanceof TextEditor)
-        {
+        if (fileEditor instanceof TextEditor) {
             editor = ((TextEditor) fileEditor).getEditor();
         }
 

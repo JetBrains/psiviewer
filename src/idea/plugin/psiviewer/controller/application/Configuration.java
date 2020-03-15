@@ -36,10 +36,10 @@ import java.awt.*;
 public class Configuration extends BaseConfigurable implements PsiViewerConstants {
     private ConfigurationPanel myPanel;
 
-    private final PsiViewerApplicationSettings settings;
+    private final PsiViewerApplicationSettings mySettings;
 
     public Configuration() {
-        settings = PsiViewerApplicationSettings.getInstance();
+        mySettings = PsiViewerApplicationSettings.getInstance();
     }
 
     @Override
@@ -63,10 +63,10 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
         if (myPanel.isPluginEnabled() ^ isPluginEnabled())
             return true;
 
-        if (!Helpers.encodeColor(myPanel.getHighlightColor()).equals(settings.HIGHLIGHT_COLOR))
+        if (!Helpers.encodeColor(myPanel.getHighlightColor()).equals(mySettings.HIGHLIGHT_COLOR))
             return true;
 
-        if (!Helpers.encodeColor(myPanel.getReferenceHighlightColor()).equals(settings.REFERENCE_HIGHLIGHT_COLOR))
+        if (!Helpers.encodeColor(myPanel.getReferenceHighlightColor()).equals(mySettings.REFERENCE_HIGHLIGHT_COLOR))
             return true;
 
         return false;
@@ -77,13 +77,13 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
      */
     @Override
     public void apply() {
-        if (settings.PLUGIN_ENABLED ^ myPanel.isPluginEnabled())  // If plugin-enabled state has changed...
+        if (mySettings.PLUGIN_ENABLED ^ myPanel.isPluginEnabled())  // If plugin-enabled state has changed...
             enableToolWindows(myPanel.isPluginEnabled());
 
-        settings.PLUGIN_ENABLED = myPanel.isPluginEnabled();
-        settings.HIGHLIGHT_COLOR = Helpers.encodeColor(myPanel.getHighlightColor());
-        settings.REFERENCE_HIGHLIGHT_COLOR = Helpers.encodeColor(myPanel.getReferenceHighlightColor());
-        settings.getTextAttributes().setBackgroundColor(getHighlightColor());
+        mySettings.PLUGIN_ENABLED = myPanel.isPluginEnabled();
+        mySettings.HIGHLIGHT_COLOR = Helpers.encodeColor(myPanel.getHighlightColor());
+        mySettings.REFERENCE_HIGHLIGHT_COLOR = Helpers.encodeColor(myPanel.getReferenceHighlightColor());
+        mySettings.getTextAttributes().setBackgroundColor(getHighlightColor());
     }
 
     private static void enableToolWindows(boolean enableToolWindows) {
@@ -112,15 +112,15 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
     }
 
     public boolean isPluginEnabled() {
-        return settings.PLUGIN_ENABLED;
+        return mySettings.PLUGIN_ENABLED;
     }
 
     private Color getHighlightColor() {
-        return Helpers.parseColor(settings.HIGHLIGHT_COLOR);
+        return Helpers.parseColor(mySettings.HIGHLIGHT_COLOR);
     }
 
 
     public Color getReferenceHighlightColor() {
-        return Helpers.parseColor(settings.REFERENCE_HIGHLIGHT_COLOR);
+        return Helpers.parseColor(mySettings.REFERENCE_HIGHLIGHT_COLOR);
     }
 }

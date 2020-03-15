@@ -45,11 +45,6 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
         psiElement.accept(_elementVisitor);
         psiElement.accept(_elementVisitorXml);
 
-//        try {
-//            psiElement.accept(new PsiViewerTreeCellJavaElementVisitor(this));
-//        } catch (Exception e) {
-//        }
-
         return this;
     }
 

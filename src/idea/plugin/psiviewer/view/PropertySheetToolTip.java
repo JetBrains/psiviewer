@@ -26,7 +26,7 @@ import javax.swing.*;
 
 class PropertySheetToolTip extends JToolTip
 {
-    private static final PropertySheetToolTip _instance = new PropertySheetToolTip();
+    private static final PropertySheetToolTip INSTANCE = new PropertySheetToolTip();
 
     private PropertySheetToolTip()
     {
@@ -35,7 +35,7 @@ class PropertySheetToolTip extends JToolTip
 
     public static PropertySheetToolTip getInstance()
     {
-        return _instance;
+        return INSTANCE;
     }
 
     public void updateUI()

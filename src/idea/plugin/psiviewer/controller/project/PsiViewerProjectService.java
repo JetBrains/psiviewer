@@ -64,24 +64,21 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
     public boolean AUTOSCROLL_FROM_SOURCE = false;
 
     private ComboBox myLanguagesComboBox;
-    private ItemListener myLanguagesComboBoxListener = new ItemListener() {
+    private final Project myProject;
+    private EditorListener myEditorListener;
+    private PsiViewerPanel myViewerPanel;
+    private final ItemListener myLanguagesComboBoxListener = new ItemListener() {
         @Override
-        public void itemStateChanged(ItemEvent e)
-        {
-            if (e.getStateChange() == ItemEvent.SELECTED)
-            {
-                _viewerPanel.refreshRootElement();
-                _viewerPanel.selectElementAtCaret();
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                myViewerPanel.refreshRootElement();
+                myViewerPanel.selectElementAtCaret();
             }
         }
     };
 
-    private final Project _project;
-    private EditorListener _editorListener;
-    private PsiViewerPanel _viewerPanel;
-
     public PsiViewerProjectService(Project project) {
-        _project = project;
+        myProject = project;
     }
 
     public void registerToolWindow() {
@@ -92,9 +89,9 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
 
     PsiViewerPanel initToolWindow(@NotNull ToolWindow toolWindow)
     {
-        _viewerPanel = new PsiViewerPanel(this);
+        myViewerPanel = new PsiViewerPanel(this);
 
-        _viewerPanel.addPropertyChangeListener("ancestor", it -> handleCurrentState());
+        myViewerPanel.addPropertyChangeListener("ancestor", it -> handleCurrentState());
         ActionManager actionManager = ActionManager.getInstance();
 
         DefaultActionGroup actionGroup = new DefaultActionGroup(ID_ACTION_GROUP, false);
@@ -133,50 +130,45 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
         panel.add(myLanguagesComboBox);
         updateLanguagesList(Collections.<Language>emptyList());
 
-        _viewerPanel.add(panel, BorderLayout.NORTH);
-        _viewerPanel.setToolWindow(toolWindow);
+        myViewerPanel.add(panel, BorderLayout.NORTH);
+        myViewerPanel.setToolWindow(toolWindow);
 
-        _editorListener = new EditorListener(_viewerPanel, _project);
+        myEditorListener = new EditorListener(myViewerPanel, myProject);
 
-        return _viewerPanel;
+        return myViewerPanel;
     }
 
     private void handleCurrentState()
     {
-        if (_viewerPanel == null)
+        if (myViewerPanel == null)
             return;
 
-        if (_viewerPanel.isDisplayable())
-        {
-            _editorListener.start();
-            _viewerPanel.selectElementAtCaret();
-        }
-        else
-        {
-            _editorListener.stop();
-            _viewerPanel.removeHighlighting();
+        if (myViewerPanel.isDisplayable()) {
+            myEditorListener.start();
+            myViewerPanel.selectElementAtCaret();
+        } else {
+            myEditorListener.stop();
+            myViewerPanel.removeHighlighting();
         }
     }
 
     public void unregisterToolWindow()
     {
-        if (_viewerPanel != null)
-        {
-            _viewerPanel.removeHighlighting();
-            _viewerPanel = null;
+        if (myViewerPanel != null) {
+            myViewerPanel.removeHighlighting();
+            myViewerPanel = null;
         }
 
-        if (_editorListener != null)
-        {
-            _editorListener.stop();
-            _editorListener = null;
+        if (myEditorListener != null) {
+            myEditorListener.stop();
+            myEditorListener = null;
         }
         getToolWindow().setAvailable(false, null);
     }
 
     private ToolWindow getToolWindow()
     {
-        return ToolWindowManager.getInstance(_project).getToolWindow(ID_TOOL_WINDOW);
+        return ToolWindowManager.getInstance(myProject).getToolWindow(ID_TOOL_WINDOW);
     }
 
     public void readExternal(Element element) throws InvalidDataException
@@ -191,7 +183,7 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
 
     public PsiViewerPanel getViewerPanel()
     {
-        return _viewerPanel;
+        return myViewerPanel;
     }
 
     public boolean isHighlighted()
@@ -203,7 +195,7 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
     {
         debug("set highlight to " + highlight);
         HIGHLIGHT = highlight;
-        _viewerPanel.applyHighlighting();
+        myViewerPanel.applyHighlighting();
 
     }
 
@@ -263,7 +255,7 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
 
     public Project getProject()
     {
-        return _project;
+        return myProject;
     }
 
     public static PsiViewerProjectService getInstance(Project project) {

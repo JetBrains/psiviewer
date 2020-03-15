@@ -11,36 +11,31 @@ import idea.plugin.psiviewer.util.IntrospectionUtil;
 import javax.swing.*;
 import java.beans.PropertyDescriptor;
 
-public class PropertyToggleAction extends ToggleAction
-{
+public class PropertyToggleAction extends ToggleAction {
     private static final Logger LOG = Logger.getInstance(PropertyToggleAction.class);
-    private final Object _target;
-    private PropertyDescriptor _property;
+    private final Object myTarget;
+    private PropertyDescriptor myPropertyDescriptor;
 
-    public PropertyToggleAction(String actionName, String toolTip, Icon icon, Object target, String property)
-    {
+    public PropertyToggleAction(String actionName, String toolTip, Icon icon, Object target, String property) {
         super(actionName, toolTip, icon);
-        _target = target;
-        _property = IntrospectionUtil.getProperty(target.getClass(), property);
-        if (!isPropertyValid(property)) _property = null;
+        myTarget = target;
+        myPropertyDescriptor = IntrospectionUtil.getProperty(target.getClass(), property);
+        if (!isPropertyValid(property)) myPropertyDescriptor = null;
     }
 
     private boolean isPropertyValid(String property)
     {
-        if (_property == null)
-        {
+        if (myPropertyDescriptor == null) {
             LOG.error("Could not find " + getPropertyName(property));
             return false;
         }
-        if (_property.getReadMethod() == null)
-        {
+        if (myPropertyDescriptor.getReadMethod() == null) {
             LOG.error("Could not find getter for " + getPropertyName(property));
             return false;
         }
-        if (_property.getWriteMethod() == null)
-        {
+        if (myPropertyDescriptor.getWriteMethod() == null) {
             LOG.error("Could not find setter for " + getPropertyName(property));
-            _property = null;
+            myPropertyDescriptor = null;
             return false;
         }
         return true;
@@ -48,18 +43,17 @@ public class PropertyToggleAction extends ToggleAction
 
     private String getPropertyName(String property)
     {
-        return "property " + property + " in class " + _target.getClass();
+        return "property " + property + " in class " + myTarget.getClass();
     }
 
-    public boolean isSelected(AnActionEvent anactionevent)
-    {
-        if (_property == null) return false;
-        return (Boolean) IntrospectionUtil.getValue(_target, _property);
+    public boolean isSelected(AnActionEvent anactionevent) {
+        if (myPropertyDescriptor == null) return false;
+        return (Boolean) IntrospectionUtil.getValue(myTarget, myPropertyDescriptor);
     }
 
     public void setSelected(AnActionEvent anactionevent, boolean flag)
     {
-        IntrospectionUtil.setValue(_target, _property, flag);
+        IntrospectionUtil.setValue(myTarget, myPropertyDescriptor, flag);
     }
 
 }

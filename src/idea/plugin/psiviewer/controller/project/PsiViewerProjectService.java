@@ -49,8 +49,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -96,12 +94,7 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
     {
         _viewerPanel = new PsiViewerPanel(this);
 
-        _viewerPanel.addPropertyChangeListener("ancestor", new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt)
-            {
-                handleCurrentState();
-            }
-        });
+        _viewerPanel.addPropertyChangeListener("ancestor", it -> handleCurrentState());
         ActionManager actionManager = ActionManager.getInstance();
 
         DefaultActionGroup actionGroup = new DefaultActionGroup(ID_ACTION_GROUP, false);

@@ -33,7 +33,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
@@ -304,13 +303,7 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
             FileViewProvider viewProvider = ((PsiFile) rootElement).getViewProvider();
 
             // iteration need, because getLanguages returns Set, not list, order is random
-            _projectComponent.updateLanguagesList(ContainerUtil.map(viewProvider.getAllFiles(), new Function<PsiFile, Language>() {
-                @Override
-                public Language fun(PsiFile psiFile)
-                {
-                    return psiFile.getLanguage();
-                }
-            }));
+            _projectComponent.updateLanguagesList(ContainerUtil.map(viewProvider.getAllFiles(), PsiElement::getLanguage));
             Language selectedLanguage = _projectComponent.getSelectedLanguage();
 
             if (selectedLanguage != null)

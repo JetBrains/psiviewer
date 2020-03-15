@@ -153,7 +153,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
                     component) {
 
         if (myShowDialog) {
-            return submit(ideaLoggingEvents, this.myDescription, "<anonymous>", component);
+            return submit(ideaLoggingEvents, this.myDescription, "<anonymous>");
         } else {
             // show modal error submission dialog
             PluginErrorSubmitDialog dialog = new PluginErrorSubmitDialog(component);
@@ -166,7 +166,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
                 dialog.persist();
                 String description = dialog.getDescription();
                 String user = dialog.getUser();
-                return submit(ideaLoggingEvents, description, user, component);
+                return submit(ideaLoggingEvents, description, user);
             }
         }
         // otherwise do nothing
@@ -180,11 +180,9 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
         super.submitAsync(events, additionalInfo, parentComponent, consumer);
     }
 
-    private SubmittedReportInfo submit
-            (IdeaLoggingEvent[] ideaLoggingEvents, String
-                    description, String
-                    user, Component
-                    component) {
+    private SubmittedReportInfo submit(IdeaLoggingEvent[] ideaLoggingEvents,
+                                       String description,
+                                       String user) {
         this.myDescription = ideaLoggingEvents[0].getThrowableText().substring(0, Math.min(Math.max(80, ideaLoggingEvents[0].getThrowableText().length()), 80));
 
         @NonNls StringBuilder descBuilder = new StringBuilder();

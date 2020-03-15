@@ -16,10 +16,8 @@ import org.jetbrains.annotations.Nullable;
 public class PluginPsiUtil
 {
     @Nullable
-    private static VirtualFile getVirtualFile(Project project, PsiElement psiElement)
-    {
-        if (psiElement == null || !psiElement.isValid() || psiElement.getContainingFile() == null)
-        {
+    private static VirtualFile getVirtualFile(PsiElement psiElement) {
+        if (psiElement == null || !psiElement.isValid() || psiElement.getContainingFile() == null) {
             return null;
         }
         return psiElement.getContainingFile().getVirtualFile();
@@ -38,7 +36,7 @@ public class PluginPsiUtil
 
     public static boolean isElementInSelectedFile(Project project, PsiElement psiElement)
     {
-        VirtualFile elementFile = getVirtualFile(project, psiElement);
+        VirtualFile elementFile = getVirtualFile(psiElement);
         if (elementFile == null)
         {
             return false;
@@ -59,7 +57,7 @@ public class PluginPsiUtil
     @Nullable
     public static Editor getEditorIfSelected(Project project, PsiElement psiElement)
     {
-        VirtualFile elementFile = getVirtualFile(project, psiElement);
+        VirtualFile elementFile = getVirtualFile(psiElement);
         if (elementFile == null)
         {
             return null;

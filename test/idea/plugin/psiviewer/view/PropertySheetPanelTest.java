@@ -38,22 +38,18 @@ public class PropertySheetPanelTest extends TestCase
 
     static class MyBean
     {
-        public String getText()
-        {
+        public String getText() {
             return "Text";
         }
 
-        public Object getObject()
-        {
+        public Object getObject() {
             return null;
         }
 
-        public void setObject(Object o)
-        {
+        public void setObject(Object o) {
         }
 
-        public void setWriteOnly(Object o)
-        {
+        public void setWriteOnly(Object o) {
         }
     }
 

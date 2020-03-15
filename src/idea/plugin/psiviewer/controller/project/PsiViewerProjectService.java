@@ -98,28 +98,28 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
         actionGroup.add(new PropertyToggleAction("Filter Whitespace",
                 "Remove whitespace elements",
                 Helpers.getIcon(ICON_FILTER_WHITESPACE),
-                this,
-                "filterWhitespace"));
+                this::isFilterWhitespace,
+                this::setFilterWhitespace));
         actionGroup.add(new PropertyToggleAction("Highlight",
                 "Highlight selected PSI element",
                 Helpers.getIcon(ICON_TOGGLE_HIGHLIGHT),
-                this,
-                "highlighted"));
+                this::isHighlighted,
+                this::setHighlighted));
         actionGroup.add(new PropertyToggleAction("Properties",
                 "Show PSI element properties",
                 AllIcons.General.Settings,
-                this,
-                "showProperties"));
+                this::isShowProperties,
+                this::setShowProperties));
         actionGroup.add(new PropertyToggleAction("Autoscroll to Source",
                 "Autoscroll to Source",
                 AllIcons.General.AutoscrollToSource,
-                this,
-                "autoScrollToSource"));
+                this::isAutoScrollToSource,
+                this::setAutoScrollToSource));
         actionGroup.add(new PropertyToggleAction("Autoscroll from Source",
                 "Autoscroll from Source111",
                 AllIcons.General.AutoscrollFromSource,
-                this,
-                "autoScrollFromSource"));
+                this::isAutoScrollFromSource,
+                this::setAutoScrollFromSource));
 
         ActionToolbar toolBar = actionManager.createActionToolbar(ID_ACTION_TOOLBAR, actionGroup, true);
 
@@ -290,15 +290,16 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
             myLanguagesComboBox.setSelectedItem(selectedLanguage);
         }
 
-        if (languages.size() < 2)
-        {
+        if (languages.size() < 2) {
             myLanguagesComboBox.setVisible(false);
-        }
-        else
-        {
+        } else {
             myLanguagesComboBox.setVisible(true);
         }
 
         myLanguagesComboBox.addItemListener(myLanguagesComboBoxListener);
+    }
+
+    public interface BooleanConsumer {
+        void accept(boolean value);
     }
 }

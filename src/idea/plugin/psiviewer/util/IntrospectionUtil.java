@@ -33,16 +33,6 @@ public class IntrospectionUtil
         return propertyDescriptors;
     }
 
-    public static PropertyDescriptor getProperty(Class targetClass, String propertyName)
-    {
-        PropertyDescriptor[] propertyDescriptors = getProperties(targetClass);
-        for (PropertyDescriptor propertyDescriptor : propertyDescriptors)
-        {
-            if (propertyDescriptor.getName().equals(propertyName)) return propertyDescriptor;
-        }
-        return null;
-    }
-
     public static Object getValue(Object target, PropertyDescriptor property)
     {
         Method getter = property.getReadMethod();
@@ -53,16 +43,7 @@ public class IntrospectionUtil
             Object args[] = {};
             getter.setAccessible(true);
 
-            //LOG.debug("Invoking " + getter.getName() + " on " + target.toString());
-            // TODO: Hack...invoking getVariants() is prohibited on PsiJavaReference objects in IDEA build #3144 and later
-//            if (target instanceof PsiJavaReference && "variants".equals(name))
-//            {
-//                value = "<unavailable>";
-//            }
-//            else
-//            {
-                value = getter.invoke(target, args);
-//            }
+            value = getter.invoke(target, args);
         }
         catch (InvocationTargetException ex)
         {
@@ -77,29 +58,5 @@ public class IntrospectionUtil
             value = "<exception=" + ex.getMessage() + ">";
         }
         return value;
-    }
-
-    public static void setValue(Object target, PropertyDescriptor property, Object value)
-    {
-        Method setter = property.getWriteMethod();
-        String name = property.getDisplayName();
-        try
-        {
-            Object args[] = {value};
-            setter.setAccessible(true);
-            value = setter.invoke(target, args);
-        }
-        catch (InvocationTargetException ex)
-        {
-            LOG.debug("Exception setting property " + name + " on " + target.toString());
-            LOG.debug(ex.getTargetException());
-            value = "<exception=" + ex.getMessage() + ">";
-        }
-        catch (Exception ex)
-        {
-            LOG.debug("Exception setting property " + name + " on " + target.toString());
-            LOG.debug(ex);
-            value = "<exception=" + ex.getMessage() + ">";
-        }
     }
 }

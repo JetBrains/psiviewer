@@ -3,14 +3,6 @@
   <vendor>Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar</vendor>
   <category>Plugin Development</category>
 
-  <project-components>
-    <component>
-      <implementation-class>idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent</implementation-class>
-      <option name="workspace" value="true"/>
-    </component>
-  </project-components>
-
-
   <depends>com.intellij.modules.lang</depends>
 
   <!-- Extensions -->
@@ -19,6 +11,7 @@
     <applicationService serviceImplementation="idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings"/>
     <errorHandler implementation="com.sylvanaar.idea.errorreporting.YouTrackBugReporter"/>
     <toolWindow id="PsiViewer" icon="/images/psiToolWindow.png" anchor="right" factoryClass="idea.plugin.psiviewer.controller.project.PsiViewerToolWindowFactory"/>
+    <projectService serviceImplementation="idea.plugin.psiviewer.controller.project.PsiViewerProjectService"/>
   </extensions>
 
   <!-- Component's actions -->

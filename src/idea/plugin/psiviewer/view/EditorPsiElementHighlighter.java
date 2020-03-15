@@ -18,9 +18,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiWhiteSpace;
 import idea.plugin.psiviewer.PsiViewerConstants;
-import idea.plugin.psiviewer.controller.application.Configuration;
 import idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings;
-import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.util.PluginPsiUtil;
 
 class EditorPsiElementHighlighter {
@@ -123,11 +122,11 @@ class EditorPsiElementHighlighter {
     }
 
     private boolean isWhiteSpaceFiltered() {
-        return PsiViewerProjectComponent.getInstance(_project).isFilterWhitespace();
+        return PsiViewerProjectService.getInstance(_project).isFilterWhitespace();
     }
 
     private boolean isHighlightOn() {
-        return PsiViewerProjectComponent.getInstance(_project).isHighlighted();
+        return idea.plugin.psiviewer.controller.project.PsiViewerProjectService.getInstance(_project).isHighlighted();
     }
 
     private boolean isElementInEditor(Editor editor, PsiElement psiElement) {

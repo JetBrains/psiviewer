@@ -36,7 +36,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import idea.plugin.psiviewer.PsiViewerConstants;
-import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.model.PsiViewerTreeModel;
 import idea.plugin.psiviewer.util.Helpers;
 import org.jetbrains.annotations.Nullable;
@@ -71,7 +71,7 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
     private final ViewerTreeSelectionListener _treeSelectionListener;
     private final EditorCaretMover _caretMover;
     private final EditorPsiElementHighlighter _highlighter;
-    private final PsiViewerProjectComponent _projectComponent;
+    private final PsiViewerProjectService _projectComponent;
     private final PropertySheetHeaderRenderer _propertyHeaderRenderer =
             new PropertySheetHeaderRenderer(Helpers.getIcon(PsiViewerConstants.ICON_PSI),
                     SwingConstants.LEFT,
@@ -81,8 +81,7 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
                     SwingConstants.LEFT,
                     BorderFactory.createEtchedBorder());
 
-    public PsiViewerPanel(PsiViewerProjectComponent projectComponent)
-    {
+    public PsiViewerPanel(PsiViewerProjectService projectComponent) {
         _projectComponent = projectComponent;
         _project = projectComponent.getProject();
         _caretMover = new EditorCaretMover(_projectComponent.getProject());

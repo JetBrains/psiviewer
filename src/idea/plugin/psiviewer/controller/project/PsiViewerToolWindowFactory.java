@@ -13,7 +13,7 @@ public class PsiViewerToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        PsiViewerProjectComponent component = PsiViewerProjectComponent.getInstance(project);
+        PsiViewerProjectService component = idea.plugin.psiviewer.controller.project.PsiViewerProjectService.getInstance(project);
         ContentManager contentManager = toolWindow.getContentManager();
         PsiViewerPanel panel = component.initToolWindow(toolWindow);
         Content content = contentManager.getFactory().createContent(panel, null, false);

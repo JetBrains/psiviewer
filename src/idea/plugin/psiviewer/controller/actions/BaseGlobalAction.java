@@ -13,7 +13,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import idea.plugin.psiviewer.PsiViewerConstants;
-import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.util.ActionEventUtil;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 
@@ -55,7 +55,7 @@ abstract class BaseGlobalAction extends AnAction
         ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow(PsiViewerConstants.ID_TOOL_WINDOW);
         if (toolWindow != null) {
             toolWindow.activate(null);
-            PsiViewerPanel viewer = PsiViewerProjectComponent.getInstance(project).getViewerPanel();
+            PsiViewerPanel viewer = PsiViewerProjectService.getInstance(project).getViewerPanel();
             if (getTargetElement(event) == null)
                 return;
 

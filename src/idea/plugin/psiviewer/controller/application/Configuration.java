@@ -27,7 +27,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import idea.plugin.psiviewer.PsiViewerConstants;
-import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.configuration.ConfigurationPanel;
 
@@ -90,7 +90,7 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
     private static void enableToolWindows(boolean enableToolWindows) {
         Project[] projects = ProjectManager.getInstance().getOpenProjects();
         for (Project project : projects) {
-            PsiViewerProjectComponent pc = PsiViewerProjectComponent.getInstance(project);
+            PsiViewerProjectService pc = PsiViewerProjectService.getInstance(project);
             if (enableToolWindows) pc.registerToolWindow();
             else
                 pc.unregisterToolWindow();

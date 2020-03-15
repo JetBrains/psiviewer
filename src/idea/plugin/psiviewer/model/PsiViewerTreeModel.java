@@ -24,7 +24,7 @@ package idea.plugin.psiviewer.model;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
-import idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent;
+import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -34,9 +34,9 @@ import java.util.List;
 
 public class PsiViewerTreeModel implements TreeModel {
     private PsiElement _root;
-    private final PsiViewerProjectComponent _projectComponent;
+    private final PsiViewerProjectService _projectComponent;
 
-    public PsiViewerTreeModel(PsiViewerProjectComponent projectComponent) {
+    public PsiViewerTreeModel(PsiViewerProjectService projectComponent) {
         _projectComponent = projectComponent;
     }
 

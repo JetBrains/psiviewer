@@ -83,7 +83,7 @@ public class PsiViewerTreeModel implements TreeModel {
         PsiElement psiParent = (PsiElement) parent;
         List<PsiElement> psiChildren = getFilteredChildren(psiParent);
 
-        return psiChildren.indexOf((PsiElement)child);
+        return psiChildren.indexOf(child);
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {

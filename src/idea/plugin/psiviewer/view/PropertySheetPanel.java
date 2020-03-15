@@ -54,7 +54,7 @@ public class PropertySheetPanel extends JPanel
         Object[][] tableData = new Object[properties.size()][2];
         Object[] columnTitles = new String[]{"Property", "Value"};
 
-        Map<Object,String> map = new TreeMap<Object, String>(); // Guarantees ascending natural key sort order
+        Map<Object, String> map = new TreeMap<>(); // Guarantees ascending natural key sort order
         for (PropertyDescriptor property : properties)
         {
             String key = property.getDisplayName();
@@ -200,7 +200,7 @@ public class PropertySheetPanel extends JPanel
     {
         PropertyDescriptor[] properties = IntrospectionUtil.getProperties(_target.getClass());
         List<PropertyDescriptor> readProperties;
-        readProperties = new ArrayList<PropertyDescriptor>(properties.length);
+        readProperties = new ArrayList<>(properties.length);
         for (PropertyDescriptor property : properties)
         {
             if (property.getReadMethod() != null)

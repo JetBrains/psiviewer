@@ -283,7 +283,7 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
         myLanguagesComboBox.removeItemListener(myLanguagesComboBoxListener);
 
         //noinspection Since15
-        myLanguagesComboBox.setModel(new ListComboBoxModel<Language>(new ArrayList<Language>(languages)));
+        myLanguagesComboBox.setModel(new ListComboBoxModel<>(new ArrayList<>(languages)));
 
         if (selectedLanguage != null && languages.contains(selectedLanguage))
         {

@@ -65,18 +65,7 @@ public class PsiViewerTreeModel implements TreeModel {
     }
 
     private List<PsiElement> getFilteredChildren(PsiElement psi) {
-        final List<PsiElement> filteredChildren = new ArrayList<PsiElement>();
-
-//        if (psi instanceof PsiLanguageInjectionHost) {
-//            InjectedLanguageUtil.enumerate(psi, psi.getContainingFile(), false, new PsiLanguageInjectionHost.InjectedPsiVisitor() {
-//                @Override
-//                public void visit(@NotNull final PsiFile injectedPsi, @NotNull final List<PsiLanguageInjectionHost.Shred> places) {
-//                    if (injectedPsi.isValid()) filteredChildren.add(injectedPsi);
-//                }
-//            });
-//
-//            return filteredChildren;
-//        }
+        final List<PsiElement> filteredChildren = new ArrayList<>();
 
         for (PsiElement e = psi.getFirstChild(); e != null; e = e.getNextSibling())
             if (isValid(e)) {

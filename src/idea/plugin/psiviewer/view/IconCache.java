@@ -37,7 +37,7 @@ import java.util.Map;
 class IconCache implements PsiViewerConstants
 {
     public static final Icon DEFAULT_ICON = Helpers.getIcon(ICON_PSI);
-    public static final Map<Class,Icon> _iconCache = new HashMap<Class, Icon>();
+    public static final Map<Class, Icon> _iconCache = new HashMap<>();
 
     static
     {

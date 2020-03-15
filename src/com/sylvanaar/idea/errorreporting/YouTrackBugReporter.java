@@ -38,6 +38,7 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -70,8 +71,13 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
         try {
 
             // Build Login
-            data.append(URLEncoder.encode("login", "UTF-8")).append("=").append(URLEncoder.encode(USER_NAME, "UTF-8"));
-            data.append("&").append(URLEncoder.encode("password", "UTF-8")).append("=").append(URLEncoder.encode("root", "UTF-8"));
+            data.append(URLEncoder.encode("login", StandardCharsets.UTF_8))
+                    .append("=")
+                    .append(URLEncoder.encode(USER_NAME, StandardCharsets.UTF_8));
+            data.append("&")
+                    .append(URLEncoder.encode("password", StandardCharsets.UTF_8))
+                    .append("=")
+                    .append(URLEncoder.encode("root", StandardCharsets.UTF_8));
 
             // Send Login
             URL url = new URL(LOGIN_URL);
@@ -97,15 +103,15 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
             // POST /rest/issue?{project}&{assignee}&{summary}&{description}&{priority}&{type}&{subsystem}&{state}&{affectsVersion}&{fixedVersions}&{attachments}&{fixedInBuild}
 
             data = new StringBuilder();
-            data.append(URLEncoder.encode("project", "UTF-8")).append("=").append(URLEncoder.encode(PROJECT_NAME, "UTF-8"));
-            data.append("&").append(URLEncoder.encode("assignee", "UTF-8")).append("=").append(URLEncoder.encode("Unassigned", "UTF-8"));
-            data.append("&").append(URLEncoder.encode("summary", "UTF-8")).append("=").append(URLEncoder.encode(myDescription, "UTF-8"));
-            data.append("&").append(URLEncoder.encode("description", "UTF-8")).append("=").append(URLEncoder.encode(myExtraInformation, "UTF-8"));
-            data.append("&").append(URLEncoder.encode("priority", "UTF-8")).append("=").append(URLEncoder.encode("4", "UTF-8"));
-            data.append("&").append(URLEncoder.encode("type", "UTF-8")).append("=").append(URLEncoder.encode("Exception", "UTF-8"));
+            data.append(URLEncoder.encode("project", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(PROJECT_NAME, StandardCharsets.UTF_8));
+            data.append("&").append(URLEncoder.encode("assignee", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("Unassigned", StandardCharsets.UTF_8));
+            data.append("&").append(URLEncoder.encode("summary", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(myDescription, StandardCharsets.UTF_8));
+            data.append("&").append(URLEncoder.encode("description", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(myExtraInformation, StandardCharsets.UTF_8));
+            data.append("&").append(URLEncoder.encode("priority", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("4", StandardCharsets.UTF_8));
+            data.append("&").append(URLEncoder.encode("type", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("Exception", StandardCharsets.UTF_8));
 
             if (this.myAffectedVersion != null)
-                data.append("&").append(URLEncoder.encode("affectsVersion", "UTF-8")).append("=").append(URLEncoder.encode(this.myAffectedVersion, "UTF-8"));
+                data.append("&").append(URLEncoder.encode("affectsVersion", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(this.myAffectedVersion, StandardCharsets.UTF_8));
 
             // Send Data To Page
             url = new URL(SERVER_ISSUE_URL);

@@ -30,6 +30,7 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -140,6 +141,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
     }
 
 
+    @NotNull
     @Override
     public String getReportActionText() {
         return "Report Error";

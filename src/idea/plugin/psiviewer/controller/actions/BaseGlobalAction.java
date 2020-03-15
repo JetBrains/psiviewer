@@ -16,6 +16,7 @@ import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.util.ActionEventUtil;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
+import org.jetbrains.annotations.NotNull;
 
 abstract class BaseGlobalAction extends AnAction
 {
@@ -49,7 +50,7 @@ abstract class BaseGlobalAction extends AnAction
         presentation.setVisible(true);
     }
 
-    public void actionPerformed(AnActionEvent event) {
+    public void actionPerformed(@NotNull AnActionEvent event) {
         Project project = ActionEventUtil.getProject(event);
         PsiDocumentManager.getInstance(project).commitAllDocuments();
         ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow(PsiViewerConstants.ID_TOOL_WINDOW);

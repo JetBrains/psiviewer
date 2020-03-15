@@ -8,6 +8,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.xml.util.XmlUtil;
 import idea.plugin.psiviewer.util.IntrospectionUtil;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -101,8 +102,7 @@ public class PropertySheetPanel extends JPanel
                 return PropertySheetToolTip.getInstance();
             }
 
-            public String getToolTipText(MouseEvent event)
-            {
+            public String getToolTipText(@NotNull MouseEvent event) {
                 int col = columnAtPoint(event.getPoint());
                 int row = rowAtPoint(event.getPoint());
 

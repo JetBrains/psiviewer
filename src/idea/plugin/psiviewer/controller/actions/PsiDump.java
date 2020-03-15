@@ -6,12 +6,13 @@ import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.datatransfer.StringSelection;
 
 public class PsiDump extends AnAction {
   @Override
-  public void actionPerformed(AnActionEvent e) {
+  public void actionPerformed(@NotNull AnActionEvent e) {
     PsiFile pf = getFile(e);
     try {
       String data = getPsiData(pf);

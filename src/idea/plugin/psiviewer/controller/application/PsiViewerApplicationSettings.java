@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.util.Helpers;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static idea.plugin.psiviewer.PsiViewerConstants.DEFAULT_HIGHLIGHT_COLOR;
@@ -39,7 +40,7 @@ public class PsiViewerApplicationSettings implements PersistentStateComponent<Ps
     }
 
     @Override
-    public void loadState(PsiViewerApplicationSettings state) {
+    public void loadState(@NotNull PsiViewerApplicationSettings state) {
         XmlSerializerUtil.copyBean(state, this);
 
         getTextAttributes().setBackgroundColor(Helpers.parseColor(HIGHLIGHT_COLOR));

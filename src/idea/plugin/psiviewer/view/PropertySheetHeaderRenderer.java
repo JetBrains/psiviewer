@@ -25,6 +25,7 @@ package idea.plugin.psiviewer.view;
 import com.intellij.psi.*;
 import com.intellij.psi.xml.*;
 import idea.plugin.psiviewer.PsiViewerConstants;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -76,23 +77,23 @@ class PropertySheetHeaderRenderer extends JLabel implements TableCellRenderer, P
     }
 
     private class ElementVisitor extends PsiElementVisitor {
-        public void visitBinaryFile(PsiBinaryFile psiElement) {
+        public void visitBinaryFile(@NotNull PsiBinaryFile psiElement) {
             setIcon(IconCache.getIcon(PsiBinaryFile.class));
         }
 
-        public void visitComment(PsiComment psiElement) {
+        public void visitComment(@NotNull PsiComment psiElement) {
             setIcon(IconCache.getIcon(PsiComment.class));
         }
 
-        public void visitDirectory(PsiDirectory psiElement) {
+        public void visitDirectory(@NotNull PsiDirectory psiElement) {
             setIcon(IconCache.getIcon(PsiDirectory.class));
         }
 
-        public void visitPlainTextFile(PsiPlainTextFile psiElement) {
+        public void visitPlainTextFile(@NotNull PsiPlainTextFile psiElement) {
             setIcon(IconCache.getIcon(PsiPlainTextFile.class));
         }
 
-        public void visitWhiteSpace(PsiWhiteSpace psiElement) {
+        public void visitWhiteSpace(@NotNull PsiWhiteSpace psiElement) {
             setIcon(IconCache.getIcon(PsiWhiteSpace.class));
         }
     }

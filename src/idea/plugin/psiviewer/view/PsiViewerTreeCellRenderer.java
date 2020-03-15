@@ -25,6 +25,7 @@ package idea.plugin.psiviewer.view;
 import com.intellij.psi.*;
 import com.intellij.psi.xml.*;
 import idea.plugin.psiviewer.PsiViewerConstants;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -93,7 +94,7 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
         }
 
 
-        public void visitWhiteSpace(PsiWhiteSpace psiElement) {
+        public void visitWhiteSpace(@NotNull PsiWhiteSpace psiElement) {
             setIcon(IconCache.getIcon(PsiWhiteSpace.class));
             setText("PsiWhiteSpace");
         }

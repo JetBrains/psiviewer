@@ -57,7 +57,7 @@ import java.util.LinkedList;
 // TODO should be a project component. Move from PsiViewerProjectcomponent the initialization to here
 
 public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.view.PsiViewerPanel");
+    private static final Logger LOG = Logger.getInstance(PsiViewerPanel.class);
 
     private String _actionTitle;
     private PsiViewerTree _tree;

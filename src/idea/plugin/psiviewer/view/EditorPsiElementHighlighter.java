@@ -23,7 +23,7 @@ import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.util.PluginPsiUtil;
 
 class EditorPsiElementHighlighter {
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.view.Highlighter");
+    private static final Logger LOG = Logger.getInstance(EditorPsiElementHighlighter.class);
 
     private final Project _project;
     private final TextAttributes _textAttributes;

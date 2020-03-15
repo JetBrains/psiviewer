@@ -37,7 +37,7 @@ import java.io.File;
  * @author <a href="mailto:intellij@studer.nu">Etienne Studer</a>, Jul 14, 2006
  */
 public class PluginErrorSubmitDialog extends DialogWrapper {
-    private static final Logger LOGGER = Logger.getInstance(PluginErrorSubmitDialog.class.getName());
+    private static final Logger LOGGER = Logger.getInstance(PluginErrorSubmitDialog.class);
 
     @SuppressWarnings({"AnalyzingVariableNaming"})
     public String USERNAME;// persisted setting

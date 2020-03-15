@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 
 public class IntrospectionUtil
 {
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.util.IntrospectionUtil");
+    private static final Logger LOG = Logger.getInstance(IntrospectionUtil.class);
 
     public static PropertyDescriptor[] getProperties(Class targetClass)
     {

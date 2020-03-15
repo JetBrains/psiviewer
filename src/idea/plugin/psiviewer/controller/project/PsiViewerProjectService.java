@@ -57,7 +57,7 @@ import java.util.Collections;
 
 public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerConstants {
 
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.controller.project.PsiViewerProjectComponent");
+    private static final Logger LOG = Logger.getInstance(PsiViewerProjectService.class);
     public boolean HIGHLIGHT = false;
     public boolean FILTER_WHITESPACE = false;
     public boolean SHOW_PROPERTIES = true;

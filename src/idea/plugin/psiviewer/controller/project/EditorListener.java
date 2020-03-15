@@ -48,7 +48,7 @@ import org.jetbrains.annotations.NotNull;
 public class EditorListener extends CaretAdapter implements FileEditorManagerListener, CaretListener {
 
 
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.controller.project.EditorListener");
+    private static final Logger LOG = Logger.getInstance(EditorListener.class);
 
     private final PsiViewerPanel _viewer;
     private final Project _project;

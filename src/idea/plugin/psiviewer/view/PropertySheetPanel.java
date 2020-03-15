@@ -6,8 +6,6 @@ package idea.plugin.psiviewer.view;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.table.JBTable;
-import com.intellij.xml.util.XmlStringUtil;
 import com.intellij.xml.util.XmlUtil;
 import idea.plugin.psiviewer.util.IntrospectionUtil;
 
@@ -19,8 +17,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * A property sheet describing the selected PSI element.
@@ -32,7 +30,7 @@ public class PropertySheetPanel extends JPanel
     private Object _target;
     private JTable _table;
 
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.view.PropertySheetPanel");
+    private static final Logger LOG = Logger.getInstance(PropertySheetPanel.class);
 
     public PropertySheetPanel()
     {

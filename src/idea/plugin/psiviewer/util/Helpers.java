@@ -32,7 +32,7 @@ import java.net.URL;
 
 public final class Helpers
 {
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.Helpers");
+    private static final Logger LOG = Logger.getInstance(Helpers.class);
     private static final Icon DEFAULT_ICON = getDefaultIcon();
 
     /**

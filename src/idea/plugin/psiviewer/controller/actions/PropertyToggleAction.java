@@ -13,7 +13,7 @@ import java.beans.PropertyDescriptor;
 
 public class PropertyToggleAction extends ToggleAction
 {
-    private static final Logger LOG = Logger.getInstance("idea.plugin.psiviewer.controller.actions.PropertyToggleAction");
+    private static final Logger LOG = Logger.getInstance(PropertyToggleAction.class);
     private final Object _target;
     private PropertyDescriptor _property;
 

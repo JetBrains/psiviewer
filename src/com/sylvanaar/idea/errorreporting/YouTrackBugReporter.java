@@ -52,21 +52,16 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
     private static final String SERVER_REST_URL = SERVER_URL + "rest/";
     private static final String SERVER_ISSUE_URL = SERVER_REST_URL + "issue";
     private static final String LOGIN_URL = SERVER_REST_URL + "user/login";
+    private static final String USER_NAME = "autosubmit";
+    private static final String PROJECT_NAME = "PSI";
 
-    private final String myUserName = "autosubmit";
-    private final String myProjectName = "PSI";
-    private final String myArea = "Main";
-    private String description = null;
-    private String extraInformation = "";
-    private String email = null;
-    private String affectedVersion = null;
-    private static final String DEFAULT_RESPONSE = "Thank you for your report.";
+    private String myDescription = null;
+    private String myExtraInformation = "";
+    private String myAffectedVersion = null;
     private final boolean myShowDialog = ApplicationInfo.getInstance().getBuild().getBaselineVersion() > 110;
 
     public String submit() {
-        if (this.description == null || this.description.length() == 0) throw new RuntimeException("Description");
-        if (this.myProjectName == null || this.myProjectName.length() == 0) throw new RuntimeException("Project");
-        if (this.myArea == null || this.myArea.length() == 0) throw new RuntimeException("Area");
+        if (this.myDescription == null || this.myDescription.length() == 0) throw new RuntimeException("Description");
 
         StringBuilder response = new StringBuilder("");
 
@@ -75,7 +70,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
         try {
 
             // Build Login
-            data.append(URLEncoder.encode("login", "UTF-8")).append("=").append(URLEncoder.encode(myUserName, "UTF-8"));
+            data.append(URLEncoder.encode("login", "UTF-8")).append("=").append(URLEncoder.encode(USER_NAME, "UTF-8"));
             data.append("&").append(URLEncoder.encode("password", "UTF-8")).append("=").append(URLEncoder.encode("root", "UTF-8"));
 
             // Send Login
@@ -102,15 +97,15 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
             // POST /rest/issue?{project}&{assignee}&{summary}&{description}&{priority}&{type}&{subsystem}&{state}&{affectsVersion}&{fixedVersions}&{attachments}&{fixedInBuild}
 
             data = new StringBuilder();
-            data.append(URLEncoder.encode("project", "UTF-8")).append("=").append(URLEncoder.encode(myProjectName, "UTF-8"));
+            data.append(URLEncoder.encode("project", "UTF-8")).append("=").append(URLEncoder.encode(PROJECT_NAME, "UTF-8"));
             data.append("&").append(URLEncoder.encode("assignee", "UTF-8")).append("=").append(URLEncoder.encode("Unassigned", "UTF-8"));
-            data.append("&").append(URLEncoder.encode("summary", "UTF-8")).append("=").append(URLEncoder.encode(description, "UTF-8"));
-            data.append("&").append(URLEncoder.encode("description", "UTF-8")).append("=").append(URLEncoder.encode(extraInformation, "UTF-8"));
+            data.append("&").append(URLEncoder.encode("summary", "UTF-8")).append("=").append(URLEncoder.encode(myDescription, "UTF-8"));
+            data.append("&").append(URLEncoder.encode("description", "UTF-8")).append("=").append(URLEncoder.encode(myExtraInformation, "UTF-8"));
             data.append("&").append(URLEncoder.encode("priority", "UTF-8")).append("=").append(URLEncoder.encode("4", "UTF-8"));
             data.append("&").append(URLEncoder.encode("type", "UTF-8")).append("=").append(URLEncoder.encode("Exception", "UTF-8"));
 
-            if (this.affectedVersion != null)
-                data.append("&").append(URLEncoder.encode("affectsVersion", "UTF-8")).append("=").append(URLEncoder.encode(this.affectedVersion, "UTF-8"));
+            if (this.myAffectedVersion != null)
+                data.append("&").append(URLEncoder.encode("affectsVersion", "UTF-8")).append("=").append(URLEncoder.encode(this.myAffectedVersion, "UTF-8"));
 
             // Send Data To Page
             url = new URL(SERVER_ISSUE_URL);
@@ -140,8 +135,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
 
 
     @Override
-    public String getReportActionText
-            () {
+    public String getReportActionText() {
         return "Report Error";
     }
 
@@ -151,7 +145,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
                     component) {
 
         if (myShowDialog) {
-            return submit(ideaLoggingEvents, this.description, "<anonymous>", component);
+            return submit(ideaLoggingEvents, this.myDescription, "<anonymous>", component);
         } else {
             // show modal error submission dialog
             PluginErrorSubmitDialog dialog = new PluginErrorSubmitDialog(component);
@@ -174,7 +168,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
     @Override
     public void submitAsync(IdeaLoggingEvent[] events, String additionalInfo, Component parentComponent,
                             Consumer<SubmittedReportInfo> consumer) {
-        this.description = additionalInfo;
+        this.myDescription = additionalInfo;
         super.submitAsync(events, additionalInfo, parentComponent, consumer);
     }
 
@@ -183,8 +177,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
                     description, String
                     user, Component
                     component) {
-        this.description = ideaLoggingEvents[0].getThrowableText().substring(0, Math.min(Math.max(80, ideaLoggingEvents[0].getThrowableText().length()), 80));
-        this.email = user;
+        this.myDescription = ideaLoggingEvents[0].getThrowableText().substring(0, Math.min(Math.max(80, ideaLoggingEvents[0].getThrowableText().length()), 80));
 
         @NonNls StringBuilder descBuilder = new StringBuilder();
 
@@ -197,7 +190,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
                 final IdeaPluginDescriptor ideaPluginDescriptor = PluginManager.getPlugin(pluginId);
                 if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled()) {
                     descBuilder.append("Plugin ").append(ideaPluginDescriptor.getName()).append(" version: ").append(ideaPluginDescriptor.getVersion()).append("\n");
-                    this.affectedVersion = ideaPluginDescriptor.getVersion();
+                    this.myAffectedVersion = ideaPluginDescriptor.getVersion();
                 }
             }
         }
@@ -210,7 +203,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
         for (IdeaLoggingEvent e : ideaLoggingEvents)
             descBuilder.append("\n\n").append(e.toString());
 
-        this.extraInformation = descBuilder.toString();
+        this.myExtraInformation = descBuilder.toString();
 
         String result = submit();
         log.info("Error submitted, response: " + result);

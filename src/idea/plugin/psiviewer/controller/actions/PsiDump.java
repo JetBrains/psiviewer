@@ -27,11 +27,11 @@ public class PsiDump extends AnAction {
   }
 
   protected static String getPsiData(PsiFile pf) {
-    String data = "";
+    StringBuilder data = new StringBuilder();
     for (PsiFile file : pf.getViewProvider().getAllFiles()) {
-      data = (new StringBuilder()).append(data).append(DebugUtil.psiToString(file, false, true)).toString();
+      data.append(DebugUtil.psiToString(file, false, true));
     }
-    return data;
+    return data.toString();
   }
 
   protected static PsiFile getFile(AnActionEvent e) {

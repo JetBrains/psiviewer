@@ -11,15 +11,9 @@ public class PsiTestDump extends PsiDump {
   public void actionPerformed(@NotNull AnActionEvent e) {
     PsiFile pf = getFile(e);
     try {
-      StringBuilder data = new StringBuilder();
-
-      data.append(pf.getText());
-
-      data.append('\n').append(TEST_DATA_SEPARATOR).append('\n');
-
-      data.append(getPsiData(pf));
-
-      placeStringInClipboard(data.toString());
+      placeStringInClipboard(pf.getText() +
+              '\n' + TEST_DATA_SEPARATOR + '\n' +
+              getPsiData(pf));
     } catch (Exception ignored) {
     }
   }

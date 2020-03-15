@@ -22,7 +22,7 @@ public class PsiViewerApplicationSettings implements PersistentStateComponent<Ps
     public String HIGHLIGHT_COLOR;
     public String REFERENCE_HIGHLIGHT_COLOR;
     public boolean PLUGIN_ENABLED;
-    private TextAttributes myReferenceTextAttributes = new TextAttributes();
+    private final TextAttributes myReferenceTextAttributes = new TextAttributes();
 
     public PsiViewerApplicationSettings() {
         HIGHLIGHT_COLOR = DEFAULT_HIGHLIGHT_COLOR;

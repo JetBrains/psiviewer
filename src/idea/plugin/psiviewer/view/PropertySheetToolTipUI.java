@@ -29,13 +29,13 @@ import java.awt.*;
 
 class PropertySheetToolTipUI extends BasicToolTipUI
 {
-    private static PropertySheetToolTipUI _instance = new PropertySheetToolTipUI();
+    private static final PropertySheetToolTipUI INSTANCE = new PropertySheetToolTipUI();
 
     private static final int MAX_WIDTH_IN_PIXELS = 600;
 
     public static ComponentUI getInstance()
     {
-        return _instance;
+        return INSTANCE;
     }
 
     public void paint(Graphics g, JComponent c)

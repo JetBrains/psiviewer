@@ -52,7 +52,7 @@ import java.util.*;
 
 public class CookieManager {
 
-private Map store;
+private final Map myStore;
 
 private static final String SET_COOKIE = "Set-Cookie";
 private static final String COOKIE_VALUE_DELIMITER = ";";
@@ -65,12 +65,12 @@ private static final String COOKIE = "Cookie";
 private static final char NAME_VALUE_SEPARATOR = '=';
 private static final char DOT = '.';
 
-private DateFormat dateFormat;
+    private final DateFormat myDateFormat;
 
 public CookieManager() {
 
-store = new HashMap();
-dateFormat = new SimpleDateFormat(DATE_FORMAT);
+    myStore = new HashMap();
+    myDateFormat = new SimpleDateFormat(DATE_FORMAT);
 }
 
 
@@ -93,14 +93,14 @@ String domain = getDomainFromHost(conn.getURL().getHost());
 Map domainStore; // this is where we will store cookies for this domain
 
 // now let's check the store to see if we have an entry for this domain
-if (store.containsKey(domain)) {
-    // we do, so lets retrieve it from the store
-    domainStore = (Map)store.get(domain);
-} else {
-    // we don't, so let's create it and put it in the store
-    domainStore = new HashMap();
-    store.put(domain, domainStore);
-}
+    if (myStore.containsKey(domain)) {
+        // we do, so lets retrieve it from the store
+        domainStore = (Map) myStore.get(domain);
+    } else {
+        // we don't, so let's create it and put it in the store
+        domainStore = new HashMap();
+        myStore.put(domain, domainStore);
+    }
 
 
 
@@ -151,7 +151,7 @@ URL url = conn.getURL();
 String domain = getDomainFromHost(url.getHost());
 String path = url.getPath();
 
-Map domainStore = (Map)store.get(domain);
+    Map domainStore = (Map) myStore.get(domain);
 if (domainStore == null) return;
 StringBuffer cookieStringBuffer = new StringBuffer();
 
@@ -188,7 +188,7 @@ private boolean isNotExpired(String cookieExpires) {
 if (cookieExpires == null) return true;
 Date now = new Date();
 try {
-    return (now.compareTo(dateFormat.parse(cookieExpires))) <= 0;
+    return (now.compareTo(myDateFormat.parse(cookieExpires))) <= 0;
 } catch (ParseException pe) {
     pe.printStackTrace();
     return false;
@@ -213,7 +213,7 @@ if (cookiePath == null) {
  */
 
 public String toString() {
-return store.toString();
+    return myStore.toString();
 }
 
 

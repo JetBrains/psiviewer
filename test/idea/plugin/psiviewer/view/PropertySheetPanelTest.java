@@ -18,8 +18,7 @@ public class PropertySheetPanelTest extends TestCase
 
     private final PropertySheetPanel propertySheetPanel = new PropertySheetPanel();
 
-    public void testSetTarget() throws Exception
-    {
+    public void testSetTarget() {
         propertySheetPanel.setTarget(new MyBean());
         TableModel model = propertySheetPanel.getTable().getModel();
         Assert.assertEquals("# cols", 2, model.getColumnCount());

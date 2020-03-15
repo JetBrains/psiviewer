@@ -23,7 +23,6 @@
 package idea.plugin.psiviewer.controller.application;
 
 import com.intellij.openapi.options.BaseConfigurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import idea.plugin.psiviewer.PsiViewerConstants;
@@ -77,7 +76,7 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
      * Save the settings from the configuration panel
      */
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         if (settings.PLUGIN_ENABLED ^ myPanel.isPluginEnabled())  // If plugin-enabled state has changed...
             enableToolWindows(myPanel.isPluginEnabled());
 

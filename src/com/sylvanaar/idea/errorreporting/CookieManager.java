@@ -77,20 +77,19 @@ public CookieManager() {
 /**
  * Retrieves and stores cookies returned by the host on the other side
  * of the the open java.net.URLConnection.
- *
+ * <p>
  * The connection MUST have been opened using the <i>connect()</i>
  * method or a IOException will be thrown.
  *
  * @param conn a java.net.URLConnection - must be open, or IOException will be thrown
- * @throws java.io.IOException Thrown if <i>conn</i> is not open.
  */
-public void storeCookies(URLConnection conn) throws IOException {
+public void storeCookies(URLConnection conn) {
 
 // let's determine the domain from where these cookies are being sent
-String domain = getDomainFromHost(conn.getURL().getHost());
+    String domain = getDomainFromHost(conn.getURL().getHost());
 
 
-Map domainStore; // this is where we will store cookies for this domain
+    Map domainStore; // this is where we will store cookies for this domain
 
 // now let's check the store to see if we have an entry for this domain
     if (myStore.containsKey(domain)) {

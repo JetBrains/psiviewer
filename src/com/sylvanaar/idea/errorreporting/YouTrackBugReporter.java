@@ -45,12 +45,6 @@ import java.util.regex.PatternSyntaxException;
 import static com.intellij.openapi.diagnostic.SubmittedReportInfo.SubmissionStatus.FAILED;
 import static com.intellij.openapi.diagnostic.SubmittedReportInfo.SubmissionStatus.NEW_ISSUE;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Jon S Akhtar
- * Date: Oct 19, 2010
- * Time: 11:35:35 AM
- */
 public class YouTrackBugReporter extends ErrorReportSubmitter {
     private static final Logger log = Logger.getInstance(YouTrackBugReporter.class);
     @NonNls

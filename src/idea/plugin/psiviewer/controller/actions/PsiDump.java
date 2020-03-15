@@ -9,12 +9,6 @@ import com.intellij.psi.impl.DebugUtil;
 
 import java.awt.datatransfer.StringSelection;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Jon S Akhtar
- * Date: 5/4/11
- * Time: 6:41 PM
- */
 public class PsiDump extends AnAction {
   @Override
   public void actionPerformed(AnActionEvent e) {

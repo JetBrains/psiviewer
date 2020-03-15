@@ -3,12 +3,6 @@ package idea.plugin.psiviewer.controller.actions;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.PsiFile;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Jon S Akhtar
- * Date: 5/5/11
- * Time: 7:29 PM
- */
 public class PsiTestDump extends PsiDump {
   public static final String TEST_DATA_SEPARATOR = "-----";
 

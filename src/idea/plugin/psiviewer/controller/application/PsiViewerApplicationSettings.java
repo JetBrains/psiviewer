@@ -13,9 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import static idea.plugin.psiviewer.PsiViewerConstants.DEFAULT_HIGHLIGHT_COLOR;
 import static idea.plugin.psiviewer.PsiViewerConstants.DEFAULT_REFERENCE_HIGHLIGHT_COLOR;
 
-/**
- * Created by Jon on 10/7/2016.
- */
 @State(name = PsiViewerConstants.CONFIGURATION_COMPONENT_NAME, storages = @Storage("other.xml"))
 public class PsiViewerApplicationSettings implements PersistentStateComponent<PsiViewerApplicationSettings> {
     private final TextAttributes _textAttributes = new TextAttributes();

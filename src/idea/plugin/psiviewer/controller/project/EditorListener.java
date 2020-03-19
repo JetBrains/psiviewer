@@ -124,7 +124,7 @@ public class EditorListener extends CaretAdapter implements FileEditorManagerLis
         if (newEditor != null)
             myCurrentEditor = newEditor;
 
-        myCurrentEditor.getCaretModel().addCaretListener(this);
+        myCurrentEditor.getCaretModel().addCaretListener(this, PsiViewerProjectService.getInstance(myProject));
     }
 
 
@@ -137,14 +137,15 @@ public class EditorListener extends CaretAdapter implements FileEditorManagerLis
     }
 
     public void start() {
-        myMessageBus = myProject.getMessageBus().connect();
+        PsiViewerProjectService pluginDisposable = PsiViewerProjectService.getInstance(myProject);
+        myMessageBus = myProject.getMessageBus().connect(pluginDisposable);
         myMessageBus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, this);
 
-        PsiManager.getInstance(myProject).addPsiTreeChangeListener(myTreeChangeListener);
+        PsiManager.getInstance(myProject).addPsiTreeChangeListener(myTreeChangeListener, pluginDisposable);
 
         myCurrentEditor = FileEditorManager.getInstance(myProject).getSelectedTextEditor();
         if (myCurrentEditor != null)
-            myCurrentEditor.getCaretModel().addCaretListener(this);
+            myCurrentEditor.getCaretModel().addCaretListener(this, pluginDisposable);
     }
 
     public void stop() {

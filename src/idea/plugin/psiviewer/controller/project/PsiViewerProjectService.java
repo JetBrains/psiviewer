@@ -23,6 +23,7 @@ package idea.plugin.psiviewer.controller.project;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.lang.Language;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -53,7 +54,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerConstants {
+public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerConstants, Disposable {
 
     private static final Logger LOG = Logger.getInstance(PsiViewerProjectService.class);
     public boolean HIGHLIGHT = false;
@@ -301,5 +302,10 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
 
     public interface BooleanConsumer {
         void accept(boolean value);
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

@@ -168,8 +168,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
     }
 
     @Override
-    public void submitAsync(IdeaLoggingEvent[] events, String additionalInfo, Component parentComponent,
-                            Consumer<SubmittedReportInfo> consumer) {
+    public void submitAsync(IdeaLoggingEvent[] events, String additionalInfo, Component parentComponent, Consumer<? super SubmittedReportInfo> consumer) {
         this.myDescription = additionalInfo;
         super.submitAsync(events, additionalInfo, parentComponent, consumer);
     }

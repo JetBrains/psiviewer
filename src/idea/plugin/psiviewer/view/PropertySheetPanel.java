@@ -87,7 +87,7 @@ public class PropertySheetPanel extends JPanel {
     {
         myTable = new JTable(tableData, columnTitle) {
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return true;
             }
 
             public JToolTip createToolTip() {
@@ -124,7 +124,18 @@ public class PropertySheetPanel extends JPanel {
         }
         ;
         myTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        myTable.getSelectionModel().setSelectionMode(0);
+        myTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        // 设置第一列为一个无框的编辑器, 并且设置为单次点击可编辑
+//        final JTextField field = new JTextField();
+//        field.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 12));
+//        field.setBorder(null);
+//        DefaultCellEditor cellEditor = new DefaultCellEditor(field);
+//        cellEditor.setClickCountToStart(0);
+//        myTable.getColumnModel().getColumn(1).setCellEditor(cellEditor);
+
+        myTable.getColumnModel().getColumn(1).setCellEditor(
+                new PropertyCellEditor());
 
         packColumn(myTable, 0, 2);
         packColumn(myTable, 1, 2);

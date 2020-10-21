@@ -31,6 +31,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -142,12 +143,13 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
     }
 
     @Override
-    public SubmittedReportInfo submit
-            (IdeaLoggingEvent[] ideaLoggingEvents, Component
-                    component) {
-
+    public boolean submit(@NotNull IdeaLoggingEvent[] ideaLoggingEvents,
+                          @Nullable String additionalInfo,
+                          @NotNull Component component,
+                          @NotNull Consumer<? super SubmittedReportInfo> consumer) {
         if (myShowDialog) {
-            return submit(ideaLoggingEvents, this.myDescription, "<anonymous>");
+            consumer.consume(submit(ideaLoggingEvents, additionalInfo, "<anonymous>"));
+            return true;
         } else {
             // show modal error submission dialog
             PluginErrorSubmitDialog dialog = new PluginErrorSubmitDialog(component);
@@ -160,17 +162,12 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
                 dialog.persist();
                 String description = dialog.getDescription();
                 String user = dialog.getUser();
-                return submit(ideaLoggingEvents, description, user);
+                consumer.consume(submit(ideaLoggingEvents, description, user));
+                return true;
             }
         }
         // otherwise do nothing
-        return null;
-    }
-
-    @Override
-    public void submitAsync(IdeaLoggingEvent[] events, String additionalInfo, Component parentComponent, Consumer<? super SubmittedReportInfo> consumer) {
-        this.myDescription = additionalInfo;
-        super.submitAsync(events, additionalInfo, parentComponent, consumer);
+        return false;
     }
 
     private SubmittedReportInfo submit(IdeaLoggingEvent[] ideaLoggingEvents,

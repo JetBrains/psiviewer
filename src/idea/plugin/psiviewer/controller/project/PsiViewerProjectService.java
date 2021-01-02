@@ -27,22 +27,22 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.util.DefaultJDOMExternalizer;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.components.panels.HorizontalLayout;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
-import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,15 +54,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerConstants, Disposable {
+import static idea.plugin.psiviewer.PsiViewerConstants.*;
+
+@State(name = "PsiViewer", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
+public class PsiViewerProjectService implements PersistentStateComponent<PsiViewerProjectService.State>,
+        Disposable {
 
     private static final Logger LOG = Logger.getInstance(PsiViewerProjectService.class);
-    public boolean HIGHLIGHT = false;
-    public boolean FILTER_WHITESPACE = false;
-    public boolean SHOW_PROPERTIES = true;
-    public int SPLIT_DIVIDER_POSITION = 300;
-    public boolean AUTOSCROLL_TO_SOURCE = false;
-    public boolean AUTOSCROLL_FROM_SOURCE = false;
+
+    static class State {
+        public boolean HIGHLIGHT = false;
+        public boolean FILTER_WHITESPACE = false;
+        public boolean SHOW_PROPERTIES = true;
+        public int SPLIT_DIVIDER_POSITION = 300;
+        public boolean AUTOSCROLL_TO_SOURCE = false;
+        public boolean AUTOSCROLL_FROM_SOURCE = false;
+    }
+    private State myState = new State();
 
     private ComboBox myLanguagesComboBox;
     private final Project myProject;
@@ -78,7 +86,7 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
         }
     };
 
-    public PsiViewerProjectService(Project project) {
+    private PsiViewerProjectService(Project project) {
         myProject = project;
     }
 
@@ -172,14 +180,15 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
         return ToolWindowManager.getInstance(myProject).getToolWindow(ID_TOOL_WINDOW);
     }
 
-    public void readExternal(Element element) throws InvalidDataException
-    {
-        DefaultJDOMExternalizer.readExternal(this, element);
+
+    @Override
+    public @Nullable State getState() {
+        return myState;
     }
 
-    public void writeExternal(Element element) throws WriteExternalException
-    {
-        DefaultJDOMExternalizer.writeExternal(this, element);
+    @Override
+    public void loadState(@NotNull State state) {
+        myState = state;
     }
 
     public PsiViewerPanel getViewerPanel()
@@ -189,69 +198,69 @@ public class PsiViewerProjectService implements JDOMExternalizable, PsiViewerCon
 
     public boolean isHighlighted()
     {
-        return HIGHLIGHT;
+        return myState.HIGHLIGHT;
     }
 
     public void setHighlighted(boolean highlight)
     {
         debug("set highlight to " + highlight);
-        HIGHLIGHT = highlight;
+        myState.HIGHLIGHT = highlight;
         myViewerPanel.applyHighlighting();
 
     }
 
     public boolean isFilterWhitespace()
     {
-        return FILTER_WHITESPACE;
+        return myState.FILTER_WHITESPACE;
     }
 
     public void setFilterWhitespace(boolean filterWhitespace)
     {
-        FILTER_WHITESPACE = filterWhitespace;
+        myState.FILTER_WHITESPACE = filterWhitespace;
         getViewerPanel().applyWhitespaceFilter();
     }
 
     public boolean isShowProperties()
     {
-        return SHOW_PROPERTIES;
+        return myState.SHOW_PROPERTIES;
     }
 
     public void setShowProperties(boolean showProperties)
     {
-        SHOW_PROPERTIES = showProperties;
+        myState.SHOW_PROPERTIES = showProperties;
         getViewerPanel().showProperties(showProperties);
     }
 
     public int getSplitDividerLocation()
     {
-        return SPLIT_DIVIDER_POSITION;
+        return myState.SPLIT_DIVIDER_POSITION;
     }
 
     public void setSplitDividerLocation(int location)
     {
-        SPLIT_DIVIDER_POSITION = location;
+        myState.SPLIT_DIVIDER_POSITION = location;
     }
 
     public boolean isAutoScrollToSource()
     {
-        return AUTOSCROLL_TO_SOURCE;
+        return myState.AUTOSCROLL_TO_SOURCE;
     }
 
     public void setAutoScrollToSource(boolean isAutoScrollToSource)
     {
         debug("autoscrolltosource=" + isAutoScrollToSource);
-        AUTOSCROLL_TO_SOURCE = isAutoScrollToSource;
+        myState.AUTOSCROLL_TO_SOURCE = isAutoScrollToSource;
     }
 
     public boolean isAutoScrollFromSource()
     {
-        return AUTOSCROLL_FROM_SOURCE;
+        return myState.AUTOSCROLL_FROM_SOURCE;
     }
 
     public void setAutoScrollFromSource(boolean isAutoScrollFromSource)
     {
         debug("autoscrollfromsource=" + isAutoScrollFromSource);
-        AUTOSCROLL_FROM_SOURCE = isAutoScrollFromSource;
+        myState.AUTOSCROLL_FROM_SOURCE = isAutoScrollFromSource;
     }
 
     public Project getProject()

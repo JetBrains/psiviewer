@@ -6,7 +6,8 @@ repositories {
     mavenCentral()
 }
 
-version = "${pluginVersion}${platformBranch}${pluginBuild}"
+version = pluginBranch ? "${pluginVersion}${pluginBranch}${pluginBuild}" :
+        "${pluginVersion}${platformBranch}${pluginBuild}"
 
 apply plugin: 'java'
 sourceCompatibility = javaVersion

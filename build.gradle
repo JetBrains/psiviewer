@@ -44,6 +44,13 @@ test {
     }
 }
 
+publishPlugin {
+    if (project.hasProperty('eap')) {
+        channels = ['EAP']
+    }
+    token = project.findProperty('jbToken') ?: ''
+}
+
 apply plugin: 'idea'
 idea {
     project {

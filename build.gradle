@@ -13,16 +13,6 @@ sourceCompatibility = javaVersion
 targetCompatibility = javaTargetVersion
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
-sourceSets {
-    main {
-        java.srcDir 'src'
-        resources.srcDir 'resources'
-    }
-    test {
-        java.srcDir 'test'
-    }
-}
-
 apply plugin: 'org.jetbrains.intellij'
 intellij {
     pluginName.set("${name}")

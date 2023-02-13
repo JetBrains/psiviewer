@@ -58326,7 +58326,7 @@
       "language": "en-US",
       "versionControlProvenance": [
         {
-          "repositoryUri": "ssh://git@github.com/cmf/psiviewer.git",
+          "repositoryUri": "ssh://git@github.com/JetBrains/psiviewer.git",
           "revisionId": "c43144dc14528cb3987d6b1b27ef4f6316708747",
           "branch": "master",
           "properties": {

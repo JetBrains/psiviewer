@@ -1,7 +1,7 @@
 ## PsiViewer ##
 
-[![CodeQL](https://github.com/cmf/psiviewer/actions/workflows/codeql.yml/badge.svg)](https://github.com/cmf/psiviewer/actions/workflows/codeql.yml)
-[![Qodana](https://github.com/cmf/psiviewer/actions/workflows/qodana_scan.yml/badge.svg)](https://github.com/cmf/psiviewer/actions/workflows/qodana_scan.yml)
+[![CodeQL](https://github.com/JetBrains/psiviewer/actions/workflows/codeql.yml/badge.svg)](https://github.com/JetBrains/psiviewer/actions/workflows/codeql.yml)
+[![Qodana](https://github.com/JetBrains/psiviewer/actions/workflows/qodana_scan.yml/badge.svg)](https://github.com/JetBrains/psiviewer/actions/workflows/qodana_scan.yml)
 
 A Program Structure Interface (PSI) tree viewer plugin for IDEA platform IDE's.
 

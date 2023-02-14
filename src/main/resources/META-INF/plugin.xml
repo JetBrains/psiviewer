@@ -1,8 +1,6 @@
 <idea-plugin url="https://github.com/JetBrains/psiviewer">
     <name>PsiViewer</name>
-    <vendor>JetBrains, Andrew Armstrong, Bas Leijdekkers, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon
-        Akhtar
-    </vendor>
+    <vendor>JetBrains, Andrew Armstrong, Vince Mallet, Ole Matzura, Jacques Morel, Colin Fleming, Jon Akhtar</vendor>
     <category>Plugin Development</category>
 
     <depends>com.intellij.modules.lang</depends>

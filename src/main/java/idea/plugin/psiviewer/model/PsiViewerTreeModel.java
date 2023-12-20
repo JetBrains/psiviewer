@@ -22,6 +22,7 @@
 
 package idea.plugin.psiviewer.model;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
@@ -69,14 +70,16 @@ public class PsiViewerTreeModel implements TreeModel {
     }
 
     private List<PsiElement> getFilteredChildren(PsiElement psi) {
-        final List<PsiElement> filteredChildren = new ArrayList<>();
+        return ReadAction.compute(() -> {
+            final List<PsiElement> filteredChildren = new ArrayList<>();
 
-        for (PsiElement e = psi.getFirstChild(); e != null; e = e.getNextSibling())
-            if (isValid(e)) {
-                filteredChildren.add(e);
-            }
+            for (PsiElement e = psi.getFirstChild(); e != null; e = e.getNextSibling())
+                if (isValid(e)) {
+                    filteredChildren.add(e);
+                }
 
-        return filteredChildren;
+            return filteredChildren;
+        });
     }
 
     private boolean isValid(PsiElement psiElement) {

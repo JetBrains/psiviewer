@@ -40,6 +40,7 @@ public class PsiViewerTreeModel implements TreeModel {
         myPsiViewerProjectService = projectComponent;
     }
 
+    @Override
     public Object getRoot() {
         return myRootElement;
     }
@@ -48,17 +49,20 @@ public class PsiViewerTreeModel implements TreeModel {
         myRootElement = root;
     }
 
+    @Override
     public Object getChild(Object parent, int index) {
         PsiElement psi = (PsiElement) parent;
         List<PsiElement> children = getFilteredChildren(psi);
         return children.get(index);
     }
 
+    @Override
     public int getChildCount(Object parent) {
         PsiElement psi = (PsiElement) parent;
         return getFilteredChildren(psi).size();
     }
 
+    @Override
     public boolean isLeaf(Object node) {
         PsiElement psi = (PsiElement) node;
         return getFilteredChildren(psi).isEmpty();
@@ -79,6 +83,7 @@ public class PsiViewerTreeModel implements TreeModel {
         return !myPsiViewerProjectService.isFilterWhitespace() || !(psiElement instanceof PsiWhiteSpace);
     }
 
+    @Override
     public int getIndexOfChild(Object parent, Object child) {
         if (!(child instanceof PsiElement)) return -1;
         PsiElement psiParent = (PsiElement) parent;
@@ -87,12 +92,15 @@ public class PsiViewerTreeModel implements TreeModel {
         return psiChildren.indexOf(child);
     }
 
+    @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
     }
 
+    @Override
     public synchronized void addTreeModelListener(TreeModelListener l) {
     }
 
+    @Override
     public synchronized void removeTreeModelListener(TreeModelListener l) {
     }
 }

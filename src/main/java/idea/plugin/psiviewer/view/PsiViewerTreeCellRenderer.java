@@ -22,6 +22,7 @@
 
 package idea.plugin.psiviewer.view;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.*;
 import com.intellij.psi.xml.*;
 import idea.plugin.psiviewer.PsiViewerConstants;
@@ -74,7 +75,7 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
         }
 
         public void visitElement(PsiElement psiElement) {
-            setText(psiElement.toString());
+            ReadAction.run(() -> setText(psiElement.toString()));
         }
 
 

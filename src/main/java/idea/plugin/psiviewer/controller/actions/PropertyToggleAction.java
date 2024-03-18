@@ -3,6 +3,7 @@
  */
 package idea.plugin.psiviewer.controller.actions;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectService.BooleanConsumer;
@@ -32,5 +33,10 @@ public class PropertyToggleAction extends ToggleAction {
 
     public void setSelected(@NotNull AnActionEvent anactionevent, boolean flag) {
         myMutator.accept(flag);
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

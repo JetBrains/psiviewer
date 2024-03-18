@@ -17,6 +17,7 @@
  */
 package com.sylvanaar.idea.errorreporting;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
@@ -24,5 +25,10 @@ import org.jetbrains.annotations.NotNull;
 public class TriggerExceptionAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         throw new RuntimeException("Test PsiViewer Exception");
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

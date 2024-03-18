@@ -3,6 +3,7 @@
  */
 package idea.plugin.psiviewer.controller.actions;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
@@ -25,8 +26,7 @@ abstract class BaseGlobalAction extends AnAction
     {
         Presentation presentation = event.getPresentation();
         Project project = ActionEventUtil.getProject(event);
-        if (project == null)
-        { // project isn't accessible from the context
+        if (project == null) {
             presentation.setEnabled(false);
             presentation.setVisible(false);
             return;
@@ -67,4 +67,9 @@ abstract class BaseGlobalAction extends AnAction
     protected abstract String getToolWindowTitle();
 
     protected abstract PsiElement getTargetElement(AnActionEvent event);
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 }

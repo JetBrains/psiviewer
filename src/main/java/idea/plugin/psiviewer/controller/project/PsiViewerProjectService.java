@@ -37,8 +37,6 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.components.panels.HorizontalLayout;
-import com.intellij.util.xmlb.XmlSerializerUtil;
-import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
@@ -131,6 +129,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
                 this::setAutoScrollFromSource));
 
         ActionToolbar toolBar = actionManager.createActionToolbar(ID_ACTION_TOOLBAR, actionGroup, true);
+        toolBar.setTargetComponent(null);
 
         JPanel panel = new JPanel(new HorizontalLayout(0));
         panel.add(toolBar.getComponent());

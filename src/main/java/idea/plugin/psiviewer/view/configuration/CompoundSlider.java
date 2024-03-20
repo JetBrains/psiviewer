@@ -49,7 +49,7 @@ class CompoundSlider extends JPanel
         );
         _slider.addChangeListener(it -> {
                     int value = ((JSlider) it.getSource()).getValue();
-                    _spinner.setValue(new Integer(value));
+            _spinner.setValue(value);
                     updateColor(value);
                 }
         );

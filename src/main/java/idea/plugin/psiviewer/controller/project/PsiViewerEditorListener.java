@@ -42,17 +42,17 @@ import org.jetbrains.annotations.NotNull;
  * @author <a href="mailto:andrew_armstrong@bigpond.com">Andrew Armstrong</a>
  * @version $Revision: 1.1 $
  */
-public class EditorListener extends CaretAdapter implements FileEditorManagerListener, CaretListener {
+public class PsiViewerEditorListener extends CaretAdapter implements FileEditorManagerListener, CaretListener {
 
 
-    private static final Logger LOG = Logger.getInstance(EditorListener.class);
+    private static final Logger LOG = Logger.getInstance(PsiViewerEditorListener.class);
 
     private final Project myProject;
     private final PsiTreeChangeListener myTreeChangeListener;
     private Editor myCurrentEditor;
     private MessageBusConnection myMessageBus;
 
-    public EditorListener(Project project) {
+    public PsiViewerEditorListener(Project project) {
         myProject = project;
         myTreeChangeListener = new PsiTreeChangeAdapter() {
             public void childrenChanged(@NotNull final PsiTreeChangeEvent event) {

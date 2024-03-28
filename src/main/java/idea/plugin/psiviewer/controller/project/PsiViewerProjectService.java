@@ -72,7 +72,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
 
     private ComboBox myLanguagesComboBox;
     private final Project myProject;
-    private EditorListener myEditorListener;
+    private PsiViewerEditorListener myEditorListener;
     private PsiViewerPanel myViewerPanel;
     private final ItemListener myLanguagesComboBoxListener = new ItemListener() {
         @Override
@@ -141,7 +141,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         myViewerPanel.add(panel, BorderLayout.NORTH);
         myViewerPanel.setToolWindow(toolWindow);
 
-        myEditorListener = new EditorListener(myProject);
+        myEditorListener = new PsiViewerEditorListener(myProject);
 
         return myViewerPanel;
     }

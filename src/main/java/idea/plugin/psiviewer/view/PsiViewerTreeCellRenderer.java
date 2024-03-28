@@ -38,7 +38,7 @@ class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiVi
 
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean isExpanded,
                                                   boolean isLeaf, int row, boolean hasFocus) {
-        super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus);
+        ReadAction.run(() -> super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus));
         setIcon(IconCache.DEFAULT_ICON);
 
         PsiElement psiElement = (PsiElement) value;

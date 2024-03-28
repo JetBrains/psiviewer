@@ -230,12 +230,13 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
             debug("selection changed to " + element + " due to " + reason);
             inSetSelectedElement = true;
             _selectedElement = element;
-            updatePropertySheet();
-            if (reason != TREE_SELECTION_CHANGED)
-                changeTreeSelection();
-            applyHighlighting();
-            if (reason != CARET_MOVED && element != null)
-                moveEditorCaret();
+            updatePropertySheet(() -> {
+                if (reason != TREE_SELECTION_CHANGED)
+                    changeTreeSelection();
+                applyHighlighting();
+                if (reason != CARET_MOVED && element != null)
+                    moveEditorCaret();
+            });
         }
         finally
         {
@@ -243,19 +244,29 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
         }
     }
 
-    private void updatePropertySheet()
+    private void updatePropertySheet() {
+        updatePropertySheet(null);
+    }
+
+
+    private void updatePropertySheet(@Nullable Runnable callback)
     {
         if (!_projectComponent.isShowProperties())
             return;
-        _propertyPanel.setTarget(_selectedElement);
-        _propertyPanel.getTable().getTableHeader().setReorderingAllowed(false);
+        _propertyPanel.setTarget(_selectedElement, () -> {
+            _propertyPanel.getTable().getTableHeader().setReorderingAllowed(false);
 
-        _propertyHeaderRenderer.setIconForElement(_selectedElement);
-        _propertyPanel.getTable().getColumnModel().getColumn(0).setHeaderRenderer(_propertyHeaderRenderer);
-        _propertyPanel.getTable().getColumnModel().getColumn(1).setHeaderRenderer(_valueHeaderRenderer);
+            _propertyHeaderRenderer.setIconForElement(_selectedElement);
+            _propertyPanel.getTable().getColumnModel().getColumn(0).setHeaderRenderer(_propertyHeaderRenderer);
+            _propertyPanel.getTable().getColumnModel().getColumn(1).setHeaderRenderer(_valueHeaderRenderer);
 
-        if (_selectedElement != null)
-            _splitPane.setDividerLocation(_projectComponent.getSplitDividerLocation());
+            if (_selectedElement != null)
+                _splitPane.setDividerLocation(_projectComponent.getSplitDividerLocation());
+
+            if (callback != null) {
+                callback.run();
+            }
+        });
     }
 
     private void changeTreeSelection()

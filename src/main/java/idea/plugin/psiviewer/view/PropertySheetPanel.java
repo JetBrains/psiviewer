@@ -3,12 +3,15 @@
  */
 package idea.plugin.psiviewer.view;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.xml.util.XmlUtil;
 import idea.plugin.psiviewer.util.IntrospectionUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -36,7 +39,7 @@ public class PropertySheetPanel extends JPanel {
         setLayout(new GridBagLayout());
     }
 
-    public void setTarget(Object bean) {
+    public void setTarget(Object bean, @Nullable Runnable callback) {
         debug("setTarget=" + bean);
         setBackground(Color.WHITE);
         setVisible(false);
@@ -46,35 +49,40 @@ public class PropertySheetPanel extends JPanel {
         myTarget = bean;
         if (myTarget == null) return;
 
-        List<PropertyDescriptor> properties = getReadProperties();
+        ApplicationManager.getApplication().executeOnPooledThread(() -> {
+            List<PropertyDescriptor> properties = getReadProperties();
 
-        Object[][] tableData = new Object[properties.size()][2];
-        Object[] columnTitles = new String[]{"Property", "Value"};
+            Object[][] tableData = new Object[properties.size()][2];
+            Object[] columnTitles = new String[]{"Property", "Value"};
 
-        Map<Object, String> map = new TreeMap<>(); // Guarantees ascending natural key sort order
-        for (PropertyDescriptor property : properties) {
-            String key = property.getDisplayName();
-            String value = formattedToString(IntrospectionUtil.getValue(myTarget, property));
+            Map<Object, String> map = new TreeMap<>(); // Guarantees ascending natural key sort order
+            for (PropertyDescriptor property : properties) {
+                String key = property.getDisplayName();
+                String value = ReadAction.compute(() -> formattedToString(IntrospectionUtil.getValue(myTarget, property)));
 
-            if(StringUtil.isNotEmpty(value) && StringUtil.startsWithIgnoreCase(value, "<html>"))
-            {
-                value = "<html>" + XmlUtil.escape(value) + "</html>";
+                if (StringUtil.isNotEmpty(value) && StringUtil.startsWithIgnoreCase(value, "<html>")) {
+                    value = "<html>" + XmlUtil.escape(value) + "</html>";
+                }
+
+                map.put(key, value);
             }
 
-            map.put(key, value);
-        }
+            int i = 0;
+            for (Iterator<Map.Entry<Object, String>> it = map.entrySet().iterator(); it.hasNext(); i++) {
+                Map.Entry<Object, String> entry = it.next();
+                Object[] rowData = tableData[i];
+                rowData[0] = entry.getKey();
+                rowData[1] = entry.getValue();
+            }
 
-        int i = 0;
-        for (Iterator<Map.Entry<Object,String>> it = map.entrySet().iterator(); it.hasNext(); i++)
-        {
-            Map.Entry<Object,String> entry = it.next();
-            Object[] rowData = tableData[i];
-            rowData[0] = entry.getKey();
-            rowData[1] = entry.getValue();
-        }
-
-        add(createTable(tableData, columnTitles));
-        setVisible(true);
+            ApplicationManager.getApplication().invokeLater(() -> {
+                add(createTable(tableData, columnTitles));
+                setVisible(true);
+                if (callback != null) {
+                    callback.run();
+                }
+            });
+        });
 
     }
 

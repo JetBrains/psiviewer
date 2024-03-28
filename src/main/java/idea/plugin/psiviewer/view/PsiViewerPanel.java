@@ -253,8 +253,12 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
 
     private void updatePropertySheet(@Nullable Runnable callback)
     {
-        if (!_projectComponent.isShowProperties())
+        if (!_projectComponent.isShowProperties()) {
+            if (callback != null) {
+                callback.run();
+            }
             return;
+        }
         _propertyPanel.setTarget(_selectedElement, () -> {
             _propertyPanel.getTable().getTableHeader().setReorderingAllowed(false);
 

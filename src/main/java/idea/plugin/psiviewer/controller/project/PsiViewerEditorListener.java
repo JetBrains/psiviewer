@@ -31,8 +31,6 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.util.messages.MessageBusConnection;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jetbrains.annotations.NotNull;
@@ -47,13 +45,11 @@ public class PsiViewerEditorListener extends CaretAdapter implements FileEditorM
     private static final Logger LOG = Logger.getInstance(PsiViewerEditorListener.class);
 
     private final Project myProject;
-    private final PsiTreeChangeListener myTreeChangeListener;
     private Editor myCurrentEditor;
     private MessageBusConnection myMessageBus;
 
     public PsiViewerEditorListener(Project project) {
         myProject = project;
-        myTreeChangeListener = new PsiViewerTreeChangeListener(project);
     }
 
     private @NotNull PsiViewerPanel getViewerPanel() {
@@ -99,8 +95,6 @@ public class PsiViewerEditorListener extends CaretAdapter implements FileEditorM
         myMessageBus = myProject.getMessageBus().connect(pluginDisposable);
         myMessageBus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, this);
 
-        PsiManager.getInstance(myProject).addPsiTreeChangeListener(myTreeChangeListener, pluginDisposable);
-
         myCurrentEditor = FileEditorManager.getInstance(myProject).getSelectedTextEditor();
         if (myCurrentEditor != null)
             myCurrentEditor.getCaretModel().addCaretListener(this, pluginDisposable);
@@ -111,8 +105,6 @@ public class PsiViewerEditorListener extends CaretAdapter implements FileEditorM
             myMessageBus.disconnect();
             myMessageBus = null;
         }
-
-        PsiManager.getInstance(myProject).removePsiTreeChangeListener(myTreeChangeListener);
     }
 
     private static void debug(String message) {

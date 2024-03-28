@@ -21,7 +21,6 @@
 */
 package idea.plugin.psiviewer.controller.project;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.CaretAdapter;
@@ -32,8 +31,8 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.util.messages.MessageBusConnection;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jetbrains.annotations.NotNull;
@@ -54,55 +53,11 @@ public class PsiViewerEditorListener extends CaretAdapter implements FileEditorM
 
     public PsiViewerEditorListener(Project project) {
         myProject = project;
-        myTreeChangeListener = new PsiTreeChangeAdapter() {
-            public void childrenChanged(@NotNull final PsiTreeChangeEvent event) {
-                updateTreeFromPsiTreeChange(event);
-            }
-
-            public void childAdded(@NotNull PsiTreeChangeEvent event) {
-                updateTreeFromPsiTreeChange(event);
-            }
-
-            public void childMoved(@NotNull PsiTreeChangeEvent event) {
-                updateTreeFromPsiTreeChange(event);
-            }
-
-            public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-                updateTreeFromPsiTreeChange(event);
-            }
-
-            public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-                updateTreeFromPsiTreeChange(event);
-            }
-
-            public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
-                updateTreeFromPsiTreeChange(event);
-            }
-        };
-    }
-
-    private void updateTreeFromPsiTreeChange(final PsiTreeChangeEvent event) {
-        if (isElementChangedUnderViewerRoot(event)) {
-            LOG.debug("PSI Change, starting update timer");
-            ApplicationManager.getApplication().runWriteAction(() -> getViewerPanel().refreshRootElement());
-        }
+        myTreeChangeListener = new PsiViewerTreeChangeListener(project);
     }
 
     private @NotNull PsiViewerPanel getViewerPanel() {
         return PsiViewerProjectService.getViewerPanel(myProject);
-    }
-
-
-    private boolean isElementChangedUnderViewerRoot(final PsiTreeChangeEvent event) {
-        PsiElement elementChangedByPsi = event.getParent();
-        PsiElement viewerRootElement = getViewerPanel().getRootElement();
-        boolean b = false;
-        try {
-            b = PsiTreeUtil.isAncestor(viewerRootElement, elementChangedByPsi, false);
-        } catch (Throwable ignored) {
-        }
-
-        return b;
     }
 
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {

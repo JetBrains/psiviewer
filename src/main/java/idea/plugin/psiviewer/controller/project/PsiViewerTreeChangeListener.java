@@ -43,6 +43,10 @@ public class PsiViewerTreeChangeListener extends PsiTreeChangeAdapter {
     }
 
     private void updateTreeFromPsiTreeChange(final PsiTreeChangeEvent event) {
+        if (!getViewerPanel().isVisible()) {
+            return;
+        }
+
         if (isElementChangedUnderViewerRoot(event)) {
             LOG.debug("PSI Change, starting update timer");
             ApplicationManager.getApplication().runWriteAction(() -> getViewerPanel().refreshRootElement());

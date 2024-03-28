@@ -37,7 +37,6 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiTreeChangeListener;
 import com.intellij.ui.components.panels.HorizontalLayout;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
 import idea.plugin.psiviewer.util.Helpers;
@@ -75,7 +74,6 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
     private ComboBox myLanguagesComboBox;
     private final Project myProject;
     private PsiViewerEditorListener myEditorListener;
-    private PsiTreeChangeListener myTreeChangeListener;
     private final PsiViewerPanel myViewerPanel;
     private final ItemListener myLanguagesComboBoxListener = new ItemListener() {
         @Override
@@ -91,7 +89,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         myProject = project;
         myViewerPanel = createViewerPanel();
         myEditorListener = new PsiViewerEditorListener(myProject);
-        myTreeChangeListener = new PsiViewerTreeChangeListener(myProject);
+        PsiManager.getInstance(myProject).addPsiTreeChangeListener(new PsiViewerTreeChangeListener(myProject), this);
     }
 
     private @NotNull PsiViewerPanel createViewerPanel()
@@ -149,11 +147,9 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
 
         if (myViewerPanel.isToolWindowVisible()) {
             myEditorListener.start();
-            PsiManager.getInstance(myProject).addPsiTreeChangeListener(myTreeChangeListener, this);
             myViewerPanel.selectElementAtCaret();
         } else {
             myEditorListener.stop();
-            PsiManager.getInstance(myProject).removePsiTreeChangeListener(myTreeChangeListener);
             myViewerPanel.removeHighlighting();
         }
     }

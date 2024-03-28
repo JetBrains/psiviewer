@@ -31,7 +31,6 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.messages.MessageBusConnection;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,8 +44,6 @@ public class PsiViewerEditorListener extends CaretAdapter implements FileEditorM
     private static final Logger LOG = Logger.getInstance(PsiViewerEditorListener.class);
 
     private final Project myProject;
-    private Editor myCurrentEditor;
-    private MessageBusConnection myMessageBus;
 
     public PsiViewerEditorListener(Project project) {
         myProject = project;
@@ -65,45 +62,19 @@ public class PsiViewerEditorListener extends CaretAdapter implements FileEditorM
     }
 
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
-        debug("selection changed " + event);
-
-        if (event.getNewFile() == null || myCurrentEditor == null) return;
-
-        Editor newEditor = event.getManager().getSelectedTextEditor();
-
-        if (myCurrentEditor != newEditor) myCurrentEditor.getCaretModel().removeCaretListener(this);
-
-        getViewerPanel().selectElementAtCaret();
-
-        if (newEditor != null)
-            myCurrentEditor = newEditor;
-
-        myCurrentEditor.getCaretModel().addCaretListener(this, PsiViewerProjectService.getInstance(myProject));
+        var viewerPanel = getViewerPanel();
+        if (viewerPanel.isToolWindowVisible()) {
+            debug("selection changed " + event);
+            viewerPanel.selectElementAtCaret();
+        }
     }
 
-
-    public void caretPositionChanged(CaretEvent event) {
-        final Editor editor = event.getEditor();
-
-        debug("caret moved to " + editor.getCaretModel().getOffset() + " in editor " + editor);
-
-        getViewerPanel().selectElementAtCaret();
-    }
-
-    public void start() {
-        PsiViewerProjectService pluginDisposable = PsiViewerProjectService.getInstance(myProject);
-        myMessageBus = myProject.getMessageBus().connect(pluginDisposable);
-        myMessageBus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, this);
-
-        myCurrentEditor = FileEditorManager.getInstance(myProject).getSelectedTextEditor();
-        if (myCurrentEditor != null)
-            myCurrentEditor.getCaretModel().addCaretListener(this, pluginDisposable);
-    }
-
-    public void stop() {
-        if (myMessageBus != null) {
-            myMessageBus.disconnect();
-            myMessageBus = null;
+    public void caretPositionChanged(@NotNull CaretEvent event) {
+        var viewerPanel = getViewerPanel();
+        if (viewerPanel.isToolWindowVisible()) {
+            final Editor editor = event.getEditor();
+            debug("caret moved to " + editor.getCaretModel().getOffset() + " in editor " + editor);
+            viewerPanel.selectElementAtCaret();
         }
     }
 

@@ -340,8 +340,7 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
 
     public void selectElementAtCaret(@Nullable Editor editor, @Nullable String changeSource)
     {
-        if (editor == null) /* Vince Mallet (21 Oct 2003) */
-        {
+        if (editor == null) {
             debug("selectElementAtCaret: Can't select element, editor is null");
             return;
         }

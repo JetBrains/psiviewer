@@ -32,6 +32,8 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.wm.ToolWindow;
@@ -74,7 +76,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
     private ComboBox myLanguagesComboBox;
     private final Project myProject;
     private PsiViewerEditorListener myEditorListener;
-    private final PsiViewerPanel myViewerPanel;
+    private final @NotNull PsiViewerPanel myViewerPanel;
     private final ItemListener myLanguagesComboBoxListener = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
@@ -88,7 +90,11 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
     private PsiViewerProjectService(Project project) {
         myProject = project;
         myViewerPanel = createViewerPanel();
+
         myEditorListener = new PsiViewerEditorListener(myProject);
+        project.getMessageBus().connect(this).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, myEditorListener);
+        EditorFactory.getInstance().getEventMulticaster().addCaretListener(myEditorListener, this);
+
         PsiManager.getInstance(myProject).addPsiTreeChangeListener(new PsiViewerTreeChangeListener(myProject), this);
     }
 
@@ -142,14 +148,9 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
 
     private void handleCurrentState()
     {
-        if (myViewerPanel == null)
-            return;
-
         if (myViewerPanel.isToolWindowVisible()) {
-            myEditorListener.start();
             myViewerPanel.selectElementAtCaret();
         } else {
-            myEditorListener.stop();
             myViewerPanel.removeHighlighting();
         }
     }

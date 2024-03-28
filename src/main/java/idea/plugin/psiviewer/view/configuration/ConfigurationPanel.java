@@ -22,14 +22,13 @@
 
 package idea.plugin.psiviewer.view.configuration;
 
-import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.PsiViewerConstants;
+import idea.plugin.psiviewer.util.Helpers;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ConfigurationPanel extends JPanel {
-    private JCheckBox _pluginEnabled;
     private JColorChooser _colorChooser;
     private AlphaChooserPanel _alphaChooser;
     private JColorChooser _refColorChooser;
@@ -48,15 +47,11 @@ public class ConfigurationPanel extends JPanel {
         _refColorChooser = new JColorChooser();
         _refColorChooser.addChooserPanel(_refAlphaChooser);
 
-        _pluginEnabled = new JCheckBox("Enable PsiViewer Plugin");
-        _pluginEnabled.setToolTipText("Enable/disable the PsiViewer tool window");
-
         setLayout(new BorderLayout());
 
         JPanel topPane = new JPanel();
         topPane.setLayout(new BoxLayout(topPane, BoxLayout.X_AXIS));
         topPane.setBorder(BorderFactory.createEtchedBorder());
-        topPane.add(_pluginEnabled);
 
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         tabbedPane.setPreferredSize(new Dimension(400, 600));
@@ -73,14 +68,6 @@ public class ConfigurationPanel extends JPanel {
 
         add(topPane, BorderLayout.NORTH);
         add(tabbedPane, BorderLayout.CENTER);
-    }
-
-    public boolean isPluginEnabled() {
-        return _pluginEnabled.isSelected();
-    }
-
-    public void setPluginEnabled(boolean enabled) {
-        _pluginEnabled.setSelected(enabled);
     }
 
     public Color getHighlightColor() {

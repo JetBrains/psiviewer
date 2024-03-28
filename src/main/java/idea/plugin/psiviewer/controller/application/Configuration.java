@@ -23,10 +23,7 @@
 package idea.plugin.psiviewer.controller.application;
 
 import com.intellij.openapi.options.BaseConfigurable;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import idea.plugin.psiviewer.PsiViewerConstants;
-import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.configuration.ConfigurationPanel;
 
@@ -60,9 +57,6 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
 
     @Override
     public boolean isModified() {
-        if (myPanel.isPluginEnabled() ^ isPluginEnabled())
-            return true;
-
         if (!Helpers.encodeColor(myPanel.getHighlightColor()).equals(mySettings.HIGHLIGHT_COLOR))
             return true;
 
@@ -77,23 +71,9 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
      */
     @Override
     public void apply() {
-        if (mySettings.PLUGIN_ENABLED ^ myPanel.isPluginEnabled())  // If plugin-enabled state has changed...
-            enableToolWindows(myPanel.isPluginEnabled());
-
-        mySettings.PLUGIN_ENABLED = myPanel.isPluginEnabled();
         mySettings.HIGHLIGHT_COLOR = Helpers.encodeColor(myPanel.getHighlightColor());
         mySettings.REFERENCE_HIGHLIGHT_COLOR = Helpers.encodeColor(myPanel.getReferenceHighlightColor());
         mySettings.getTextAttributes().setBackgroundColor(getHighlightColor());
-    }
-
-    private static void enableToolWindows(boolean enableToolWindows) {
-        Project[] projects = ProjectManager.getInstance().getOpenProjects();
-        for (Project project : projects) {
-            PsiViewerProjectService pc = PsiViewerProjectService.getInstance(project);
-            if (enableToolWindows) pc.registerToolWindow();
-            else
-                pc.unregisterToolWindow();
-        }
     }
 
     /**
@@ -101,7 +81,6 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
      */
     @Override
     public void reset() {
-        myPanel.setPluginEnabled(isPluginEnabled());
         myPanel.setHighlightColor(getHighlightColor());
         myPanel.setReferenceHighlightColor(getReferenceHighlightColor());
     }
@@ -109,10 +88,6 @@ public class Configuration extends BaseConfigurable implements PsiViewerConstant
     @Override
     public void disposeUIResources() {
         myPanel = null;
-    }
-
-    public boolean isPluginEnabled() {
-        return mySettings.PLUGIN_ENABLED;
     }
 
     private Color getHighlightColor() {

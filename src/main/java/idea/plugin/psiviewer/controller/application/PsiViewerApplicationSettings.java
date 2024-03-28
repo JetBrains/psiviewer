@@ -19,13 +19,11 @@ public class PsiViewerApplicationSettings implements PersistentStateComponent<Ps
     private final TextAttributes myTextAttributes = new TextAttributes();
     public String HIGHLIGHT_COLOR;
     public String REFERENCE_HIGHLIGHT_COLOR;
-    public boolean PLUGIN_ENABLED;
     private final TextAttributes myReferenceTextAttributes = new TextAttributes();
 
     public PsiViewerApplicationSettings() {
         HIGHLIGHT_COLOR = DEFAULT_HIGHLIGHT_COLOR;
         REFERENCE_HIGHLIGHT_COLOR = DEFAULT_REFERENCE_HIGHLIGHT_COLOR;
-        PLUGIN_ENABLED = true;
         getTextAttributes().setBackgroundColor(Helpers.parseColor(HIGHLIGHT_COLOR));
     }
 

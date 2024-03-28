@@ -91,12 +91,6 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         myProject = project;
     }
 
-    public void registerToolWindow() {
-        ToolWindow toolWindow = getToolWindow();
-        initToolWindow(toolWindow);
-        toolWindow.setAvailable(true, null);
-    }
-
     PsiViewerPanel initToolWindow(@NotNull ToolWindow toolWindow)
     {
         myViewerPanel = new PsiViewerPanel(this);
@@ -166,25 +160,6 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         }
     }
 
-    public void unregisterToolWindow()
-    {
-        if (myViewerPanel != null) {
-            myViewerPanel.removeHighlighting();
-            myViewerPanel = null;
-        }
-
-        if (myEditorListener != null) {
-            myEditorListener.stop();
-            myEditorListener = null;
-        }
-
-        if (myTreeChangeListener != null) {
-            PsiManager.getInstance(myProject).removePsiTreeChangeListener(myTreeChangeListener);
-            myTreeChangeListener = null;
-        }
-
-        getToolWindow().setAvailable(false, null);
-    }
 
     private ToolWindow getToolWindow()
     {

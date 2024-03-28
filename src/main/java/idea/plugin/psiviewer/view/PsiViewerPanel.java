@@ -228,23 +228,22 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
         if (inSetSelectedElement)
             return;
 
-        try
-        {
             debug("selection changed to " + element + " due to " + reason);
-            inSetSelectedElement = true;
             _selectedElement = element;
             updatePropertySheet(() -> {
                 if (reason != TREE_SELECTION_CHANGED)
                     changeTreeSelection();
                 applyHighlighting();
-                if (reason != CARET_MOVED && element != null)
-                    moveEditorCaret();
+                if (reason != CARET_MOVED && element != null) {
+                    try {
+                        inSetSelectedElement = true;
+                        moveEditorCaret();
+                    } finally {
+                        inSetSelectedElement = false;
+                    }
+
+                }
             });
-        }
-        finally
-        {
-            inSetSelectedElement = false;
-        }
     }
 
     private void updatePropertySheet() {

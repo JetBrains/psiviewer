@@ -141,7 +141,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         myViewerPanel.add(panel, BorderLayout.NORTH);
         myViewerPanel.setToolWindow(toolWindow);
 
-        myEditorListener = new EditorListener(myViewerPanel, myProject);
+        myEditorListener = new EditorListener(myProject);
 
         return myViewerPanel;
     }
@@ -190,8 +190,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         myState = state;
     }
 
-    public PsiViewerPanel getViewerPanel()
-    {
+    public PsiViewerPanel getViewerPanel() {
         return myViewerPanel;
     }
 
@@ -267,8 +266,12 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         return myProject;
     }
 
-    public static PsiViewerProjectService getInstance(Project project) {
+    public static @NotNull PsiViewerProjectService getInstance(@NotNull Project project) {
         return project.getService(PsiViewerProjectService.class);
+    }
+
+    public static @NotNull PsiViewerPanel getViewerPanel(@NotNull Project project) {
+        return getInstance(project).getViewerPanel();
     }
 
     private static void debug(String message)

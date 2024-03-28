@@ -147,7 +147,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         if (myViewerPanel == null)
             return;
 
-        if (myViewerPanel.isDisplayable()) {
+        if (myViewerPanel.isToolWindowVisible()) {
             myEditorListener.start();
             PsiManager.getInstance(myProject).addPsiTreeChangeListener(myTreeChangeListener, this);
             myViewerPanel.selectElementAtCaret();

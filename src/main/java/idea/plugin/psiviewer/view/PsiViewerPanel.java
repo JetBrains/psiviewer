@@ -38,6 +38,7 @@ import idea.plugin.psiviewer.PsiViewerConstants;
 import idea.plugin.psiviewer.controller.project.PsiViewerProjectService;
 import idea.plugin.psiviewer.model.PsiViewerTreeModel;
 import idea.plugin.psiviewer.util.Helpers;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -65,7 +66,7 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
     private PsiElement _selectedElement; // The currently selected element in the tree
     private PropertySheetPanel _propertyPanel;
     private final Project _project;
-    private ToolWindow _toolWindow;
+    private @Nullable ToolWindow myToolWindow;
     private JSplitPane _splitPane;
     private final ViewerTreeSelectionListener _treeSelectionListener;
     private final EditorCaretMover _caretMover;
@@ -141,14 +142,16 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
         updatePropertySheet();
     }
 
-    private ToolWindow getToolWindow()
-    {
-        return _toolWindow;
+    private @Nullable ToolWindow getToolWindow() {
+        return myToolWindow;
     }
 
-    public void setToolWindow(ToolWindow toolWindow)
-    {
-        _toolWindow = toolWindow;
+    public void setToolWindow(@NotNull ToolWindow toolWindow) {
+        myToolWindow = toolWindow;
+    }
+
+    public boolean isToolWindowVisible() {
+        return myToolWindow != null && myToolWindow.isVisible();
     }
 
     private void buildGUI()

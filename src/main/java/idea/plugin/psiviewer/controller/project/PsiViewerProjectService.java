@@ -27,6 +27,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -102,7 +103,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
     {
         var viewerPanel = new PsiViewerPanel(this);
 
-        viewerPanel.addPropertyChangeListener("ancestor", it -> handleCurrentState());
+        viewerPanel.addPropertyChangeListener("ancestor", it -> ApplicationManager.getApplication().invokeLater(this::handleCurrentState));
         ActionManager actionManager = ActionManager.getInstance();
 
         DefaultActionGroup actionGroup = new DefaultActionGroup(ID_ACTION_GROUP, false);

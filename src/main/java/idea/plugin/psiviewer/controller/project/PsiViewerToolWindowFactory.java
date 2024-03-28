@@ -14,7 +14,8 @@ public class PsiViewerToolWindowFactory implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         PsiViewerProjectService component = PsiViewerProjectService.getInstance(project);
         ContentManager contentManager = toolWindow.getContentManager();
-        PsiViewerPanel panel = component.initToolWindow(toolWindow);
+        PsiViewerPanel panel = component.getViewerPanel();
+        panel.setToolWindow(toolWindow);
         Content content = contentManager.getFactory().createContent(panel, null, false);
         contentManager.addContent(content);
     }

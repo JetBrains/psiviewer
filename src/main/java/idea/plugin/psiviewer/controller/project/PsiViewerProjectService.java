@@ -76,7 +76,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
     private final Project myProject;
     private PsiViewerEditorListener myEditorListener;
     private PsiTreeChangeListener myTreeChangeListener;
-    private PsiViewerPanel myViewerPanel;
+    private final PsiViewerPanel myViewerPanel;
     private final ItemListener myLanguagesComboBoxListener = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
@@ -89,13 +89,16 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
 
     private PsiViewerProjectService(Project project) {
         myProject = project;
+        myViewerPanel = createViewerPanel();
+        myEditorListener = new PsiViewerEditorListener(myProject);
+        myTreeChangeListener = new PsiViewerTreeChangeListener(myProject);
     }
 
-    PsiViewerPanel initToolWindow(@NotNull ToolWindow toolWindow)
+    private @NotNull PsiViewerPanel createViewerPanel()
     {
-        myViewerPanel = new PsiViewerPanel(this);
+        var viewerPanel = new PsiViewerPanel(this);
 
-        myViewerPanel.addPropertyChangeListener("ancestor", it -> handleCurrentState());
+        viewerPanel.addPropertyChangeListener("ancestor", it -> handleCurrentState());
         ActionManager actionManager = ActionManager.getInstance();
 
         DefaultActionGroup actionGroup = new DefaultActionGroup(ID_ACTION_GROUP, false);
@@ -135,13 +138,8 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         panel.add(myLanguagesComboBox);
         updateLanguagesList(Collections.<Language>emptyList());
 
-        myViewerPanel.add(panel, BorderLayout.NORTH);
-        myViewerPanel.setToolWindow(toolWindow);
-
-        myEditorListener = new PsiViewerEditorListener(myProject);
-        myTreeChangeListener = new PsiViewerTreeChangeListener(myProject);
-
-        return myViewerPanel;
+        viewerPanel.add(panel, BorderLayout.NORTH);
+        return viewerPanel;
     }
 
     private void handleCurrentState()

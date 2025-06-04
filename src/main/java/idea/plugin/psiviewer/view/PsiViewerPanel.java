@@ -54,7 +54,7 @@ import java.util.LinkedList;
 /**
  * A JPanel that holds a toolbar, a tree view, and a property sheet.
  */
-// TODO should be a project component. Move from PsiViewerProjectcomponent the initialization to here
+// TODO should be a project component. Move from PsiViewerProjectService the initialization to here
 
 public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
     private static final Logger LOG = Logger.getInstance(PsiViewerPanel.class);

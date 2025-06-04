@@ -88,7 +88,7 @@ public final class Helpers
     public static Color parseColor(String rgba)
     {
         int red = 0, green = 0, blue = 0, alpha = 128;
-        String token[] = rgba.split(" ");
+        String token[] = rgba.trim().split("\\s+");
         if (token.length > 0) red = getSample(token[0]);
         if (token.length > 1) green = getSample(token[1]);
         if (token.length > 2) blue = getSample(token[2]);
@@ -101,7 +101,8 @@ public final class Helpers
         int s;
         try
         {
-            s = Math.min(Math.abs(Integer.valueOf(sample).intValue()), 255);
+            s = Integer.parseInt(sample.trim());
+            s = Math.max(0, Math.min(s, 255));
         }
         catch (NumberFormatException e)
         {

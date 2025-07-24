@@ -34,10 +34,10 @@
             <keyboard-shortcut first-keystroke="control shift P" keymap="$default"/>
         </action>
 
-        <action class="idea.plugin.psiviewer.controller.actions.PsiDump" icon="/actions/dump.png"
+        <action class="idea.plugin.psiviewer.controller.actions.PsiDump" icon="AllIcons.Actions.Dump"
                 id="idea.plugin.psiviewer.controller.actions.PsiDump" text="PSI dump to clipboard"/>
 
-        <action class="idea.plugin.psiviewer.controller.actions.PsiTestDump" icon="/actions/dump.png"
+        <action class="idea.plugin.psiviewer.controller.actions.PsiTestDump" icon="AllIcons.Actions.Dump"
                 id="idea.plugin.psiviewer.controller.actions.PsiTestDump" text="PSI unit test data file to clipboard"/>
 
         <!--<action id="com.sylvanaar.idea.errorreporting.TriggerExceptionAction"-->

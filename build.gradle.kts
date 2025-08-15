@@ -4,7 +4,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
-    id("org.jetbrains.intellij.platform") version "2.6.0"
+    id("org.jetbrains.intellij.platform") version "2.7.2"
 }
 
 repositories {

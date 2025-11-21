@@ -21,6 +21,6 @@ jobs:
         with:
           use-caches: false
           args: --baseline,.qodana/baseline.sarif.json,--linter,${{ env.QODANA_LINTER }}
-      - uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ runner.temp }}/qodana/results/qodana.sarif.json

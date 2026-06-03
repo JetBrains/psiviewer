@@ -18,9 +18,9 @@
 
 package com.sylvanaar.idea.errorreporting;
 
-import com.intellij.diagnostic.IdeErrorsDialog;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
+import com.intellij.ide.plugins.PluginUtil;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter;
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent;
@@ -181,7 +181,7 @@ public class YouTrackBugReporter extends ErrorReportSubmitter {
         descBuilder.append("Platform Version: ").append(platformBuild).append('\n');
         Throwable t = ideaLoggingEvents[0].getThrowable();
         if (t != null) {
-            final PluginId pluginId = IdeErrorsDialog.findPluginId(t);
+            final PluginId pluginId = PluginUtil.getInstance().findPluginId(t);
             if (pluginId != null) {
                 final IdeaPluginDescriptor ideaPluginDescriptor = PluginManager.getPlugin(pluginId);
                 if (ideaPluginDescriptor != null && !ideaPluginDescriptor.isBundled()) {

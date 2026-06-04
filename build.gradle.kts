@@ -1,10 +1,11 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
-    id("org.jetbrains.intellij.platform") version "2.10.5"
+    id("org.jetbrains.intellij.platform") version "2.16.0"
 }
 
 repositories {
@@ -27,9 +28,17 @@ version = properties("pluginVersion").get().ifEmpty { properties("platformVersio
 apply(plugin = "java")
 apply(plugin = "org.jetbrains.intellij.platform")
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(providers.gradleProperty("javaToolchain").get()))
+    }
+}
+
 dependencies {
     intellijPlatform {
-        create("IC", platformVersionProvider.get(), useInstaller = properties("useInstaller").get().toBoolean())
+        create(IntelliJPlatformType.IntellijIdea, platformVersionProvider.get()) {
+            useInstaller = properties("useInstaller").get().toBoolean()
+        }
         val platformToolsVersion = properties("platformToolsVersion")
         if (platformToolsVersion.get().isEmpty()) {
             testFramework(TestFrameworkType.Platform)
@@ -39,6 +48,7 @@ dependencies {
         }
         jetbrainsRuntime()
     }
+
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 }

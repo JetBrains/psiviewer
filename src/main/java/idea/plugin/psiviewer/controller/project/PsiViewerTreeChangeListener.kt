@@ -1,72 +1,51 @@
-package idea.plugin.psiviewer.controller.project;
+package idea.plugin.psiviewer.controller.project
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiTreeChangeAdapter;
-import com.intellij.psi.PsiTreeChangeEvent;
-import com.intellij.psi.util.PsiTreeUtil;
-import idea.plugin.psiviewer.view.PsiViewerPanel;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiTreeChangeAdapter
+import com.intellij.psi.PsiTreeChangeEvent
+import com.intellij.psi.util.PsiTreeUtil
+import idea.plugin.psiviewer.view.PsiViewerPanel
 
-public class PsiViewerTreeChangeListener extends PsiTreeChangeAdapter {
-    private static final Logger LOG = Logger.getInstance(PsiViewerTreeChangeListener.class);
-    private final @NotNull Project myProject;
+private val log = logger<PsiViewerTreeChangeListener>()
 
-    public PsiViewerTreeChangeListener(@NotNull Project project) {
-        myProject = project;
-    }
+class PsiViewerTreeChangeListener(private val myProject: Project) : PsiTreeChangeAdapter() {
+    override fun childrenChanged(event: PsiTreeChangeEvent) = updateTreeFromPsiTreeChange(event)
 
-    public void childrenChanged(@NotNull final PsiTreeChangeEvent event) {
-        updateTreeFromPsiTreeChange(event);
-    }
+    override fun childAdded(event: PsiTreeChangeEvent) = updateTreeFromPsiTreeChange(event)
 
-    public void childAdded(@NotNull PsiTreeChangeEvent event) {
-        updateTreeFromPsiTreeChange(event);
-    }
+    override fun childMoved(event: PsiTreeChangeEvent) = updateTreeFromPsiTreeChange(event)
 
-    public void childMoved(@NotNull PsiTreeChangeEvent event) {
-        updateTreeFromPsiTreeChange(event);
-    }
+    override fun childRemoved(event: PsiTreeChangeEvent) = updateTreeFromPsiTreeChange(event)
 
-    public void childRemoved(@NotNull PsiTreeChangeEvent event) {
-        updateTreeFromPsiTreeChange(event);
-    }
+    override fun childReplaced(event: PsiTreeChangeEvent) = updateTreeFromPsiTreeChange(event)
 
-    public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-        updateTreeFromPsiTreeChange(event);
-    }
+    override fun propertyChanged(event: PsiTreeChangeEvent) = updateTreeFromPsiTreeChange(event)
 
-    public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
-        updateTreeFromPsiTreeChange(event);
-    }
-
-    private void updateTreeFromPsiTreeChange(final PsiTreeChangeEvent event) {
-        if (!getViewerPanel().isVisible()) {
-            return;
+    private fun updateTreeFromPsiTreeChange(event: PsiTreeChangeEvent) {
+        if (!this.viewerPanel.isVisible) {
+            return
         }
 
         if (isElementChangedUnderViewerRoot(event)) {
-            LOG.debug("PSI Change, starting update timer");
-            ApplicationManager.getApplication().runWriteAction(() -> getViewerPanel().refreshRootElement());
+            log.debug("PSI Change, starting update timer")
+            ApplicationManager.getApplication().runWriteAction(Runnable { this.viewerPanel.refreshRootElement() })
         }
     }
 
-    private boolean isElementChangedUnderViewerRoot(final PsiTreeChangeEvent event) {
-        PsiElement elementChangedByPsi = event.getParent();
-        PsiElement viewerRootElement = getViewerPanel().getRootElement();
-        boolean isAncestor = false;
+    private fun isElementChangedUnderViewerRoot(event: PsiTreeChangeEvent): Boolean {
+        val elementChangedByPsi = event.parent
+        val viewerRootElement = this.viewerPanel.rootElement
+        var isAncestor = false
         try {
-            isAncestor = PsiTreeUtil.isAncestor(viewerRootElement, elementChangedByPsi, false);
-        } catch (Throwable ignored) {
+            isAncestor = PsiTreeUtil.isAncestor(viewerRootElement, elementChangedByPsi, false)
+        } catch (ignored: Throwable) {
         }
 
-        return isAncestor;
+        return isAncestor
     }
 
-    private @NotNull PsiViewerPanel getViewerPanel() {
-        return PsiViewerProjectService.getViewerPanel(myProject);
-    }
-
+    private val viewerPanel: PsiViewerPanel
+        get() = PsiViewerProjectService.getViewerPanel(myProject)
 }

@@ -1,6 +1,7 @@
 package idea.plugin.psiviewer.controller.project
 
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiTreeChangeAdapter
 import com.intellij.psi.PsiTreeChangeEvent
@@ -61,14 +62,12 @@ class PsiViewerTreeChangeListener(
     }
 
     private fun isElementChangedUnderViewerRoot(event: PsiTreeChangeEvent): Boolean {
-        val viewerRootElement = viewerPanel.rootElement
-        var isAncestor = false
-        try {
-            isAncestor = PsiTreeUtil.isAncestor(viewerRootElement, event.parent, false)
-        } catch (ignored: Throwable) {
+        return try {
+            PsiTreeUtil.isAncestor(viewerPanel.rootElement, event.parent, false)
+        } catch (e: Throwable) {
+            rethrowControlFlowException(e)
+            false
         }
-
-        return isAncestor
     }
 
     private val viewerPanel: PsiViewerPanel

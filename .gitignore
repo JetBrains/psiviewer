@@ -1,5 +1,6 @@
 .idea
 !.idea/runConfigurations
+!.idea/vcs.xml
 .sandbox
 build/
 .gradle/

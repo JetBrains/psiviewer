@@ -4,7 +4,8 @@ IntelliJ Platform plugin: a tool window that shows the PSI (Program Structure In
 
 ## Build & run
 
-- Gradle + `org.jetbrains.intellij.platform` plugin (see `build.gradle.kts`). Java 21.
+- Gradle + `org.jetbrains.intellij.platform` plugin (see `build.gradle.kts`). Java/Kotlin toolchain from `gradle.properties` (`javaToolchain`).
+- Kotlin is enabled (`org.jetbrains.kotlin.jvm`). Mixed Java/Kotlin sources both live under `src/main/java`. Kotlin stdlib is NOT bundled (`kotlin.stdlib.default.dependency=false`) — it comes from the target platform; that property is read by the Kotlin plugin and checked by `verifyPluginProjectConfiguration`.
 - Target platform is set in `gradle.properties` (`platformVersion`/`platformBranch`, currently IU 2026.2). Bumps to platform/gradle are their own commits (see git log).
 - Sandbox lives under `.intellijPlatform/sandbox/`.
 - Common tasks: `./gradlew build`, `./gradlew test`, `./gradlew runIde`, `./gradlew verifyPlugin`.
@@ -37,6 +38,16 @@ MVC-ish split under `idea.plugin.psiviewer`:
 ## Tests
 
 `src/test/java` — platform test framework (JUnit4). `PropertySheetPanelTest` is the existing example. Prefer functional/behavioral tests over unit tests.
+
+## Performance notes
+
+- A PSI file can contain thousands of elements (e.g. a huge malformed comment). Anything driven by PSI-tree-change or caret events must assume large, deep trees.
+- `PsiViewerTreeChangeListener` reacts to *every* PSI change, several fire per keystroke — refreshes must be debounced (`Flow.debounce` on the service's `CoroutineScope`) and run on `Dispatchers.EDT`, never synchronously and never inside a `runWriteAction` (a read-only viewer takes no write lock).
+- `PsiViewerTreeModel` backs a Swing tree over PSI; be mindful that `getChild`/`getChildCount`/`getIndexOfChild` are called repeatedly by the tree UI, so their per-call cost multiplies.
+
+## Conventions
+
+- Services can receive a platform-managed `CoroutineScope` via constructor injection (`PsiViewerProjectService(Project, CoroutineScope)`), cancelled on service disposal. Prefer it over hand-rolled scopes / `Alarm` / `MergingUpdateQueue`.
 
 ## Reference
 

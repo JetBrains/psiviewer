@@ -41,6 +41,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiManager;
 import com.intellij.ui.components.panels.HorizontalLayout;
+import kotlinx.coroutines.CoroutineScope;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
@@ -88,15 +89,18 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         }
     };
 
-    private PsiViewerProjectService(Project project) {
+    private final @NotNull CoroutineScope myCoroutineScope;
+
+    private PsiViewerProjectService(@NotNull Project project, @NotNull CoroutineScope coroutineScope) {
         myProject = project;
+        myCoroutineScope = coroutineScope;
         myViewerPanel = createViewerPanel();
 
         myEditorListener = new PsiViewerEditorListener(myProject);
         project.getMessageBus().connect(this).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, myEditorListener);
         EditorFactory.getInstance().getEventMulticaster().addCaretListener(myEditorListener, this);
 
-        PsiManager.getInstance(myProject).addPsiTreeChangeListener(new PsiViewerTreeChangeListener(myProject), this);
+        PsiManager.getInstance(myProject).addPsiTreeChangeListener(new PsiViewerTreeChangeListener(myProject, myCoroutineScope), this);
     }
 
     private @NotNull PsiViewerPanel createViewerPanel()

@@ -19,139 +19,124 @@
 	Author:
 	Andrew J. Armstrong <andrew_armstrong@bigpond.com>
 */
+package idea.plugin.psiviewer.view
 
-package idea.plugin.psiviewer.view;
+import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.psi.*
+import com.intellij.psi.xml.*
+import idea.plugin.psiviewer.PsiViewerConstants
+import java.awt.Component
+import javax.swing.JTree
+import javax.swing.tree.DefaultTreeCellRenderer
 
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.psi.*;
-import com.intellij.psi.xml.*;
-import idea.plugin.psiviewer.PsiViewerConstants;
-import org.jetbrains.annotations.NotNull;
+private const val MAX_TEXT_LENGTH = 80
 
-import javax.swing.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import java.awt.*;
+internal class PsiViewerTreeCellRenderer : DefaultTreeCellRenderer(), PsiViewerConstants {
+    private val _elementVisitor = ElementVisitor()
+    private val _elementVisitorXml = ElementVisitorXml()
 
-class PsiViewerTreeCellRenderer extends DefaultTreeCellRenderer implements PsiViewerConstants {
-    private final ElementVisitor _elementVisitor = new ElementVisitor();
-    private final XmlElementVisitor _elementVisitorXml = new ElementVisitorXml();
+    override fun getTreeCellRendererComponent(
+        tree: JTree?, value: Any?, isSelected: Boolean, isExpanded: Boolean,
+        isLeaf: Boolean, row: Int, hasFocus: Boolean
+    ): Component {
+        runReadActionBlocking {
+            super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus)
+            setIcon(IconCache.DEFAULT_ICON)
 
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean isSelected, boolean isExpanded,
-                                                  boolean isLeaf, int row, boolean hasFocus) {
-        ReadAction.run(() -> super.getTreeCellRendererComponent(tree, value, isSelected, isExpanded, isLeaf, row, hasFocus));
-        setIcon(IconCache.DEFAULT_ICON);
-
-        PsiElement psiElement = (PsiElement) value;
-
-        psiElement.accept(_elementVisitor);
-        psiElement.accept(_elementVisitorXml);
-
-        return this;
+            val psiElement = value as PsiElement
+            psiElement.accept(_elementVisitor)
+            psiElement.accept(_elementVisitorXml)
+        }
+        return this
     }
 
-    public PsiViewerTreeCellRenderer() {
-        setOpaque(false);
+    init {
+        isOpaque = false
     }
 
-    private class ElementVisitor extends PsiElementVisitor {
-
-        private static final int MAX_TEXT_LENGTH = 80;
-
-
-        public void visitBinaryFile(PsiBinaryFile psiElement) {
-            setIcon(IconCache.getIcon(PsiBinaryFile.class));
-            setText("PsiBinaryFile: " + psiElement.getName());
+    private inner class ElementVisitor : PsiElementVisitor() {
+        override fun visitBinaryFile(psiElement: PsiBinaryFile) {
+            setIcon(IconCache.getIcon(PsiBinaryFile::class.java))
+            text = "PsiBinaryFile: " + psiElement.name
         }
 
-
-        public void visitComment(PsiComment psiElement) {
-            setIcon(IconCache.getIcon(PsiComment.class));
-            setText("PsiComment: " + truncate(psiElement.getText()));
+        override fun visitComment(psiElement: PsiComment) {
+            setIcon(IconCache.getIcon(PsiComment::class.java))
+            text = "PsiComment: " + truncate(psiElement.text)
         }
 
-        public void visitDirectory(PsiDirectory psiElement) {
-            setIcon(IconCache.getIcon(PsiDirectory.class));
-            setText("PsiDirectory: " + psiElement.getName());
+        override fun visitDirectory(psiElement: PsiDirectory) {
+            setIcon(IconCache.getIcon(PsiDirectory::class.java))
+            text = "PsiDirectory: " + psiElement.name
         }
 
-        public void visitElement(PsiElement psiElement) {
-            ReadAction.run(() -> setText(psiElement.toString()));
+        override fun visitElement(psiElement: PsiElement) {
+            text = psiElement.toString()
         }
 
-
-        public void visitFile(PsiFile psiElement) {
-            setText("PsiFile: " + psiElement.getName());
+        override fun visitFile(psiElement: PsiFile) {
+            text = "PsiFile: " + psiElement.name
         }
 
-
-        public void visitPlainTextFile(PsiPlainTextFile psiElement) {
-            setIcon(IconCache.getIcon(PsiPlainTextFile.class));
-            setText("PsiPlainTextFile: " + psiElement.getName());
+        override fun visitPlainTextFile(psiElement: PsiPlainTextFile) {
+            setIcon(IconCache.getIcon(PsiPlainTextFile::class.java))
+            text = "PsiPlainTextFile: " + psiElement.name
         }
 
-
-        public void visitWhiteSpace(@NotNull PsiWhiteSpace psiElement) {
-            setIcon(IconCache.getIcon(PsiWhiteSpace.class));
-            setText("PsiWhiteSpace");
+        override fun visitWhiteSpace(psiElement: PsiWhiteSpace) {
+            setIcon(IconCache.getIcon(PsiWhiteSpace::class.java))
+            text = "PsiWhiteSpace"
         }
 
-        private String truncate(String text) {
-            if (text.length() > MAX_TEXT_LENGTH)
-                return text.substring(0, MAX_TEXT_LENGTH).trim() + "...";
-            else
-                return text;
-        }
-
-        private ElementVisitor() {
+        private fun truncate(text: String): String {
+            return if (text.length > MAX_TEXT_LENGTH) text.substring(0, MAX_TEXT_LENGTH).trim { it <= ' ' } + "..."
+            else text
         }
     }
 
-
-
-    private class ElementVisitorXml extends XmlElementVisitor {
-        public void visitXmlAttribute(XmlAttribute psiElement) {
-            setIcon(IconCache.getIcon(XmlAttribute.class));
-            setText("XmlAttribute: " + psiElement.getName());
+    private inner class ElementVisitorXml : XmlElementVisitor() {
+        override fun visitXmlAttribute(psiElement: XmlAttribute) {
+            setIcon(IconCache.getIcon(XmlAttribute::class.java))
+            text = "XmlAttribute: " + psiElement.name
         }
 
-        public void visitXmlAttributeValue(XmlAttributeValue psiElement) {
-            setText("XmlAttributeValue");
+        override fun visitXmlAttributeValue(psiElement: XmlAttributeValue) {
+            text = "XmlAttributeValue"
         }
 
-        public void visitXmlComment(XmlComment psiElement) {
-            setIcon(IconCache.getIcon(XmlComment.class));
-            setText("XmlComment");
+        override fun visitXmlComment(psiElement: XmlComment) {
+            setIcon(IconCache.getIcon(XmlComment::class.java))
+            text = "XmlComment"
         }
 
-        public void visitXmlDecl(XmlDecl psiElement) {
-            setText("XmlDecl");
+        override fun visitXmlDecl(psiElement: XmlDecl) {
+            text = "XmlDecl"
         }
 
-        public void visitXmlDoctype(XmlDoctype psiElement) {
-            setText("XmlDoctype");
+        override fun visitXmlDoctype(psiElement: XmlDoctype) {
+            text = "XmlDoctype"
         }
 
-        public void visitXmlDocument(XmlDocument psiElement) {
-            setText("XmlDocument");
+        override fun visitXmlDocument(psiElement: XmlDocument) {
+            text = "XmlDocument"
         }
 
-        public void visitXmlFile(XmlFile psiElement) {
-            setIcon(IconCache.getIcon(XmlFile.class));
-            setText("XmlFile: " + psiElement.getName());
+        override fun visitXmlFile(psiElement: XmlFile) {
+            setIcon(IconCache.getIcon(XmlFile::class.java))
+            text = "XmlFile: " + psiElement.name
         }
 
-        public void visitXmlProlog(XmlProlog psiElement) {
-            setText("XmlProlog");
+        override fun visitXmlProlog(psiElement: XmlProlog) {
+            text = "XmlProlog"
         }
 
-        public void visitXmlTag(XmlTag psiElement) {
-            setIcon(IconCache.getIcon(XmlTag.class));
-            setText("XmlTag: " + psiElement.getName());
+        override fun visitXmlTag(psiElement: XmlTag) {
+            setIcon(IconCache.getIcon(XmlTag::class.java))
+            text = "XmlTag: " + psiElement.name
         }
 
-        public void visitXmlToken(XmlToken psiElement) {
-            setText("XmlToken: " + psiElement.getText());
+        override fun visitXmlToken(psiElement: XmlToken) {
+            text = "XmlToken: " + psiElement.text
         }
     }
-
 }

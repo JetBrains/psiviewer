@@ -6,6 +6,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
     id("org.jetbrains.intellij.platform") version "2.16.0"
+    id("org.jetbrains.kotlin.jvm") version "2.3.21"
 }
 
 repositories {
@@ -27,10 +28,17 @@ version = properties("pluginVersion").get().ifEmpty { properties("platformVersio
 
 apply(plugin = "java")
 apply(plugin = "org.jetbrains.intellij.platform")
+apply(plugin = "org.jetbrains.kotlin.jvm")
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(providers.gradleProperty("javaToolchain").get()))
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(providers.gradleProperty("javaTargetVersion").get()))
     }
 }
 

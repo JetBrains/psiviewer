@@ -225,9 +225,10 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
 
     private void setSelectedElement(PsiElement element, String reason)
     {
-        if (inSetSelectedElement)
+        if (inSetSelectedElement || _selectedElement == element)
             return;
 
+        if (_projectComponent.isAutoScrollFromSource() || reason == TREE_SELECTION_CHANGED) {
             debug("selection changed to " + element + " due to " + reason);
             _selectedElement = element;
             updatePropertySheet(() -> {
@@ -241,9 +242,9 @@ public class PsiViewerPanel extends JPanel implements PsiViewerConstants {
                     } finally {
                         inSetSelectedElement = false;
                     }
-
                 }
             });
+        }
     }
 
     private void updatePropertySheet() {

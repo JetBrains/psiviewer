@@ -55,6 +55,9 @@ dependencies {
             testFramework(TestFrameworkType.Platform, version = platformToolsVersion)
         }
         jetbrainsRuntime()
+        // provides intellij.libraries.lucene.common; without it the spellchecker modules of IDEA CORE stay
+        // unresolved in tests and every dependent plugin, including this one, is excluded from the plugin set
+        bundledPlugin("intellij.libraries.misc.plugin")
     }
 
     testImplementation("junit:junit:4.13.2")

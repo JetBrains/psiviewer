@@ -14,7 +14,10 @@ repositories {
     intellijPlatform {
         defaultRepositories()
         jetbrainsRuntime()
-        nightly()
+        val platformBranch = providers.gradleProperty("platformBranch").get()
+        if (platformBranch.contains("-SNAPSHOT") && !platformBranch.contains("-EAP-SNAPSHOT")) {
+            nightly()
+        }
     }
 }
 

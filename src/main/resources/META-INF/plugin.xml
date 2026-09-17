@@ -7,7 +7,8 @@
 
     <!-- Extensions -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable groupId="tools" instance="idea.plugin.psiviewer.controller.application.Configuration"/>
+        <applicationConfigurable groupId="tools" id="idea.plugin.psiviewer.configuration" displayName="PsiViewer"
+                                 instance="idea.plugin.psiviewer.controller.application.Configuration"/>
         <applicationService
                 serviceImplementation="idea.plugin.psiviewer.controller.application.PsiViewerApplicationSettings"/>
         <errorHandler implementation="com.sylvanaar.idea.errorreporting.YouTrackBugReporter"/>

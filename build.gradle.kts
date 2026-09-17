@@ -74,8 +74,6 @@ tasks {
     }
 
     test {
-        systemProperty("idea.plugins.path", project.rootDir.canonicalPath + "/.test-plugins")
-
         testLogging {
             exceptionFormat = TestExceptionFormat.FULL
             showStandardStreams = true

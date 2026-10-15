@@ -246,6 +246,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
     {
         debug("autoscrollfromsource=" + isAutoScrollFromSource);
         myState.AUTOSCROLL_FROM_SOURCE = isAutoScrollFromSource;
+        if (isAutoScrollFromSource) myViewerPanel.selectElementAtCaret();
     }
 
     public Project getProject()

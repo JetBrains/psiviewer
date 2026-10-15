@@ -40,12 +40,12 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiManager;
+import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.components.panels.HorizontalLayout;
 import kotlinx.coroutines.CoroutineScope;
 import idea.plugin.psiviewer.controller.actions.PropertyToggleAction;
 import idea.plugin.psiviewer.util.Helpers;
 import idea.plugin.psiviewer.view.PsiViewerPanel;
-import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -282,7 +282,7 @@ public class PsiViewerProjectService implements PersistentStateComponent<PsiView
         myLanguagesComboBox.removeItemListener(myLanguagesComboBoxListener);
 
         //noinspection Since15
-        myLanguagesComboBox.setModel(new ListComboBoxModel<>(new ArrayList<>(languages)));
+        myLanguagesComboBox.setModel(new CollectionComboBoxModel<>(new ArrayList<>(languages)));
 
         if (selectedLanguage != null && languages.contains(selectedLanguage))
         {
